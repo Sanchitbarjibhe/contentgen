@@ -118,3 +118,29 @@ model DailyUsage {
   @@unique([userId, date])
   @@index([userId, date])
 }
+
+model UserUsage {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  freeCreditsLeft  Int      @default(5)
+  lastResetDate    DateTime @default(now())
+  isPremium        Boolean  @default(false)
+  stripeCustomerId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([stripeCustomerId])
+}
+
+model GeneratedHook {
+  id                String   @id @default(cuid())
+  userId            String
+  topic             String
+  niche             String
+  platform          String
+  generatedHooks    Json
+  avgRetentionScore Float    @default(0.0)
+  createdAt         DateTime @default(now())
+
+  @@index([userId, createdAt])
+}

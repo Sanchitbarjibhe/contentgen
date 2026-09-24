@@ -11,13 +11,14 @@ import type { GenerationResult, Niche, Platform, UsageInfo } from "@/lib/types";
 import { NICHES, PLATFORMS } from "@/lib/types";
 
 interface HookGeneratorFormProps {
-  onGenerated: (result: GenerationResult & { id: string; usage: UsageInfo }) => void;
+  onGenerated: (result: GenerationResult & { id: string; usage: UsageInfo; topic: string; niche: Niche; platform: Platform; createdAt: string }) => void;
+  onUpgrade: () => void;
   initialUsage?: UsageInfo;
 }
 
 const MIN_TOPIC_LENGTH = 10;
 
-export function HookGeneratorForm({ onGenerated, initialUsage }: HookGeneratorFormProps) {
+export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage }: HookGeneratorFormProps) {
   const [topic, setTopic] = useState("");
   const [niche, setNiche] = useState<Niche>("TECH");
   const [platform, setPlatform] = useState<Platform>("SHORTS");
@@ -135,9 +136,9 @@ export function HookGeneratorForm({ onGenerated, initialUsage }: HookGeneratorFo
           {usage && usage.limit !== null && (
             <p className="text-xs text-zinc-500">
               {usage.remaining} of {usage.limit} free generations left today.{" "}
-              <a href="/pricing" className="text-indigo-400 hover:underline">
+              <button type="button" onClick={onUpgrade} className="text-indigo-400 hover:underline">
                 Upgrade for unlimited
-              </a>
+              </button>
               .
             </p>
           )}
@@ -156,14 +157,22 @@ export function HookGeneratorForm({ onGenerated, initialUsage }: HookGeneratorFo
             )}
           </AnimatePresence>
 
-          <Button type="submit" size="lg" className="w-full" disabled={!canSubmit} loading={loading}>
-            {!loading && (isOutOfCredits ? <Sparkles className="size-4" /> : <Wand2 className="size-4" />)}
-            {loading
-              ? "Writing your hooks..."
-              : isOutOfCredits
-              ? "Upgrade to keep generating"
-              : "Generate 10 hooks"}
-          </Button>
+          {isOutOfCredits ? (
+            <>
+              <Button type="submit" size="lg" className="w-full" disabled>
+                <Sparkles className="size-4" />
+                Generate 10 hooks
+              </Button>
+              <Button type="button" size="lg" variant="secondary" className="w-full" onClick={onUpgrade}>
+                Upgrade to keep generating
+              </Button>
+            </>
+          ) : (
+            <Button type="submit" size="lg" className="w-full" disabled={!canSubmit} loading={loading}>
+              {!loading && <Wand2 className="size-4" />}
+              {loading ? "Writing your hooks..." : "Generate 10 hooks"}
+            </Button>
+          )}
         </form>
       </CardBody>
     </Card>

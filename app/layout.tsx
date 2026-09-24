@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import AuthActions from "@/components/AuthActions";
-import "@/app/globals.css";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 

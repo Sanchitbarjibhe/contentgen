@@ -29,6 +29,11 @@ export async function POST(req: NextRequest) {
         if (session.mode === "subscription" && session.subscription && session.metadata?.userId) {
           const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
           await syncSubscription(session.metadata.userId, subscription);
+        } else if (session.mode === "subscription" && session.metadata?.anonId) {
+          await prisma.userUsage.update({
+            where: { userId: session.metadata.anonId },
+            data: { isPremium: true, stripeCustomerId: session.customer as string },
+          });
         }
         break;
       }
@@ -39,11 +44,20 @@ export async function POST(req: NextRequest) {
         const userId = subscription.metadata?.userId;
         if (userId) {
           await syncSubscription(userId, subscription);
+        } else if (subscription.metadata?.anonId) {
+          await prisma.userUsage.update({
+            where: { userId: subscription.metadata.anonId },
+            data: { isPremium: event.type !== "customer.subscription.deleted" && isPremiumStripeStatus(subscription.status) },
+          });
         } else {
           // Fall back to matching by Stripe customer id if metadata is missing.
           await prisma.subscription.updateMany({
             where: { stripeCustomerId: subscription.customer as string },
             data: statusUpdateFrom(subscription),
+          });
+          await prisma.userUsage.updateMany({
+            where: { stripeCustomerId: subscription.customer as string },
+            data: { isPremium: event.type !== "customer.subscription.deleted" && isPremiumStripeStatus(subscription.status) },
           });
         }
         break;
@@ -60,6 +74,10 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true });
 }
 
+function isPremiumStripeStatus(status: Stripe.Subscription.Status): boolean {
+  return status === "active" || status === "trialing";
+}
+
 async function syncSubscription(userId: string, subscription: Stripe.Subscription) {
   const priceId = subscription.items.data[0]?.price.id ?? null;
 
@@ -67,12 +85,10 @@ async function syncSubscription(userId: string, subscription: Stripe.Subscriptio
     where: { userId },
     create: {
       userId,
-      plan: planFromPriceId(priceId),
       stripeCustomerId: subscription.customer as string,
       ...statusUpdateFrom(subscription, priceId),
     },
     update: {
-      plan: planFromPriceId(priceId),
       stripeCustomerId: subscription.customer as string,
       ...statusUpdateFrom(subscription, priceId),
     },
