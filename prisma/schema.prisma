@@ -1,0 +1,120 @@
+// prisma/schema.prisma
+// HookCraft AI — core data model
+// Run: npx prisma migrate dev --name init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Plan {
+  FREE
+  PRO
+  AGENCY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+enum Niche {
+  TECH
+  FINANCE
+  FITNESS
+  COMEDY
+  BUSINESS
+}
+
+enum Platform {
+  REELS
+  SHORTS
+  TIKTOK
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscription Subscription?
+  generations  Generation[]
+  dailyUsage   DailyUsage[]
+
+  @@index([email])
+}
+
+/// One row per user, created lazily on first Clerk webhook / first request.
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan   Plan               @default(FREE)
+  status SubscriptionStatus @default(ACTIVE)
+
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([stripeCustomerId])
+}
+
+/// A single AI generation call — stores the full structured output so
+/// history / CSV export never has to re-call the model.
+model Generation {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  topic    String   @db.Text
+  niche    Niche
+  platform Platform
+
+  /// HookResult[] — see lib/types.ts for the exact shape.
+  hooks             Json
+  description       String   @db.Text
+  hashtags          String[]
+  avgRetentionScore Int
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+/// Per-calendar-day counter, keyed by UTC midnight. Avoids the drift and
+/// timezone bugs a single rolling "generationsToday" counter runs into.
+model DailyUsage {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date  DateTime // truncated to UTC midnight
+  count Int      @default(0)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
