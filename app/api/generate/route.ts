@@ -15,11 +15,25 @@ import { NICHES, PLATFORMS } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const requestSchema = z.object({
+const requestSchema = z.preprocess((value) => {
+    if (!value || typeof value !== "object") return value;
+
+    const input = value as Record<string, unknown>;
+    const niche = typeof input.niche === "string" ? input.niche.trim().toUpperCase() : input.niche;
+    const platformText = typeof input.platform === "string" ? input.platform.trim().toUpperCase() : "";
+    const platform = platformText.includes("REEL") ? "REELS" : platformText.includes("SHORT") ? "SHORTS" : platformText.includes("TIKTOK") ? "TIKTOK" : input.platform;
+
+    return {
+        ...input,
+        topic: input.topic ?? input.prompt,
+        niche,
+        platform,
+    };
+}, z.object({
     topic: z.string().trim().min(10, "Give me at least a sentence about the video so the hooks have something to work with.").max(1200, "Keep the topic/script summary under 1200 characters."),
     niche: z.enum(NICHES),
     platform: z.enum(PLATFORMS),
-});
+}));
 
 export async function POST(req: NextRequest) {
     const existingAnonId = req.cookies.get(ANON_ID_COOKIE)?.value;
