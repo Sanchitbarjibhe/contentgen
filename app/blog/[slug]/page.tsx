@@ -50,7 +50,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
 
             {/* 👈 dangerouslySetInnerHTML वापरून HTML रेंडर करा */}
             <article
-                className="prose prose-invert max-w-none leading-relaxed"
+                className="prose prose-invert max-w-none leading-relaxed prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline"
                 dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
         </main>
