@@ -11,7 +11,7 @@ const config: Config = {
     extend: {
       colors: {
         accent: {
-          DEFAULT: "#4F46E5", // indigo-600, hooktos brand accent
+          DEFAULT: "#4F46E5", // indigo-600, HookTos brand accent
           light: "#818CF8",
           dark: "#3730A3",
         },

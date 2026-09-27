@@ -24,7 +24,7 @@ export default function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
       <span className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-4 py-1.5 text-sm font-medium text-indigo-300 ring-1 ring-inset ring-indigo-500/30">
         <Sparkles className="size-4" />
-        hooktos AI
+        HookTos AI
       </span>
       <h1 className="text-4xl font-bold text-center">Stop losing viewers in the first 3 seconds.</h1>
       <p className="max-w-md text-zinc-500">

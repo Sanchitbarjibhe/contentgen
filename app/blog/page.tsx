@@ -34,7 +34,7 @@ export default function BlogListingPage() {
     return (
         <main className="max-w-4xl mx-auto p-6 min-h-screen pt-16">
             <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-white mb-3">hooktos AI Blog</h1>
+                <h1 className="text-4xl font-bold text-white mb-3">HookTos AI Blog</h1>
                 <p className="text-zinc-400 text-sm">
                     Latest strategies, guides, and tips for creating viral short-form content.
                 </p>

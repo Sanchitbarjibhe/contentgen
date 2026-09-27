@@ -2,7 +2,7 @@
 title: "Short-Form Content Strategy: How to Hook Viewers in the First 3 Seconds"
 description: "Master the art of the 3-second hook. Learn the psychology, frameworks, and visual techniques that keep viewers watching your short-form videos instead of scrolling past."
 date: "2026-09-29"
-author: "hooktos AI Team"
+author: "HookTos AI Team"
 tags: ["Short-Form Content", "Hooks", "Reels", "TikTok", "Retention", "Video Strategy"]
 ---
 You have **3 seconds**. 

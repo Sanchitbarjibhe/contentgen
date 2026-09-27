@@ -2,7 +2,7 @@
 title: "How to Deal with Algorithm Changes Without Losing Your Mind"
 description: "Reach dropped overnight? Don't panic. Learn how to protect your mental health and build an algorithm-proof content engine that thrives through platform updates."
 date: "2026-09-30"
-author: "hooktos AI Team"
+author: "HookTos AI Team"
 tags: \["Algorithm Updates", "Creator Mindset", "Social Media Strategy", "Content Distribution", "Audience Ownership"\]
 ---
 You wake up, open your dashboard, and check your latest post metrics.
