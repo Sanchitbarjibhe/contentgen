@@ -3,14 +3,70 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "HookCraft AI — Viral Hook & SEO Generator",
-  description: "Generate scroll-stopping hooks, SEO descriptions, and hashtags for Reels, Shorts, and TikTok.",
+  metadataBase: new URL('https://contentgen-eight.vercel.app'),
+  title: {
+    default: 'HookCraft AI — Viral Hook Generator & SEO Content Assistant',
+    template: '%s | HookCraft AI',
+  },
+  description:
+    'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
+  keywords: [
+    'HookCraft AI',
+    'Viral Hook Generator',
+    'AI Content Generator',
+    'Instagram Reels Hooks',
+    'YouTube Shorts Hooks',
+    'TikTok Viral Captions',
+    'Social Media Content Assistant',
+    'Video Retention Hooks',
+  ],
+  authors: [{ name: 'HookCraft AI Team' }],
+  creator: 'HookCraft AI',
+  publisher: 'HookCraft AI',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://contentgen-eight.vercel.app',
+    siteName: 'HookCraft AI',
+    title: 'HookCraft AI — Generate Viral Hooks & High-Ranking Content',
+    description:
+      'Stop losing viewers! Generate high-retention viral hooks for Reels, Shorts, and TikTok instantly using HookCraft AI.',
+    images: [
+      {
+        url: '/og-image.png', // Public folder मध्ये 1200x630px चा फोटो टाका
+        width: 1200,
+        height: 630,
+        alt: 'HookCraft AI Dashboard & Viral Hook Generator',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'HookCraft AI — Create Viral Social Media Hooks in Seconds',
+    description:
+      'Supercharge your social media growth with AI-generated hooks and high-converting content.',
+    images: ['/og-image.png'],
+    creator: '@hookcraftai',
+  },
+  alternates: {
+    canonical: 'https://contentgen-eight.vercel.app',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

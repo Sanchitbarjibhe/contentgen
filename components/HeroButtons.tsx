@@ -19,7 +19,7 @@ export default function HeroButtons({
     return (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
 
-            {/* 1. Primary Button: Sign In */}
+            {/* 1. Primary Button: Sign In
             <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
@@ -29,13 +29,13 @@ export default function HeroButtons({
                 <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl opacity-75 blur-[2px] group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
 
                 <div className="relative px-5 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 transition-all duration-300 flex items-center justify-center gap-2 text-white font-semibold text-sm sm:text-base border border-white/10 shadow-lg shadow-purple-500/20">
-                    {/* <LogIn className="w-4 h-4 text-purple-400 group-hover:translate-x-0.5 transition-transform" /> */}
+                 <LogIn className="w-4 h-4 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
                     <span>Sign In</span>
                     <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </div>
-            </motion.button>
+            </motion.button> 
 
-            {/* 2. Secondary Button: Explore Dashboard */}
+            {/* 2. Secondary Button: Explore Dashboard
             <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
@@ -44,7 +44,7 @@ export default function HeroButtons({
             >
                 <LayoutDashboard className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
                 <span>Explore Dashboard</span>
-            </motion.button>
+            </motion.button>*/}
 
             {/* 3. Ghost Button: Read Blogs */}
             <motion.button
