@@ -2,7 +2,7 @@
 title: "The Pitch Email Template That Gets Brands to Pay You More (2026 Strategy)"
 description: "Stop sending cold pitch emails that get ignored. Use this proven brand pitch template and negotiation framework to double your creator sponsorship rates in 2026."
 date: "2026-10-01"
-author: "HookCraft AI Team"
+author: "hooktos AI Team"
 tags: ["Brand Deals", "Monetization", "Creator Economy", "Pitch Template", "Influencer Marketing", "Negotiation"]
 keywords: "pitch email template for creators, how to pitch brands, influencer pitch email, brand sponsorship outreach, monetization for content creators"
 ---

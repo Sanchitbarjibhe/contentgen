@@ -2,7 +2,7 @@
 title: "How to Monetize a Small Audience (Under 5k Followers)"
 description: "You don't need 100k followers to build a full-time income online. Here is how to make your first $1,000–$5,000 with a small, engaged audience in 2026."
 date: "2026-09-28"
-author: "HookCraft AI Team"
+author: "hooktos AI Team"
 tags: ["Monetization", "Creator Economy", "Solopreneur", "Digital Products", "Audience Building"]
 ---
 
