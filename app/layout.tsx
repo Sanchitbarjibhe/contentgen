@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   },
   description:
     'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
+  icons: {
+    icon: '/hooktos.png', // किंवा '/icon.png'
+    shortcut: '/hooktos.png',
+    apple: '/hooktos.png', // iOS डिव्हाईससाठी (180x180 png)
+  },
   keywords: [
     'HookTos AI',
     'Viral Hook Generator',
@@ -49,7 +54,7 @@ export const metadata: Metadata = {
       'Stop losing viewers! Generate high-retention viral hooks for Reels, Shorts, and TikTok instantly using HookTos AI.',
     images: [
       {
-        url: '/og-image.png', // Public folder मध्ये 1200x630px चा फोटो टाका
+        url: '/hooktos.png', // Public folder मध्ये 1200x630px चा फोटो टाका
         width: 1200,
         height: 630,
         alt: 'HookTos AI Dashboard & Viral Hook Generator',
@@ -61,7 +66,7 @@ export const metadata: Metadata = {
     title: 'HookTos AI — Create Viral Social Media Hooks in Seconds',
     description:
       'Supercharge your social media growth with AI-generated hooks and high-converting content.',
-    images: ['/og-image.png'],
+    images: ['public/hooktos.png'],
     creator: '@HookTosai',
   },
   alternates: {
