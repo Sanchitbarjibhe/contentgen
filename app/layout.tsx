@@ -8,7 +8,7 @@ import "@/app/globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://contentgen-eight.vercel.app'),
+  metadataBase: new URL('https://www.hooktos.com'),
   title: {
     default: 'HookTos AI — Viral Hook Generator & SEO Content Assistant',
     template: '%s | HookTos AI',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://contentgen-eight.vercel.app',
+    url: 'https://www.hooktos.com',
     siteName: 'HookTos AI',
     title: 'HookTos AI — Generate Viral Hooks & High-Ranking Content',
     description:
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     creator: '@HookTosai',
   },
   alternates: {
-    canonical: 'https://contentgen-eight.vercel.app',
+    canonical: 'https://www.hooktos.com',
   },
 };
 
