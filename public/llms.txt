@@ -1,0 +1,19 @@
+# HookTos AI
+
+HookTos AI helps creators develop short-form social video content. Its content-generation workflow provides ten hook ideas, a retention score, an SEO description, and fifteen hashtags for Instagram Reels, YouTube Shorts, and TikTok.
+
+## Primary pages
+
+- [Home](https://www.hooktos.com/): HookTos AI content generation overview.
+- [Blog](https://www.hooktos.com/blog): Guides and strategies for short-form content.
+
+## Blog articles
+
+- [10 Proven Content Hook Formulas](https://www.hooktos.com/blog/10_proven_content_hook_formulas_to_create_viral_content)
+- [10 Viral Hooks for Reels](https://www.hooktos.com/blog/10-viral-hooks-for-reels)
+- [AI Content Generation and SEO](https://www.hooktos.com/blog/ai_content_generation_blog_seo_optimization_guide)
+- [Dealing With Algorithm Changes](https://www.hooktos.com/blog/dealing_with_algorithm_changes)
+- [Monetize a Small Audience](https://www.hooktos.com/blog/monetize_a_small_audience)
+- [Short-Form Content Strategy](https://www.hooktos.com/blog/short_form_content_strategy)
+- [The Brand Pitch Email Template](https://www.hooktos.com/blog/the_pitch_email_template_that_gets_brands_to_pay_you_more)
+- [The Truth About Going Viral](https://www.hooktos.com/blog/the_truth_about_going_viral_in_2026_skill_vs_luck)

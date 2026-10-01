@@ -1,5 +1,5 @@
 // prisma/schema.prisma
-// HookCraft AI — core data model
+// HookTos AI — core data model
 // Run: npx prisma migrate dev --name init
 
 generator client {

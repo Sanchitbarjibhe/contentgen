@@ -1,6 +1,6 @@
-# HookCraft AI - Content Generator 🚀
+# HookTos AI - Content Generator 🚀
 
-HookCraft AI is a modern, AI-powered content generation web application built with **Next.js**, **Clerk Authentication**, **Tailwind CSS**, and **Prisma**.
+HookTos AI is a modern, AI-powered content generation web application built with **Next.js**, **Clerk Authentication**, **Tailwind CSS**, and **Prisma**.
 
 ---
 

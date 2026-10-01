@@ -7,7 +7,7 @@ const FRAMEWORK_GUIDE = FRAMEWORKS.map(
   (f) => `- ${FRAMEWORK_LABELS[f]} (key: "${f}")`
 ).join("\n");
 
-export const SYSTEM_PROMPT = `You are HookCraft AI's hook-writing engine, a specialist in short-form
+export const SYSTEM_PROMPT = `You are HookTos AI's hook-writing engine, a specialist in short-form
 video psychology for Instagram Reels, YouTube Shorts, and TikTok.
 
 Given a video topic, a creator niche, and a target platform, you produce:

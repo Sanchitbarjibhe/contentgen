@@ -10,7 +10,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "HookCraft AI — Viral Hook & SEO Generator",
+  title: "HookTos AI — Viral Hook & SEO Generator",
   description: "Generate scroll-stopping hooks, SEO descriptions, and hashtags for Reels, Shorts, and TikTok.",
 };
 
@@ -21,9 +21,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
           <header className="flex items-center justify-between border-b border-white/[0.06] px-4 py-4 sm:px-6 lg:px-8">
             <Link href="/" className="text-sm font-semibold text-zinc-100">
-              HookCraft AI
+              HookTos AI
             </Link>
             <div className="flex items-center gap-3">
+              <Link
+                href="/changelog"
+                className="text-sm text-zinc-400 hover:text-white transition"
+              >
+                What's New
+              </Link>
+              <Link
+                href="/about"
+                className="text-sm text-zinc-400 hover:text-white transition"
+              >
+                About
+              </Link>
               <Link
                 href="/blog"
                 className="text-sm text-zinc-400 hover:text-white transition"
