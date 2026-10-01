@@ -48,6 +48,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                 {data.date && <p className="text-sm text-zinc-500">{data.date}</p>}
             </div>
 
+            {/* 👈 dangerouslySetInnerHTML वापरून HTML रेंडर करा */}
             <article
                 className="prose prose-invert max-w-none leading-relaxed prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline"
                 dangerouslySetInnerHTML={{ __html: htmlContent }}

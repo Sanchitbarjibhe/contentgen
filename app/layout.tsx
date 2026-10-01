@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
+import AuthActions from "@/components/AuthActions";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -78,20 +80,35 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} min-h-screen bg-zinc-950 font-sans text-zinc-100 antialiased`}>
-        <header className="flex items-center justify-between border-b border-white/[0.06] px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="text-sm font-semibold text-zinc-100">
-            HookTos AI
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/blog"
-              className="text-sm text-zinc-400 hover:text-white transition"
-            >
-              Blog
+        <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
+          <header className="flex items-center justify-between border-b border-white/[0.06] px-4 py-4 sm:px-6 lg:px-8">
+            <Link href="/" className="text-sm font-semibold text-zinc-100">
+              HookTos AI
             </Link>
-          </div>
-        </header>
-        {children}
+            <div className="flex items-center gap-3">
+              <Link
+                href="/changelog"
+                className="text-sm text-zinc-400 hover:text-white transition"
+              >
+                What's New
+              </Link>
+              <Link
+                href="/about"
+                className="text-sm text-zinc-400 hover:text-white transition"
+              >
+                About
+              </Link>
+              <Link
+                href="/blog"
+                className="text-sm text-zinc-400 hover:text-white transition"
+              >
+                Blog
+              </Link>
+              <AuthActions />
+            </div>
+          </header>
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

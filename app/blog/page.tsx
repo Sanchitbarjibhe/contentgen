@@ -1,74 +1,118 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import Link from "next/link";
+import React from 'react';
+import Link from 'next/link';
+
+export const metadata = {
+    title: 'Blog — HookTos AI',
+    description: 'Latest strategies, guides, and tips for creating viral short-form content with AI.',
+};
+
+// Blog Posts Data
+const blogPosts = [
+    {
+        slug: '10-viral-hooks-for-reels',
+        title: '10 Viral Hooks to Skyrocket Your Instagram Reels in 2026',
+        description:
+            'Discover the top 10 AI-proven hooks that grab attention in the first 3 seconds and massively increase your engagement and views.',
+        date: '2026-09-25',
+        readTime: '4 min read',
+        category: 'Instagram Strategy',
+    },
+    {
+        slug: 'monetize_a_small_audience',
+        title: 'The Solopreneur Playbook: How to Monetize Your Audience in 2026',
+        description:
+            'Learn how full-time creators and solopreneurs build 6-figure businesses using digital products, brand sponsorships, and paid communities.',
+        date: '2026-09-26',
+        readTime: '6 min read',
+        category: 'Monetization',
+    },
+    {
+        slug: 'short_form_content_strategy',
+        title: 'Short-Form Content Strategy for YouTube Shorts & TikTok',
+        description:
+            'Master the algorithm with data-backed retention tactics, pacing secrets, and storytelling hooks built for rapid growth.',
+        date: '2026-09-27',
+        readTime: '5 min read',
+        category: 'Growth Tactics',
+    },
+    {
+        slug: 'dealing_with_algorithm_changes',
+        title: 'Dealing with Social Media Algorithm Changes Without Burning Out',
+        description:
+            'How to adapt your content creation workflow when algorithms shift, keeping your reach consistent and high-converting.',
+        date: '2026-09-28',
+        readTime: '4 min read',
+        category: 'Algorithm',
+    },
+    {
+        slug: 'the_pitch_email_template_that_gets_brands_to_pay_you_more',
+        title: 'The Pitch Email Template That Gets Brands to Pay You More',
+        description:
+            'A proven outreach script and negotiation framework designed to help creators land premium brand sponsorships.',
+        date: '2026-09-29',
+        readTime: '3 min read',
+        category: 'Sponsorships',
+    },
+    {
+        slug: 'the_truth_about_going_viral_in_2026_skill_vs_luck',
+        title: 'The Truth About Going Viral in 2026: Skill vs Luck',
+        description:
+            'An in-depth analysis of short-form video metrics and why viral distribution is a repeatable skill rather than random chance.',
+        date: '2026-09-30',
+        readTime: '7 min read',
+        category: 'Analytics',
+    },
+];
 
 export default function BlogListingPage() {
-    const blogDir = path.resolve(".", "content/blogs");
-
-    if (!fs.existsSync(blogDir)) {
-        // जर फोल्डर नसेल, तर ते ऑटोमॅटिक तयार करा
-        fs.mkdirSync(blogDir, { recursive: true });
-    }
-
-    const files = fs.readdirSync(blogDir);
-
-    const posts = files
-        .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
-        .map((filename) => {
-            // 1. Extension काढू न योग्य slug बनवा
-            const slug = filename.replace(/\.mdx?$/, "");
-
-            const filePath = path.join(blogDir, filename);
-            const fileContent = fs.readFileSync(filePath, "utf-8");
-
-            // 2. Frontmatter Parse करा
-            const { data } = matter(fileContent);
-
-            return {
-                slug,
-                data,
-            };
-        });
-
     return (
-        <main className="max-w-4xl mx-auto p-6 min-h-screen pt-16">
-            <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-white mb-3">HookTos AI Blog</h1>
-                <p className="text-zinc-400 text-sm">
+        <div className="bg-slate-950 text-slate-100 min-h-screen py-16 px-4 sm:px-6 lg:px-8 selection:bg-purple-500 selection:text-white">
+            {/* Header Section */}
+            <div className="max-w-4xl mx-auto text-center space-y-4">
+                <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    Knowledge & Growth Guides
+                </span>
+                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+                    HookTos AI <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">Blog</span>
+                </h1>
+                <p className="text-slate-400 text-lg max-w-2xl mx-auto">
                     Latest strategies, guides, and tips for creating viral short-form content.
                 </p>
             </div>
-            <div className="grid gap-6">
-                {posts.length === 0 ? (
-                    // जर एकही ब्लॉग सापडला नाही तर हा मेसेज दिसेल
-                    <div className="text-center p-12 border border-zinc-800 rounded-xl bg-zinc-900/20 text-zinc-500">
-                        No blog posts found. Please ensure your .mdx files are inside the 'content/blogs' folder with correct frontmatter.
-                    </div>
-                ) : (
-                    // जर ब्लॉग्स असतील तर ते मॅप होतील
-                    posts.map((post: any) => (
-                        <Link
-                            key={post.slug}
-                            href={`/blog/${post.slug}`}
-                            prefetch={false} // <-- हे जोडल्यामुळे बॅकग्राउंडला चुकीचा डेटा प्रीफेच होणार नाही
 
-                            className="p-6 border border-zinc-800 rounded-xl bg-zinc-900/50 hover:border-indigo-500/50 hover:bg-zinc-900 transition block group"
-                        >
-                            <div className="flex justify-between items-start mb-2">
-                                <h2 className="text-xl font-semibold text-white group-hover:text-indigo-400 transition">
-                                    {post.data.title || post.slug}
-                                </h2>
-                                {post.data.date && (
-                                    <span className="text-xs text-zinc-500">{post.data.date}</span>
-                                )}
+            {/* Blog Grid / Cards Container */}
+            <div className="max-w-4xl mx-auto mt-14 space-y-6">
+                {blogPosts.map((post) => (
+                    <Link
+                        key={post.slug}
+                        href={`/blog/${post.slug}`}
+                        className="group block p-6 sm:p-8 rounded-2xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-sm hover:border-purple-500/50 hover:bg-slate-900/80 transition-all duration-300 shadow-lg hover:shadow-purple-500/10"
+                    >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <span className="text-xs font-semibold text-purple-400 bg-purple-500/10 px-3 py-1 rounded-md border border-purple-500/20 w-fit">
+                                {post.category}
+                            </span>
+                            <div className="flex items-center gap-3 text-xs text-slate-500 font-mono">
+                                <span>{post.readTime}</span>
+                                <span>•</span>
+                                <time>{post.date}</time>
                             </div>
-                            <p className="text-zinc-400 text-sm">{post.data.description}</p>
-                        </Link>
-                    ))
-                )}
-            </div>
+                        </div>
 
-        </main>
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-100 group-hover:text-purple-300 transition-colors duration-200">
+                            {post.title}
+                        </h2>
+
+                        <p className="text-slate-400 text-sm mt-3 leading-relaxed font-normal">
+                            {post.description}
+                        </p>
+
+                        <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-400 group-hover:text-blue-300 transition-colors">
+                            Read Article <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </div>
     );
 }
