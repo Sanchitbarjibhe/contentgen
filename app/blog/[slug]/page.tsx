@@ -2,15 +2,14 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { marked } from "marked"; // 👈 marked इंपोर्ट करा
 
 interface BlogProps {
     params: Promise<{ slug: string }>;
 }
 
-export default async function SingleBlogPost({ params }: BlogProps) {
-    const { slug } = await params;
-
+function getBlogPost(slug: string) {
     let blogDir = path.resolve(process.cwd(), "content", "blogs");
 
     if (!fs.existsSync(blogDir)) {
@@ -18,7 +17,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     }
 
     if (!fs.existsSync(blogDir)) {
-        return notFound();
+        return null;
     }
 
     const allFiles = fs.readdirSync(blogDir);
@@ -29,12 +28,54 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     });
 
     if (!matchedFile) {
-        return notFound();
+        return null;
     }
 
     const filePath = path.join(blogDir, matchedFile);
     const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(fileContent);
+    return matter(fileContent);
+}
+
+export async function generateMetadata({ params }: BlogProps): Promise<Metadata> {
+    const { slug } = await params;
+    const post = getBlogPost(slug);
+
+    if (!post) {
+        return {};
+    }
+
+    const title = `${post.data.title || slug} | HookTos AI`;
+    const description = post.data.description || "Read the latest from HookTos AI.";
+    const canonical = `https://www.hooktos.com/blog/${slug}`;
+
+    return {
+        title: { absolute: title },
+        description,
+        alternates: { canonical },
+        openGraph: {
+            type: "article",
+            title,
+            description,
+            url: canonical,
+            siteName: "HookTos AI",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+    };
+}
+
+export default async function SingleBlogPost({ params }: BlogProps) {
+    const { slug } = await params;
+    const post = getBlogPost(slug);
+
+    if (!post) {
+        return notFound();
+    }
+
+    const { data, content } = post;
 
     // Markdown ला HTML मध्ये रूपांतरित करा
     const htmlContent = marked.parse(content);
