@@ -3,7 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { marked } from "marked"; // 👈 marked इंपोर्ट करा
+import { marked } from "marked";
 
 interface BlogProps {
     params: Promise<{ slug: string }>;
@@ -41,11 +41,15 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
     const post = getBlogPost(slug);
 
     if (!post) {
-        return {};
+        return {
+            title: "Blog Post Not Found | HookTos AI",
+        };
     }
 
-    const title = `${post.data.title || slug} | HookTos AI`;
-    const description = post.data.description || "Read the latest from HookTos AI.";
+    // Dynamic Title & Description Optimization
+    const rawTitle = post.data.title || slug.replace(/[-_]/g, " ");
+    const title = `${rawTitle} | HookTos AI`;
+    const description = post.data.description || `Learn more about ${rawTitle} on HookTos AI - The ultimate viral hook & content generator tool.`;
     const canonical = `https://www.hooktos.com/blog/${slug}`;
 
     return {
@@ -77,14 +81,14 @@ export default async function SingleBlogPost({ params }: BlogProps) {
 
     const { data, content } = post;
 
-    // Markdown ला HTML मध्ये रूपांतरित करा
-    const htmlContent = marked.parse(content);
+    // Async handling for marked parser safety
+    const htmlContent = await marked.parse(content);
 
     return (
         <main className="max-w-3xl mx-auto p-6 min-h-screen pt-24 text-zinc-300">
             <div className="mb-8 border-b border-zinc-800 pb-6">
-                <h1 className="text-4xl font-extrabold text-white mb-3">
-                    {data.title || slug}
+                <h1 className="text-4xl font-extrabold text-white mb-3 capitalize">
+                    {data.title || slug.replace(/[-_]/g, " ")}
                 </h1>
                 {data.date && <p className="text-sm text-zinc-500">{data.date}</p>}
             </div>
