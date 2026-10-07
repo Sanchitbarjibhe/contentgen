@@ -11,7 +11,7 @@ export default function AboutPage() {
             {/* Hero Section */}
             <div className="max-w-5xl mx-auto text-center space-y-6">
                 <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                    Powered by HookCraft AI
+                    Powered by HookTos AI
                 </span>
                 <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
                     Empowering Creators to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">Hook Their Audience</span>

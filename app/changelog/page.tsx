@@ -45,7 +45,7 @@ const releases: ReleaseUpdate[] = [
     {
         version: 'v1.1.0',
         date: 'August 2026',
-        title: 'HookCraft AI Engine Upgrade & Analytics Preview',
+        title: 'HookTos AI Engine Upgrade & Analytics Preview',
         description:
             'Engineered a faster AI inference workflow for generating platform-specific viral hooks in under 3 seconds.',
         changes: [
@@ -70,7 +70,7 @@ const releases: ReleaseUpdate[] = [
         date: 'July 2026',
         title: 'Official Launch of HookTos AI',
         description:
-            'The initial public release of HookTos AI under the HookCraft brand architecture, designed to help creators beat the algorithm.',
+            'The initial public release of HookTos AI under the HookTosbrand architecture, designed to help creators beat the algorithm.',
         changes: [
             {
                 category: 'New Feature',
