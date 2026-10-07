@@ -79,33 +79,26 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} min-h-screen bg-zinc-950 font-sans text-zinc-100 antialiased`}>
+      <body className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}>
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
-          <header className="flex items-center justify-between border-b border-white/[0.06] px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="/" className="text-sm font-semibold text-zinc-100">
-              HookTos AI
-            </Link>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/changelog"
-                className="text-sm text-zinc-400 hover:text-white transition"
-              >
-                What's New
+          <header className=" max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between">
+            <div className="flex items-center gap-2 font-extrabold text-xl tracking-tight text-white">
+              <Link href="/" className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                HookTos AI
               </Link>
-              <Link
-                href="/about"
-                className="text-sm text-zinc-400 hover:text-white transition"
-              >
+            </div>
+            <nav className="flex items-center gap-6 text-sm font-medium text-slate-300">
+              <Link href="/changelog" className="hover:text-white transition">
+                What&apos;s New
+              </Link>
+              <Link href="/about" className="hover:text-white transition">
                 About
               </Link>
-              <Link
-                href="/blog"
-                className="text-sm text-zinc-400 hover:text-white transition"
-              >
+              <Link href="/blog" className="hover:text-white transition">
                 Blog
               </Link>
-              <AuthActions />
-            </div>
+              {/* <AuthActions /> */}
+            </nav>
           </header>
           {children}
         </ClerkProvider>

@@ -11,31 +11,12 @@ export default function HomePage() {
   return (
     <div className="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
       {/* Header Navigation */}
-      <header className="max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-extrabold text-xl tracking-tight text-white">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-            HookTos AI
-          </span>
-        </div>
-        <nav className="flex items-center gap-6 text-sm font-medium text-slate-300">
-          <Link href="/changelog" className="hover:text-white transition">
-            What&apos;s New
-          </Link>
-          <Link href="/about" className="hover:text-white transition">
-            About
-          </Link>
-          <Link href="/blog" className="hover:text-white transition">
-            Blog
-          </Link>
-        </nav>
-      </header>
-
       {/* Main Hero Section */}
       <main className="max-w-5xl mx-auto px-6 py-20 text-center space-y-8 my-auto">
         {/* Pill Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-300 shadow-inner">
           <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-          Powered by HookCraft AI
+          Powered by HookTos AI
         </div>
 
         {/* Headline */}
