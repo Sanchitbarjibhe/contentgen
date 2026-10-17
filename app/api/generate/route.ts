@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { generateHooks, HookGenerationError } from "@/lib/openai";
@@ -69,17 +69,27 @@ export async function POST(req: NextRequest) {
 
     try {
         const result = await generateHooks({ topic, niche, platform });
+        const generatedHooks: Prisma.JsonObject = {
+            hooks: result.hooks.map((hook): Prisma.JsonObject => ({
+                framework: hook.framework,
+                hook: hook.hook,
+                retentionScore: hook.retentionScore,
+                rationale: hook.rationale,
+            })),
+            description: result.description,
+            hashtags: {
+                broad: result.hashtags.broad,
+                medium: result.hashtags.medium,
+                lowCompetition: result.hashtags.lowCompetition,
+            },
+        };
         const generation = await prisma.generatedHook.create({
             data: {
                 userId,
                 topic,
                 niche,
                 platform,
-                generatedHooks: {
-                    hooks: result.hooks,
-                    description: result.description,
-                    hashtags: result.hashtags,
-                } as unknown as Prisma.InputJsonValue,
+                generatedHooks,
                 avgRetentionScore: result.avgRetentionScore,
             },
         });
@@ -118,7 +128,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function reserveCredit(userId: string) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         let record = await tx.userUsage.upsert({
             where: { userId },
             update: {},

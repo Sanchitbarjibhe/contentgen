@@ -1,6 +1,7 @@
 // lib/subscription.ts
 // Central place for "does this user get to do X" logic, so the API route,
 // the dashboard, and the form don't each re-implement the freemium rules.
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { startOfUtcDay } from "@/lib/utils";
 import { PLAN_LIMITS, type Plan, type UsageInfo } from "@/lib/types";
@@ -63,7 +64,7 @@ export async function checkAndConsumeUsage(
 
   // Single round-trip: read current count, decide, then write — wrapped in
   // a transaction so two concurrent requests can't both slip past the cap.
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const existing = await tx.dailyUsage.findUnique({
       where: { userId_date: { userId, date: today } },
     });
