@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   description:
     'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
   icons: {
-    icon: '/hooktos.jpg',
-    shortcut: '/hooktos.jpg',
-    apple: '/hooktos.jpg',
+    icon: '/hooktos.svg',
+    shortcut: '/hooktos.svg',
+    apple: '/hooktos.svg',
   },
   keywords: [
     'HookTos AI',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       'Stop losing viewers! Generate high-retention viral hooks for Reels, Shorts, and TikTok instantly using HookTos AI.',
     images: [
       {
-        url: '/hooktos.jpg',
+        url: '/hooktos.svg',
         alt: 'HookTos AI logo',
       },
     ],
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     title: 'HookTos AI — Create Viral Social Media Hooks in Seconds',
     description:
       'Supercharge your social media growth with AI-generated hooks and high-converting content.',
-    images: ['/hooktos.jpg'],
+    images: ['/hooktos.svg'],
     creator: '@HookTosai',
   },
   alternates: {

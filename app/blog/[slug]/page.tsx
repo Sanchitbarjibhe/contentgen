@@ -9,35 +9,41 @@ interface BlogProps {
     params: Promise<{ slug: string }>;
 }
 
+function normalizeSlug(slug: string) {
+    let decodedSlug = slug;
+    try {
+        decodedSlug = decodeURIComponent(slug);
+    } catch (error) {
+        if (!(error instanceof URIError)) throw error;
+    }
+
+    return decodedSlug.trim().replace(/_/g, "-").replace(/-+/g, "-").toLowerCase();
+}
+
+function getFileSlug(fileName: string) {
+    return fileName.replace(/(?:\.(?:md|mdx))+$/i, "");
+}
+
 function getBlogPost(slug: string) {
-    let blogDir = path.resolve(process.cwd(), "content", "blogs");
+    const matchedFile = fs.readdirSync(path.join(process.cwd(), "content", "blogs")).find((file) =>
+        normalizeSlug(getFileSlug(file)) === normalizeSlug(slug)
+    );
+    if (!matchedFile) return null;
 
-    if (!fs.existsSync(blogDir)) {
-        blogDir = path.resolve(process.cwd(), "src", "content", "blogs");
-    }
-
-    if (!fs.existsSync(blogDir)) {
-        return null;
-    }
-
-    const allFiles = fs.readdirSync(blogDir);
-
-    const matchedFile = allFiles.find((file) => {
-        const fileSlug = file.replace(/\.(mdx?|md|txt)$/i, "");
-        return fileSlug.toLowerCase() === slug.toLowerCase();
-    });
-
-    if (!matchedFile) {
-        return null;
-    }
-
-    const filePath = path.join(blogDir, matchedFile);
+    const filePath = path.join(process.cwd(), "content", "blogs", matchedFile);
     const fileContent = fs.readFileSync(filePath, "utf-8");
     return matter(fileContent);
 }
 
+export function generateStaticParams() {
+    return fs.readdirSync(path.join(process.cwd(), "content", "blogs"))
+        .filter((file) => /(?:\.(?:md|mdx))+$/i.test(file))
+        .map((file) => ({ slug: normalizeSlug(getFileSlug(file)) }));
+}
+
 export async function generateMetadata({ params }: BlogProps): Promise<Metadata> {
     const { slug } = await params;
+    const normalizedSlug = normalizeSlug(slug);
     const post = getBlogPost(slug);
 
     if (!post) {
@@ -47,10 +53,10 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
     }
 
     // Dynamic Title & Description Optimization
-    const rawTitle = post.data.title || slug.replace(/[-_]/g, " ");
+    const rawTitle = post.data.title || normalizedSlug.replace(/-/g, " ");
     const title = `${rawTitle} | HookTos AI`;
     const description = post.data.description || `Learn more about ${rawTitle} on HookTos AI - The ultimate viral hook & content generator tool.`;
-    const canonical = `https://www.hooktos.com/blog/${slug}`;
+    const canonical = `https://www.hooktos.com/blog/${normalizedSlug}`;
 
     return {
         title: { absolute: title },
@@ -74,6 +80,7 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
 export default async function SingleBlogPost({ params }: BlogProps) {
     const { slug } = await params;
     const post = getBlogPost(slug);
+    const normalizedSlug = normalizeSlug(slug);
 
     if (!post) {
         return notFound();
@@ -85,19 +92,20 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const htmlContent = await marked.parse(content);
 
     return (
-        <main className="max-w-3xl mx-auto p-6 min-h-screen pt-24 text-zinc-300">
-            <div className="mb-8 border-b border-zinc-800 pb-6">
-                <h1 className="text-4xl font-extrabold text-white mb-3 capitalize">
-                    {data.title || slug.replace(/[-_]/g, " ")}
-                </h1>
-                {data.date && <p className="text-sm text-zinc-500">{data.date}</p>}
-            </div>
+        <main className="min-h-screen bg-slate-950 text-slate-100">
+            <article className="max-w-3xl mx-auto px-6 py-12">
+                <div className="mb-8 border-b border-slate-800 pb-6">
+                    <h1 className="text-4xl font-extrabold text-slate-100 mb-3 capitalize">
+                        {data.title || normalizedSlug.replace(/-/g, " ")}
+                    </h1>
+                    {data.date && <p className="text-sm text-slate-400">{data.date}</p>}
+                </div>
 
-            {/* 👈 dangerouslySetInnerHTML वापरून HTML रेंडर करा */}
-            <article
-                className="prose prose-invert max-w-none leading-relaxed prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-            />
+                <div
+                    className="prose prose-invert prose-purple lg:prose-lg max-w-none prose-a:no-underline hover:prose-a:underline"
+                    dangerouslySetInnerHTML={{ __html: htmlContent }}
+                />
+            </article>
         </main>
     );
 }
