@@ -1,9 +1,10 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
+import Navbar from "@/app/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -16,9 +17,9 @@ export const metadata: Metadata = {
   description:
     'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
   icons: {
-    icon: '/hooktos.png', // किंवा '/icon.png'
-    shortcut: '/hooktos.png',
-    apple: '/hooktos.png', // iOS डिव्हाईससाठी (180x180 png)
+    icon: '/hooktos.jpg',
+    shortcut: '/hooktos.jpg',
+    apple: '/hooktos.jpg',
   },
   keywords: [
     'HookTos AI',
@@ -54,10 +55,8 @@ export const metadata: Metadata = {
       'Stop losing viewers! Generate high-retention viral hooks for Reels, Shorts, and TikTok instantly using HookTos AI.',
     images: [
       {
-        url: '/hooktos.png', // Public folder मध्ये 1200x630px चा फोटो टाका
-        width: 1200,
-        height: 630,
-        alt: 'HookTos AI Dashboard & Viral Hook Generator',
+        url: '/hooktos.jpg',
+        alt: 'HookTos AI logo',
       },
     ],
   },
@@ -66,7 +65,7 @@ export const metadata: Metadata = {
     title: 'HookTos AI — Create Viral Social Media Hooks in Seconds',
     description:
       'Supercharge your social media growth with AI-generated hooks and high-converting content.',
-    images: ['public/hooktos.png'],
+    images: ['/hooktos.jpg'],
     creator: '@HookTosai',
   },
   alternates: {
@@ -77,21 +76,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} min-h-screen bg-zinc-950 font-sans text-zinc-100 antialiased`}>
-        <header className="flex items-center justify-between border-b border-white/[0.06] px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="text-sm font-semibold text-zinc-100">
-            HookTos AI
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/blog"
-              className="text-sm text-zinc-400 hover:text-white transition"
-            >
-              Blog
-            </Link>
-          </div>
-        </header>
-        {children}
+      <body className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}>
+        <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
+          <Navbar />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

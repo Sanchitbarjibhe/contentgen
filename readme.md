@@ -32,3 +32,16 @@ HookTos AI is a modern, AI-powered content generation web application built with
 ```bash
 git clone -b dev [https://github.com/Sanchitbarjibhe/Content-generator.git](https://github.com/Sanchitbarjibhe/Content-generator.git)
 cd contentgen
+```
+
+## Trending audio and hashtags
+
+The trending pages use sample data by default. To load live results, set these server-side environment variables and configure each Apify task to return the corresponding trend records:
+
+```env
+APIFY_API_KEY=your_apify_api_key
+APIFY_TRENDING_AUDIO_TASK_ID=your_audio_task_id
+APIFY_TRENDING_HASHTAG_TASK_ID=your_hashtag_task_id
+```
+
+The API responses are cached and revalidated every two hours. Keep these credentials server-side; they are not needed to use the sample data.
