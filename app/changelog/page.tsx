@@ -12,16 +12,59 @@ interface ReleaseUpdate {
     title: string;
     description: string;
     changes: {
-        category: 'New Feature' | 'Improvement' | 'Bug Fix';
+        category:
+            | 'New Feature'
+            | 'New Feature: Instagram Trending Audio Engine (/audio)'
+            | 'New Feature: High-Converting Hashtag Finder (/hashtag)'
+            | 'Branding & Search Indexing: Official Logo & Favicon Integration'
+            | 'Improvement'
+            | 'Bug Fix'
+            | 'Improvement & Bug Fixes: UI/UX & Tailwind v4 Architecture';
         items: string[];
     }[];
 }
 
 const releases: ReleaseUpdate[] = [
     {
+        version: 'v1.3.0',
+        date: 'October 2026',
+        badge: 'Latest Release',
+        title: 'Trending Sounds, Viral Hashtag Engine & Brand Identity Upgrade',
+        description:
+            "We've introduced real-time Instagram audio & hashtag tracking tools, fully upgraded our brand design with official logo branding across search engines, and fixed core layout & styling system bugs for a seamless experience.",
+        changes: [
+            {
+                category: 'New Feature: Instagram Trending Audio Engine (/audio)',
+                items: [
+                    'Launched real-time viral sound tracking with Apify background sync and ISR caching, growth velocity indicators, reel usage metrics, and instant hook copy actions.',
+                ],
+            },
+            {
+                category: 'New Feature: High-Converting Hashtag Finder (/hashtag)',
+                items: [
+                    'Introduced top-performing hashtag stacks for SaaS, AI, Marketing, and Fitness niches, displaying reach potential and post volume with one-click hashtag copying.',
+                ],
+            },
+            {
+                category: 'Branding & Search Indexing: Official Logo & Favicon Integration',
+                items: [
+                    'Updated site-wide favicon, tab icons, and search result preview cards with the official HookTos AI logo (/hooktos ai logo.jpg).',
+                    'Integrated the logo into the main navigation bar header with smooth gradient typography.',
+                ],
+            },
+            {
+                category: 'Improvement & Bug Fixes: UI/UX & Tailwind v4 Architecture',
+                items: [
+                    'Unified dark mode with a bg-slate-950 glassmorphism background and ambient glow across all routes to prevent color shade mismatches.',
+                    'Upgraded responsive navigation with refined font sizes, optimized link spacing, and a mobile hamburger menu overlay.',
+                    'Resolved dynamic MDX slug mismatches and PostCSS parsing issues, and updated the @tailwindcss/postcss setup.',
+                ],
+            },
+        ],
+    },
+    {
         version: 'v1.2.0',
         date: 'September 2026',
-        badge: 'Latest Release',
         title: 'MDX Blog Engine & Dynamic SEO Sitemap Engine',
         description:
             'We have completely upgraded our SEO infrastructure and content publishing system to deliver lightning-fast loading speeds and improved search rankings.',
