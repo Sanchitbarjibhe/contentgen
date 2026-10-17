@@ -34,7 +34,7 @@ export default function HomePage() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <Link
+          {/* <Link
             href="/auth/signin"
             className="px-6 py-3 rounded-xl font-semibold text-sm bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white transition duration-200 shadow-lg"
           >
@@ -46,7 +46,7 @@ export default function HomePage() {
             className="px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition duration-200 shadow-lg shadow-purple-500/20"
           >
             Explore Dashboard
-          </Link>
+          </Link> */}
 
           <Link
             href="/blog"
