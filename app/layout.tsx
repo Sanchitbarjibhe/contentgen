@@ -17,9 +17,14 @@ export const metadata: Metadata = {
   description:
     'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
   icons: {
-    icon: '/hooktos.svg',
-    shortcut: '/hooktos.svg',
-    apple: '/hooktos.svg',
+    icon: [
+      { url: '/hooktos-icon-32.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/hooktos-icon-192.jpg', sizes: '192x192', type: 'image/jpeg' },
+    ],
+    shortcut: '/hooktos-icon-32.jpg',
+    apple: [
+      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/jpeg' },
+    ],
   },
   keywords: [
     'HookTos AI',

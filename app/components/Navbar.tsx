@@ -31,14 +31,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between py-4">
           <Link
             href="/"
-            className="flex items-center gap-3 whitespace-nowrap text-lg font-extrabold tracking-tight"
+            className="flex items-center gap-3.5 whitespace-nowrap text-lg font-extrabold tracking-tight"
           >
             <Image
-              src="/hooktos.jpg"
+              src="/hooktos.svg"
               alt="HookTos AI logo"
-              width={36}
-              height={36}
-              className="rounded-full border border-slate-800 object-cover"
+              width={44}
+              height={44}
+              className="size-11 rounded-full border border-slate-700 object-cover shadow-sm"
             />
             <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text">
               HookTos AI
@@ -54,11 +54,10 @@ export default function Navbar() {
                   key={href}
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  className={`relative whitespace-nowrap py-2 transition-colors duration-200 hover:text-white ${
-                    active
+                  className={`relative whitespace-nowrap py-2 transition-colors duration-200 hover:text-white ${active
                       ? "text-white after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-purple-400"
                       : ""
-                  }`}
+                    }`}
                 >
                   {label}
                 </Link>
@@ -87,9 +86,8 @@ export default function Navbar() {
         <div
           id="mobile-navigation"
           aria-hidden={!isOpen}
-          className={`overflow-hidden transition-[max-height,opacity,visibility] duration-200 ease-out md:hidden ${
-            isOpen ? "visible max-h-96 opacity-100" : "invisible max-h-0 opacity-0 delay-200"
-          }`}
+          className={`overflow-hidden transition-[max-height,opacity,visibility] duration-200 ease-out md:hidden ${isOpen ? "visible max-h-96 opacity-100" : "invisible max-h-0 opacity-0 delay-200"
+            }`}
         >
           <nav aria-label="Mobile navigation" className="flex flex-col border-t border-slate-800/60 py-2">
             {links.map(({ href, label }) => {
@@ -102,9 +100,8 @@ export default function Navbar() {
                   aria-current={active ? "page" : undefined}
                   tabIndex={isOpen ? 0 : -1}
                   onClick={() => setIsOpen(false)}
-                  className={`rounded-lg px-3 py-3 text-sm font-semibold transition-colors duration-200 hover:bg-slate-800/60 hover:text-white ${
-                    active ? "text-purple-300" : "text-slate-300"
-                  }`}
+                  className={`rounded-lg px-3 py-3 text-sm font-semibold transition-colors duration-200 hover:bg-slate-800/60 hover:text-white ${active ? "text-purple-300" : "text-slate-300"
+                    }`}
                 >
                   {label}
                 </Link>

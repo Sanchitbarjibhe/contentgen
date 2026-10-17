@@ -93,16 +93,25 @@ export default async function SingleBlogPost({ params }: BlogProps) {
 
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100">
-            <article className="max-w-3xl mx-auto px-6 py-12">
-                <div className="mb-8 border-b border-slate-800 pb-6">
-                    <h1 className="text-4xl font-extrabold text-slate-100 mb-3 capitalize">
+            <article className="max-w-4xl mx-auto px-6 py-12">
+                <header className="mb-10 text-center space-y-4">
+                    <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
                         {data.title || normalizedSlug.replace(/-/g, " ")}
                     </h1>
-                    {data.date && <p className="text-sm text-slate-400">{data.date}</p>}
-                </div>
+                    {data.date && <p className="text-sm text-purple-400 font-medium">{data.date}</p>}
+                </header>
 
                 <div
-                    className="prose prose-invert prose-purple lg:prose-lg max-w-none prose-a:no-underline hover:prose-a:underline"
+                    className="prose prose-invert prose-purple lg:prose-lg max-w-none
+                        prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
+                        prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-slate-800 prose-h2:pb-2
+                        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                        prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-6
+                        prose-a:text-purple-400 prose-a:font-semibold prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-purple-300
+                        prose-strong:text-white prose-strong:font-bold
+                        prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6 prose-ul:space-y-2
+                        prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6 prose-ol:space-y-2
+                        prose-blockquote:border-l-4 prose-blockquote:border-purple-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-400"
                     dangerouslySetInnerHTML={{ __html: htmlContent }}
                 />
             </article>
