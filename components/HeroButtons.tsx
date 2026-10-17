@@ -15,7 +15,7 @@ export default function HeroButtons({
     onSignIn,
     onReadBlogs,
     onExploreDashboard,
-}: HeroButtonsProps): JSX.Element {
+}: HeroButtonsProps): React.ReactElement {
     return (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
 
