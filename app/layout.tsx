@@ -1,11 +1,10 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
-import AuthActions from "@/components/AuthActions";
+import Navbar from "@/app/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -81,31 +80,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className="dark">
       <body className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}>
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
-          <header className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-4 bg-slate-950 px-6 py-4 sm:flex-row sm:gap-0">
-            <div className="flex items-center gap-2 whitespace-nowrap font-extrabold text-lg tracking-tight text-white">
-              <Link href="/" className="whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-                HookTos AI
-              </Link>
-            </div>
-            <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-white">
-              <Link href="/changelog" className="whitespace-nowrap transition hover:text-purple-300">
-                What&apos;s New
-              </Link>
-              <Link href="/audio" className="whitespace-nowrap transition hover:text-purple-300">
-                Trending Audio
-              </Link>
-              <Link href="/hashtag" className="whitespace-nowrap transition hover:text-purple-300">
-                Top Hashtags
-              </Link>
-              <Link href="/about" className="whitespace-nowrap transition hover:text-purple-300">
-                About
-              </Link>
-              <Link href="/blog" className="whitespace-nowrap transition hover:text-purple-300">
-                Blog
-              </Link>
-              {/* <AuthActions /> */}
-            </nav>
-          </header>
+          <Navbar />
           {children}
         </ClerkProvider>
       </body>

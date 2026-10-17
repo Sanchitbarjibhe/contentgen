@@ -91,8 +91,7 @@ export default function HashtagExplorer() {
   }
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden bg-slate-950 px-4 py-16 text-slate-100 sm:px-6 lg:px-8">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-96 max-w-5xl bg-linear-to-r from-blue-600/20 via-purple-500/10 to-transparent blur-3xl" />
+    <main className="relative isolate min-h-screen overflow-hidden bg-transparent px-4 py-16 text-slate-100 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-semibold tracking-wide text-blue-200">

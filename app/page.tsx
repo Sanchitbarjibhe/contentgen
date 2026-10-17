@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <div className="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+    <div className="flex min-h-screen flex-col justify-between bg-transparent text-slate-100 selection:bg-purple-500 selection:text-white">
       {/* Header Navigation */}
       {/* Main Hero Section */}
       <main className="max-w-5xl mx-auto px-6 py-20 text-center space-y-8 my-auto">

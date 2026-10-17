@@ -66,7 +66,7 @@ const blogPosts = [
 
 export default function BlogListingPage() {
     return (
-        <div className="bg-slate-950 text-slate-100 min-h-screen py-16 px-4 sm:px-6 lg:px-8 selection:bg-purple-500 selection:text-white">
+        <div className="min-h-screen bg-transparent px-4 py-16 text-slate-100 selection:bg-purple-500 selection:text-white sm:px-6 lg:px-8">
             {/* Header Section */}
             <div className="max-w-4xl mx-auto text-center space-y-4">
                 <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">

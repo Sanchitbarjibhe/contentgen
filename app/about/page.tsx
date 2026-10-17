@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function AboutPage() {
     return (
-        <div className="bg-slate-950 text-slate-100 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-transparent px-4 py-16 text-slate-100 sm:px-6 lg:px-8">
             {/* Hero Section */}
             <div className="max-w-5xl mx-auto text-center space-y-6">
                 <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
