@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const links = [
   { href: "/changelog", label: "What's New" },
@@ -30,9 +31,18 @@ export default function Navbar() {
         <div className="flex items-center justify-between py-4">
           <Link
             href="/"
-            className="whitespace-nowrap text-lg font-extrabold tracking-tight text-transparent bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text"
+            className="flex items-center gap-3 whitespace-nowrap text-lg font-extrabold tracking-tight"
           >
-            HookTos AI
+            <Image
+              src="/hooktos.jpg"
+              alt="HookTos AI logo"
+              width={36}
+              height={36}
+              className="rounded-full border border-slate-800 object-cover"
+            />
+            <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text">
+              HookTos AI
+            </span>
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-slate-300 md:flex sm:gap-8 sm:text-base">
