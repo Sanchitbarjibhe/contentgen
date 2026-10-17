@@ -69,27 +69,26 @@ export async function POST(req: NextRequest) {
 
     try {
         const result = await generateHooks({ topic, niche, platform });
-        const generatedHooks: Prisma.JsonObject = {
-            hooks: result.hooks.map((hook): Prisma.JsonObject => ({
-                framework: hook.framework,
-                hook: hook.hook,
-                retentionScore: hook.retentionScore,
-                rationale: hook.rationale,
-            })),
-            description: result.description,
-            hashtags: {
-                broad: result.hashtags.broad,
-                medium: result.hashtags.medium,
-                lowCompetition: result.hashtags.lowCompetition,
-            },
-        };
         const generation = await prisma.generatedHook.create({
             data: {
                 userId,
                 topic,
                 niche,
                 platform,
-                generatedHooks,
+                generatedHooks: {
+                    hooks: result.hooks.map((hook) => ({
+                        framework: hook.framework,
+                        hook: hook.hook,
+                        retentionScore: hook.retentionScore,
+                        rationale: hook.rationale,
+                    })),
+                    description: result.description,
+                    hashtags: {
+                        broad: result.hashtags.broad,
+                        medium: result.hashtags.medium,
+                        lowCompetition: result.hashtags.lowCompetition,
+                    },
+                },
                 avgRetentionScore: result.avgRetentionScore,
             },
         });
