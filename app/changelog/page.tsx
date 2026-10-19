@@ -17,6 +17,9 @@ interface ReleaseUpdate {
             | 'New Feature: Instagram Trending Audio Engine (/audio)'
             | 'New Feature: High-Converting Hashtag Finder (/hashtag)'
             | 'Branding & Search Indexing: Official Logo & Favicon Integration'
+            | 'Marketplace & Business Directory'
+            | 'Virtual Billboard & Ad Booking'
+            | 'Payments & Checkout'
             | 'Improvement'
             | 'Bug Fix'
             | 'Improvement & Bug Fixes: UI/UX & Tailwind v4 Architecture';
@@ -26,9 +29,41 @@ interface ReleaseUpdate {
 
 const releases: ReleaseUpdate[] = [
     {
-        version: 'v1.3.0',
+        version: 'v1.4.0',
         date: 'October 2026',
         badge: 'Latest Release',
+        title: 'Marketplace, Business Directory & Virtual Billboard',
+        description:
+            'Discover businesses in the new marketplace, explore interactive billboard ad spaces, and preview a country-aware checkout experience for ad bookings.',
+        changes: [
+            {
+                category: 'Marketplace & Business Directory',
+                items: [
+                    'Added a dark-glass marketplace with business listings and four continuously scrolling marquee rows.',
+                    'Introduced a three-step business listing form with a free lifetime listing badge.',
+                    'Added a /directory compatibility route that forwards visitors to the marketplace.',
+                ],
+            },
+            {
+                category: 'Virtual Billboard & Ad Booking',
+                items: [
+                    'Added interactive billboard spaces with tier-based banner sizes, creative previews, and views, clicks, and CTR metrics.',
+                    'Added an ad booking modal with country and duration selection.',
+                ],
+            },
+            {
+                category: 'Payments & Checkout',
+                items: [
+                    'Added Stripe checkout for USD/EUR and Razorpay checkout for INR, with server-side pricing and payment verification.',
+                    'Live payments require Stripe and Razorpay credentials in the deployment environment.',
+                    'Ad artwork and bookings are not yet stored, and paid ads are not automatically activated.',
+                ],
+            },
+        ],
+    },
+    {
+        version: 'v1.3.0',
+        date: 'October 2026',
         title: 'Trending Sounds, Viral Hashtag Engine & Brand Identity Upgrade',
         description:
             "We've introduced real-time Instagram audio & hashtag tracking tools, fully upgraded our brand design with official logo branding across search engines, and fixed core layout & styling system bugs for a seamless experience.",

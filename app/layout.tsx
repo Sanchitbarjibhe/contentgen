@@ -5,6 +5,14 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
 import Navbar from "@/app/components/Navbar";
+import ConsentBanner from "@/components/ConsentBanner";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import JsonLd from "@/components/JsonLd";
+import {
+  organizationSchema,
+  softwareApplicationSchema,
+  websiteSchema,
+} from "@/lib/schema";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -18,12 +26,12 @@ export const metadata: Metadata = {
     'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
   icons: {
     icon: [
-      { url: '/hooktos-icon-32.jpg', sizes: '32x32', type: 'image/jpeg' },
-      { url: '/hooktos-icon-192.jpg', sizes: '192x192', type: 'image/jpeg' },
+      { url: '/hooktos.svg', sizes: '32x32', type: 'image/svg' },
+      { url: '/hooktos.svg', sizes: '192x192', type: 'image/svg' },
     ],
-    shortcut: '/hooktos-icon-32.jpg',
+    shortcut: '/hooktos.svg',
     apple: [
-      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/jpeg' },
+      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/svg' },
     ],
   },
   keywords: [
@@ -82,10 +90,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}>
+        <JsonLd
+          data={[
+            organizationSchema,
+            websiteSchema,
+            softwareApplicationSchema,
+          ]}
+        />
+        <GoogleAnalytics />
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
           <Navbar />
           {children}
         </ClerkProvider>
+        <ConsentBanner />
       </body>
     </html>
   );
