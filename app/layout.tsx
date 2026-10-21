@@ -19,19 +19,19 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.hooktos.com'),
   title: {
-    default: 'HookTos AI — Viral Hook Generator & SEO Content Assistant',
+    default: 'HookTos AI | AI Viral Hook Generator',
     template: '%s | HookTos AI',
   },
   description:
-    'Generate 10x viral hooks for Instagram Reels, YouTube Shorts, and TikTok in seconds. Boost reach, engagement, and video retention with AI-driven content generation.',
+    'Generate viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts with HookTos AI.',
   icons: {
     icon: [
-      { url: '/hooktos.svg', sizes: '32x32', type: 'image/svg' },
-      { url: '/hooktos.svg', sizes: '192x192', type: 'image/svg' },
+      { url: '/hooktos-icon-32.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/hooktos-icon-192.jpg', sizes: '192x192', type: 'image/jpeg' },
     ],
-    shortcut: '/hooktos.svg',
+    shortcut: '/hooktos-icon-32.jpg',
     apple: [
-      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/svg' },
+      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/jpeg' },
     ],
   },
   keywords: [
@@ -63,9 +63,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.hooktos.com',
     siteName: 'HookTos AI',
-    title: 'HookTos AI — Generate Viral Hooks & High-Ranking Content',
+    title: 'HookTos AI | Viral Hooks for Social Video',
     description:
-      'Stop losing viewers! Generate high-retention viral hooks for Reels, Shorts, and TikTok instantly using HookTos AI.',
+      'Create high-retention hooks and SEO-ready content for TikTok, Instagram Reels, and YouTube Shorts in seconds.',
     images: [
       {
         url: '/hooktos.svg',
@@ -75,9 +75,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HookTos AI — Create Viral Social Media Hooks in Seconds',
+    title: 'AI Viral Hook Generator | HookTos AI',
     description:
-      'Supercharge your social media growth with AI-generated hooks and high-converting content.',
+      'Create viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
     images: ['/hooktos.svg'],
     creator: '@HookTosai',
   },

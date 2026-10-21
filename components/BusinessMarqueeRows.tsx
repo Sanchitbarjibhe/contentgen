@@ -1,8 +1,13 @@
+import type { BusinessListingItem } from "@/lib/marketplace-types";
+import { getSafeExternalUrl } from "@/lib/marketplace-types";
+
 interface Business {
+  id?: string;
   name: string;
   niche: string;
   initials: string;
   accent: string;
+  websiteUrl?: string;
 }
 
 const BUSINESS_ROWS: readonly (readonly Business[])[] = [
@@ -169,7 +174,7 @@ function ListingRow({
             {businesses.map((business) => (
               <article
                 className="flex w-60 shrink-0 items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 px-3 py-3 shadow-lg shadow-slate-950/20 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-purple-400/30 hover:bg-slate-900/90 sm:w-72 sm:gap-3.5 sm:px-4 sm:py-3.5"
-                key={business.name}
+                key={business.id ?? business.name}
               >
                 <span
                   aria-hidden="true"
@@ -179,7 +184,17 @@ function ListingRow({
                 </span>
                 <div className="min-w-0">
                   <h3 className="truncate text-sm font-bold text-slate-100">
-                    {business.name}
+                    {getSafeExternalUrl(business.websiteUrl) ? (
+                      <a
+                        href={getSafeExternalUrl(business.websiteUrl) ?? undefined}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {business.name}
+                      </a>
+                    ) : (
+                      business.name
+                    )}
                   </h3>
                   <p className="mt-1 truncate text-xs font-medium text-slate-400">
                     {business.niche}
@@ -194,18 +209,34 @@ function ListingRow({
   );
 }
 
-export default function BusinessMarqueeRows() {
+export default function BusinessMarqueeRows({
+  listings,
+}: {
+  listings: BusinessListingItem[] | null;
+}) {
+  const businesses =
+    listings?.length
+      ? listings.map((listing, index) => ({
+          id: listing.id,
+          name: listing.name,
+          niche: `${listing.category} · ${listing.tag}`,
+          initials: listing.name.charAt(0).toUpperCase(),
+          accent: BUSINESS_ROWS[index % BUSINESS_ROWS.length][0].accent,
+          websiteUrl: listing.websiteUrl,
+        }))
+      : BUSINESS_ROWS.flat();
+  const rowSize = Math.ceil(businesses.length / BUSINESS_ROWS.length);
+  const rows = BUSINESS_ROWS.map((_, index) =>
+    businesses.slice(index * rowSize, (index + 1) * rowSize),
+  );
+
   return (
     <div
       aria-label="Discover independent businesses"
       className="space-y-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
     >
-      {BUSINESS_ROWS.map((businesses, rowIndex) => (
-        <ListingRow
-          businesses={businesses}
-          key={rowIndex}
-          rowIndex={rowIndex}
-        />
+      {rows.map((row, rowIndex) => (
+        <ListingRow businesses={row} key={rowIndex} rowIndex={rowIndex} />
       ))}
     </div>
   );

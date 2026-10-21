@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { ArrowDown, Sparkles } from "lucide-react";
+import {
+  getActiveBusinessListings,
+  getLiveBillboardSlots,
+} from "@/app/actions/marketplace";
 import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import DirectoryPaymentStatus from "@/components/DirectoryPaymentStatus";
@@ -11,7 +15,14 @@ export const metadata: Metadata = {
     "Discover independent businesses, list your company for free for life, and promote your brand on the Home Talk virtual billboard.",
 };
 
-export default function MarketplacePage() {
+export const dynamic = "force-dynamic";
+
+export default async function MarketplacePage() {
+  const [billboardSlots, businessListings] = await Promise.all([
+    getLiveBillboardSlots(),
+    getActiveBusinessListings(),
+  ]);
+
   return (
     <main className="relative isolate overflow-hidden bg-transparent text-slate-100">
       <div
@@ -31,7 +42,7 @@ export default function MarketplacePage() {
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
           id="virtual-billboard"
         >
-          <VirtualBillboard />
+          <VirtualBillboard slots={billboardSlots} />
         </section>
 
         <div aria-hidden="true" className="border-t border-slate-800/70" />
@@ -63,7 +74,7 @@ export default function MarketplacePage() {
             </div>
 
             <div className="mt-8 space-y-1 sm:mt-10">
-              <BusinessMarqueeRows />
+              <BusinessMarqueeRows listings={businessListings} />
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10">

@@ -9,10 +9,13 @@ import {
 } from "lucide-react";
 import AdBookingModal from "@/components/AdBookingModal";
 import { formatAdPrice } from "@/lib/ad-pricing";
+import type { BillboardSlot } from "@/lib/marketplace-types";
+import { getSafeExternalUrl } from "@/lib/marketplace-types";
 
 type AdSize = "feature" | "wide" | "medium" | "compact";
 
 interface Advertiser {
+  id?: string;
   name: string;
   category: string;
   initials: string;
@@ -20,6 +23,9 @@ interface Advertiser {
   views: number;
   accent: string;
   weeklyBudget: number;
+  tier?: string | null;
+  imageUrl?: string | null;
+  websiteUrl?: string | null;
 }
 
 const ADVERTISERS: Advertiser[] = [
@@ -115,6 +121,13 @@ function adSizeForBudget(weeklyBudget: number): AdSize {
   return "compact";
 }
 
+function adSizeForAdvertiser(advertiser: Advertiser): AdSize {
+  if (advertiser.tier === "FEATURED") return "feature";
+  if (advertiser.tier === "MEDIUM") return "medium";
+  if (advertiser.tier === "STANDARD") return "compact";
+  return adSizeForBudget(advertiser.weeklyBudget);
+}
+
 function AdMetrics({ advertiser }: { advertiser: Advertiser }) {
   const ctr =
     advertiser.views === 0
@@ -139,18 +152,42 @@ function AdMetrics({ advertiser }: { advertiser: Advertiser }) {
   );
 }
 
-export default function VirtualBillboard() {
+export default function VirtualBillboard({
+  slots,
+}: {
+  slots: BillboardSlot[] | null;
+}) {
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  const advertisers: Advertiser[] = slots?.length
+    ? slots.map((slot, index) => ({
+        id: slot.id,
+        name: slot.title,
+        category: slot.category,
+        initials: slot.title.charAt(0).toUpperCase(),
+        clicks: slot.clicks,
+        views: slot.views,
+        accent: ADVERTISERS[index % ADVERTISERS.length].accent,
+        weeklyBudget: slot.pricePerWeek,
+        tier: slot.tier,
+        imageUrl: slot.imageUrl,
+        websiteUrl: slot.websiteUrl,
+      }))
+    : ADVERTISERS.map((advertiser, index) => ({
+        ...advertiser,
+        id: `fallback-${index}`,
+        imageUrl: null,
+        websiteUrl: null,
+      }));
 
   const metrics = useMemo(() => {
-    const views = ADVERTISERS.reduce((total, ad) => total + ad.views, 0);
-    const clicks = ADVERTISERS.reduce((total, ad) => total + ad.clicks, 0);
+    const views = advertisers.reduce((total, ad) => total + ad.views, 0);
+    const clicks = advertisers.reduce((total, ad) => total + ad.clicks, 0);
     return {
       views,
       clicks,
       ctr: views === 0 ? "0.0" : ((clicks / views) * 100).toFixed(1),
     };
-  }, []);
+  }, [advertisers]);
 
   return (
     <section
@@ -226,7 +263,7 @@ export default function VirtualBillboard() {
                 aria-hidden="true"
                 className="size-1.5 animate-pulse rounded-full bg-emerald-300"
               />
-              {ADVERTISERS.length} live slots active
+              {advertisers.length} live slots active
             </span>
           </div>
 
@@ -234,15 +271,24 @@ export default function VirtualBillboard() {
             aria-label="Interactive billboard ad heatmap. Featured, wide, medium, and compact ad spaces."
             className="grid auto-rows-[5.25rem] grid-cols-6 grid-flow-dense gap-2 sm:auto-rows-[6rem] sm:gap-3 md:auto-rows-[6.5rem] md:grid-cols-8 xl:auto-rows-[7.5rem] xl:grid-cols-12"
           >
-            {ADVERTISERS.map((advertiser, index) => {
-              const adSize = adSizeForBudget(advertiser.weeklyBudget);
+            {advertisers.map((advertiser, index) => {
+              const adSize = adSizeForAdvertiser(advertiser);
               const featured = adSize === "feature" || adSize === "wide";
               return (
                 <article
                   aria-label={`${advertiser.name}, ${advertiser.category} sponsored ad`}
                   className={`group relative isolate flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${advertiser.accent} p-3 shadow-lg transition duration-300 hover:-translate-y-0.5 hover:border-purple-300/50 hover:shadow-xl hover:shadow-purple-950/30 sm:p-4 ${SIZE_CLASSES[adSize]}`}
-                  key={advertiser.name}
+                  key={advertiser.id}
                 >
+                  {advertiser.imageUrl && (
+                    <img
+                      alt=""
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 -z-20 size-full object-cover opacity-30"
+                      loading="lazy"
+                      src={advertiser.imageUrl}
+                    />
+                  )}
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.13),transparent_60%)] opacity-60 transition-opacity group-hover:opacity-100"
@@ -254,7 +300,20 @@ export default function VirtualBillboard() {
                       </span>
                       <div className="min-w-0">
                         <p className="truncate text-xs font-bold text-white sm:text-sm">
-                          {advertiser.name}
+                          {getSafeExternalUrl(advertiser.websiteUrl) ? (
+                            <a
+                              href={
+                                getSafeExternalUrl(advertiser.websiteUrl) ??
+                                undefined
+                              }
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              {advertiser.name}
+                            </a>
+                          ) : (
+                            advertiser.name
+                          )}
                         </p>
                         <p className="mt-0.5 truncate text-[9px] text-slate-200/75 sm:text-[11px]">
                           {advertiser.category}
