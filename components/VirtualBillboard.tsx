@@ -134,22 +134,22 @@ function AdMetrics({ advertiser }: { advertiser: Advertiser }) {
       ? "0.0"
       : ((advertiser.clicks / advertiser.views) * 100).toFixed(1);
 
-  return (
-    <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-medium text-slate-300/80 sm:gap-x-4 sm:text-xs">
-      <span className="inline-flex items-center gap-1">
-        <Eye aria-hidden="true" className="size-3 text-blue-300" />
-        {advertiser.views.toLocaleString()}
-      </span>
-      <span className="inline-flex items-center gap-1">
-        <MousePointer2 aria-hidden="true" className="size-3 text-purple-300" />
-        {advertiser.clicks.toLocaleString()}
-      </span>
-      <span className="inline-flex items-center gap-1">
-        <BarChart3 aria-hidden="true" className="size-3 text-emerald-300" />
-        {ctr}% CTR
-      </span>
-    </div>
-  );
+  // return (
+  //   <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-medium text-slate-300/80 sm:gap-x-4 sm:text-xs">
+  //     <span className="inline-flex items-center gap-1">
+  //       <Eye aria-hidden="true" className="size-3 text-blue-300" />
+  //       {advertiser.views.toLocaleString()}
+  //     </span>
+  //     <span className="inline-flex items-center gap-1">
+  //       <MousePointer2 aria-hidden="true" className="size-3 text-purple-300" />
+  //       {advertiser.clicks.toLocaleString()}
+  //     </span>
+  //     <span className="inline-flex items-center gap-1">
+  //       <BarChart3 aria-hidden="true" className="size-3 text-emerald-300" />
+  //       {ctr}% CTR
+  //     </span>
+  //   </div>
+  // );
 }
 
 export default function VirtualBillboard({
@@ -160,24 +160,24 @@ export default function VirtualBillboard({
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const advertisers: Advertiser[] = slots?.length
     ? slots.map((slot, index) => ({
-        id: slot.id,
-        name: slot.title,
-        category: slot.category,
-        initials: slot.title.charAt(0).toUpperCase(),
-        clicks: slot.clicks,
-        views: slot.views,
-        accent: ADVERTISERS[index % ADVERTISERS.length].accent,
-        weeklyBudget: slot.pricePerWeek,
-        tier: slot.tier,
-        imageUrl: slot.imageUrl,
-        websiteUrl: slot.websiteUrl,
-      }))
+      id: slot.id,
+      name: slot.title,
+      category: slot.category,
+      initials: slot.title.charAt(0).toUpperCase(),
+      clicks: slot.clicks,
+      views: slot.views,
+      accent: ADVERTISERS[index % ADVERTISERS.length].accent,
+      weeklyBudget: slot.pricePerWeek,
+      tier: slot.tier,
+      imageUrl: slot.imageUrl,
+      websiteUrl: slot.websiteUrl,
+    }))
     : ADVERTISERS.map((advertiser, index) => ({
-        ...advertiser,
-        id: `fallback-${index}`,
-        imageUrl: null,
-        websiteUrl: null,
-      }));
+      ...advertiser,
+      id: `fallback-${index}`,
+      imageUrl: null,
+      websiteUrl: null,
+    }));
 
   const metrics = useMemo(() => {
     const views = advertisers.reduce((total, ad) => total + ad.views, 0);
@@ -194,10 +194,7 @@ export default function VirtualBillboard({
       aria-labelledby="billboard-title"
       className="relative flex min-h-[calc(100svh-73px)] flex-col justify-center py-12 sm:py-16"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-48 top-1/4 -z-10 size-[30rem] rounded-full bg-purple-700/10 blur-[130px]"
-      />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-48 top-1/4 -z-10 size-[30rem] rounded-full bg-purple-700/10 blur-[130px]" />
       <div className="mx-auto w-full max-w-7xl">
         <div className="flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
           <div>
@@ -223,7 +220,7 @@ export default function VirtualBillboard({
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 sm:min-w-[25rem] sm:gap-3">
+          {/* <div className="grid grid-cols-3 gap-2 sm:min-w-[25rem] sm:gap-3">
             {[
               { label: "Views", value: metrics.views, icon: Eye, color: "text-blue-300" },
               { label: "Clicks", value: metrics.clicks, icon: MousePointer2, color: "text-purple-300" },
@@ -245,7 +242,7 @@ export default function VirtualBillboard({
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-7 rounded-3xl border border-slate-800 bg-slate-900/50 p-3 shadow-2xl shadow-purple-950/10 backdrop-blur-xl sm:mt-9 sm:p-5">
@@ -343,7 +340,7 @@ export default function VirtualBillboard({
                           : "Thoughtfully made. Locally loved."}
                       </p>
                     )}
-                    <AdMetrics advertiser={advertiser} />
+                    {/* <AdMetrics advertiser={advertiser} /> */}
                   </div>
                 </article>
               );

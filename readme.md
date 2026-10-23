@@ -45,3 +45,9 @@ APIFY_TRENDING_HASHTAG_TASK_ID=your_hashtag_task_id
 ```
 
 The API responses are cached and revalidated every two hours. Keep these credentials server-side; they are not needed to use the sample data.
+
+# Project Tech Stack Rules
+
+- **Database:** Supabase (PostgreSQL)
+- **ORM:** Prisma
+- **Important:** Do NOT use Mongoose or MongoDB. Stick strictly to Prisma Client.

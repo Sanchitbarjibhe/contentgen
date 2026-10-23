@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, BadgeCheck, Check, Sparkles } from "lucide-react";
 
 const CATEGORIES = ["Tech", "Food", "Retail", "SaaS", "Services"] as const;
@@ -9,6 +10,7 @@ interface ListingDetails {
   businessName: string;
   website: string;
   category: (typeof CATEGORIES)[number];
+  tag: string;
   country: string;
   city: string;
   logoUrl: string;
@@ -19,6 +21,7 @@ const INITIAL_DETAILS: ListingDetails = {
   businessName: "",
   website: "",
   category: "Tech",
+  tag: "",
   country: "",
   city: "",
   logoUrl: "",
@@ -29,9 +32,13 @@ const fieldClassName =
   "mt-2 w-full rounded-xl border border-slate-700/80 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/20";
 
 export default function BusinessListingForm() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [details, setDetails] = useState<ListingDetails>(INITIAL_DETAILS);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [createdSlug, setCreatedSlug] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   function updateDetails<K extends keyof ListingDetails>(
@@ -46,9 +53,64 @@ export default function BusinessListingForm() {
     setStep((current) => Math.min(current + 1, 3));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    if (loading) return;
+
+    setLoading(true);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: details.businessName,
+          category: details.category,
+          tag: details.tag,
+          websiteUrl: details.website,
+          logoUrl: details.logoUrl || undefined,
+          description: `${details.description.trim()}\n\nLocation: ${details.city.trim()}, ${details.country.trim()}`,
+        }),
+      });
+      const responseBody: unknown = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const error =
+          typeof responseBody === "object" &&
+          responseBody !== null &&
+          "error" in responseBody &&
+          typeof responseBody.error === "string"
+            ? responseBody.error
+            : "Unable to save your listing. Please try again.";
+        throw new Error(error);
+      }
+
+      if (
+        typeof responseBody !== "object" ||
+        responseBody === null ||
+        !("listing" in responseBody) ||
+        typeof responseBody.listing !== "object" ||
+        responseBody.listing === null ||
+        !("slug" in responseBody.listing) ||
+        typeof responseBody.listing.slug !== "string"
+      ) {
+        throw new Error("The listing was submitted, but the server response was invalid.");
+      }
+
+      setCreatedSlug(responseBody.listing.slug);
+      setSubmitted(true);
+      router.refresh();
+    } catch (error: unknown) {
+      console.error("[business listing] submission failed:", error);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to save your listing. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -64,15 +126,17 @@ export default function BusinessListingForm() {
           <h2 className="mt-5 text-2xl font-bold text-white">You&apos;re on the list!</h2>
           <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
             <span className="font-semibold text-slate-200">{details.businessName}</span>{" "}
-            is ready for its free lifetime listing. Your details have not been
-            sent or saved in this demo.
+            has been saved to the Home Talk directory.
           </p>
+          <p className="mt-2 text-xs text-slate-500">Listing slug: {createdSlug}</p>
           <button
             className="mt-6 rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800"
             onClick={() => {
               setDetails(INITIAL_DETAILS);
               setStep(1);
               setSubmitted(false);
+              setCreatedSlug("");
+              setErrorMessage("");
             }}
             type="button"
           >
@@ -183,6 +247,23 @@ export default function BusinessListingForm() {
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label
+                    className="text-sm font-medium text-slate-200"
+                    htmlFor="business-tag"
+                  >
+                    Short business tag
+                  </label>
+                  <input
+                    className={fieldClassName}
+                    id="business-tag"
+                    maxLength={80}
+                    onChange={(event) => updateDetails("tag", event.target.value)}
+                    placeholder="e.g. AI Automation"
+                    required
+                    value={details.tag}
+                  />
+                </div>
               </div>
             )}
 
@@ -279,6 +360,7 @@ export default function BusinessListingForm() {
                     ["Business", details.businessName],
                     ["Website", details.website],
                     ["Category", details.category],
+                    ["Tag", details.tag],
                     ["Location", `${details.city}, ${details.country}`],
                     ["Logo", details.logoUrl || "Not provided"],
                     ["Description", details.description],
@@ -301,6 +383,16 @@ export default function BusinessListingForm() {
                   Free listing. No credit card required.
                 </p>
               </div>
+            )}
+
+            {errorMessage && (
+              <p
+                aria-live="polite"
+                className="mt-5 rounded-xl border border-rose-400/20 bg-rose-400/[0.08] px-4 py-3 text-sm text-rose-200"
+                role="alert"
+              >
+                {errorMessage}
+              </p>
             )}
 
             <div className="mt-7 flex items-center justify-between gap-3 border-t border-slate-800 pt-5">
@@ -327,11 +419,12 @@ export default function BusinessListingForm() {
                 </button>
               ) : (
                 <button
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-purple-950/30 transition hover:from-purple-500 hover:to-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-purple-950/30 transition hover:from-purple-500 hover:to-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={loading}
                   type="submit"
                 >
                   <Check aria-hidden="true" className="size-4" />
-                  Add free listing
+                  {loading ? "Saving listing..." : "Add free listing"}
                 </button>
               )}
             </div>
