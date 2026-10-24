@@ -1,5 +1,6 @@
 import type { BusinessListingItem } from "@/lib/marketplace-types";
 import { getSafeExternalUrl } from "@/lib/marketplace-types";
+import BusinessListingLogo from "@/components/BusinessListingLogo";
 
 interface Business {
   id?: string;
@@ -8,6 +9,7 @@ interface Business {
   initials: string;
   accent: string;
   websiteUrl?: string;
+  logoUrl?: string | null;
 }
 
 const BUSINESS_ROWS: readonly (readonly Business[])[] = [
@@ -176,12 +178,14 @@ function ListingRow({
                 className="flex w-60 shrink-0 items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 px-3 py-3 shadow-lg shadow-slate-950/20 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-purple-400/30 hover:bg-slate-900/90 sm:w-72 sm:gap-3.5 sm:px-4 sm:py-3.5"
                 key={business.id ?? business.name}
               >
-                <span
-                  aria-hidden="true"
-                  className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-sm font-black text-white shadow-lg ${business.accent}`}
-                >
-                  {business.initials}
-                </span>
+                <BusinessListingLogo
+                  accent={business.accent}
+                  initials={business.initials}
+                  key={`${business.id ?? business.name}:${business.logoUrl ?? ""}:${business.websiteUrl ?? ""}`}
+                  logoUrl={business.logoUrl ?? null}
+                  name={business.name}
+                  websiteUrl={business.websiteUrl ?? ""}
+                />
                 <div className="min-w-0">
                   <h3 className="truncate text-sm font-bold text-slate-100">
                     {getSafeExternalUrl(business.websiteUrl) ? (
@@ -223,6 +227,7 @@ export default function BusinessMarqueeRows({
           initials: listing.name.charAt(0).toUpperCase(),
           accent: BUSINESS_ROWS[index % BUSINESS_ROWS.length][0].accent,
           websiteUrl: listing.websiteUrl,
+          logoUrl: listing.logoUrl,
         }))
       : BUSINESS_ROWS.flat();
   const rowSize = Math.ceil(businesses.length / BUSINESS_ROWS.length);

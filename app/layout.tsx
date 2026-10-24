@@ -26,14 +26,17 @@ export const metadata: Metadata = {
     'Generate viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts with HookTos AI.',
   icons: {
     icon: [
-      { url: '/hooktos-icon-32.jpg', sizes: '32x32', type: 'image/jpeg' },
-      { url: '/hooktos-icon-192.jpg', sizes: '192x192', type: 'image/jpeg' },
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
-    shortcut: '/hooktos-icon-32.jpg',
+    shortcut: '/favicon.ico',
     apple: [
-      { url: '/hooktos-apple-icon-180.jpg', sizes: '180x180', type: 'image/jpeg' },
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
+  manifest: '/site.webmanifest',
   keywords: [
     'HookTos AI',
     'Viral Hook Generator',
@@ -68,8 +71,10 @@ export const metadata: Metadata = {
       'Create high-retention hooks and SEO-ready content for TikTok, Instagram Reels, and YouTube Shorts in seconds.',
     images: [
       {
-        url: '/hooktos.svg',
-        alt: 'HookTos AI logo',
+        url: '/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
+        alt: 'HookTos AI Logo',
       },
     ],
   },
@@ -78,7 +83,7 @@ export const metadata: Metadata = {
     title: 'AI Viral Hook Generator | HookTos AI',
     description:
       'Create viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
-    images: ['/hooktos.svg'],
+    images: ['/android-chrome-512x512.png'],
     creator: '@HookTosai',
   },
   alternates: {
@@ -89,7 +94,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}>
+      <body
+        className={`${inter.variable} min-h-screen bg-slate-950 font-sans text-zinc-100 antialiased`}
+        suppressHydrationWarning
+      >
         <JsonLd
           data={[
             organizationSchema,
