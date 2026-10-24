@@ -12,136 +12,16 @@ interface Business {
   logoUrl?: string | null;
 }
 
-const BUSINESS_ROWS: readonly (readonly Business[])[] = [
-  [
-    {
-      name: "Northstar Studio",
-      niche: "SaaS · AI Automation",
-      initials: "N",
-      accent: "from-violet-500 to-indigo-500",
-    },
-    {
-      name: "Goodkind Coffee",
-      niche: "Food · Artisan Cafe",
-      initials: "G",
-      accent: "from-amber-500 to-orange-500",
-    },
-    {
-      name: "Pixel & Pine",
-      niche: "Retail · Minimalist Gear",
-      initials: "P",
-      accent: "from-emerald-500 to-teal-500",
-    },
-    {
-      name: "Orbit Analytics",
-      niche: "Tech · Data Intelligence",
-      initials: "O",
-      accent: "from-sky-500 to-blue-500",
-    },
-    {
-      name: "Brightside Co.",
-      niche: "Services · Creative Studio",
-      initials: "B",
-      accent: "from-yellow-500 to-amber-500",
-    },
-  ],
-  [
-    {
-      name: "Cloudberry",
-      niche: "Food · Botanical Blends",
-      initials: "C",
-      accent: "from-fuchsia-500 to-purple-500",
-    },
-    {
-      name: "Forma Works",
-      niche: "Tech · Thoughtful Design",
-      initials: "F",
-      accent: "from-cyan-500 to-blue-500",
-    },
-    {
-      name: "Sunday Supply",
-      niche: "Retail · Everyday Essentials",
-      initials: "S",
-      accent: "from-pink-500 to-rose-500",
-    },
-    {
-      name: "Kindred House",
-      niche: "Services · Home Styling",
-      initials: "K",
-      accent: "from-orange-500 to-rose-500",
-    },
-    {
-      name: "Little Loom",
-      niche: "Retail · Artisan Textiles",
-      initials: "L",
-      accent: "from-teal-500 to-emerald-500",
-    },
-  ],
-  [
-    {
-      name: "Morrow Health",
-      niche: "Health · Daily Wellness",
-      initials: "M",
-      accent: "from-green-500 to-cyan-500",
-    },
-    {
-      name: "Openfield",
-      niche: "SaaS · Team Workflow",
-      initials: "O",
-      accent: "from-blue-500 to-indigo-500",
-    },
-    {
-      name: "Golden Hour",
-      niche: "Food · Small Batch Bakes",
-      initials: "G",
-      accent: "from-yellow-500 to-orange-500",
-    },
-    {
-      name: "Forma Foundry",
-      niche: "Tech · Product Design",
-      initials: "F",
-      accent: "from-violet-500 to-fuchsia-500",
-    },
-    {
-      name: "Field Notes",
-      niche: "Retail · Paper Goods",
-      initials: "F",
-      accent: "from-lime-500 to-green-500",
-    },
-  ],
-  [
-    {
-      name: "Good Measure",
-      niche: "Services · Growth Strategy",
-      initials: "G",
-      accent: "from-sky-500 to-cyan-500",
-    },
-    {
-      name: "Sunday State",
-      niche: "Wellness · Mindful Living",
-      initials: "S",
-      accent: "from-rose-500 to-pink-500",
-    },
-    {
-      name: "Copperline",
-      niche: "Retail · Modern Ceramics",
-      initials: "C",
-      accent: "from-orange-500 to-amber-500",
-    },
-    {
-      name: "Signal & Story",
-      niche: "SaaS · Brand Intelligence",
-      initials: "S",
-      accent: "from-indigo-500 to-purple-500",
-    },
-    {
-      name: "Wildwood Table",
-      niche: "Food · Seasonal Kitchen",
-      initials: "W",
-      accent: "from-emerald-500 to-lime-500",
-    },
-  ],
-];
+const BUSINESS_ACCENTS = [
+  "from-violet-500 to-indigo-500",
+  "from-amber-500 to-orange-500",
+  "from-emerald-500 to-teal-500",
+  "from-sky-500 to-blue-500",
+  "from-fuchsia-500 to-purple-500",
+  "from-cyan-500 to-blue-500",
+  "from-pink-500 to-rose-500",
+  "from-orange-500 to-rose-500",
+] as const;
 
 const ROW_CLASSES = [
   "business-marquee-row-one",
@@ -216,22 +96,29 @@ function ListingRow({
 export default function BusinessMarqueeRows({
   listings,
 }: {
-  listings: BusinessListingItem[] | null;
+  listings: BusinessListingItem[];
 }) {
-  const businesses =
-    listings?.length
-      ? listings.map((listing, index) => ({
-          id: listing.id,
-          name: listing.name,
-          niche: `${listing.category} · ${listing.tag}`,
-          initials: listing.name.charAt(0).toUpperCase(),
-          accent: BUSINESS_ROWS[index % BUSINESS_ROWS.length][0].accent,
-          websiteUrl: listing.websiteUrl,
-          logoUrl: listing.logoUrl,
-        }))
-      : BUSINESS_ROWS.flat();
-  const rowSize = Math.ceil(businesses.length / BUSINESS_ROWS.length);
-  const rows = BUSINESS_ROWS.map((_, index) =>
+  const businesses = listings.map((listing, index) => ({
+    id: listing.id,
+    name: listing.name,
+    niche: `${listing.category} · ${listing.tag}`,
+    initials: listing.name.charAt(0).toUpperCase(),
+    accent: BUSINESS_ACCENTS[index % BUSINESS_ACCENTS.length],
+    websiteUrl: listing.websiteUrl,
+    logoUrl: listing.logoUrl,
+  }));
+
+  if (businesses.length === 0) {
+    return (
+      <p className="py-8 text-center text-sm text-slate-400">
+        No approved businesses are listed yet.
+      </p>
+    );
+  }
+
+  const rowCount = Math.min(4, businesses.length);
+  const rowSize = Math.ceil(businesses.length / rowCount);
+  const rows = Array.from({ length: rowCount }, (_, index) =>
     businesses.slice(index * rowSize, (index + 1) * rowSize),
   );
 

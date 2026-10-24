@@ -32,25 +32,18 @@ export async function getLiveBillboardSlots(): Promise<BillboardSlot[] | null> {
   }
 }
 
-export async function getActiveBusinessListings(): Promise<
-  BusinessListingItem[] | null
-> {
-  try {
-    return await prisma.businessListing.findMany({
-      where: { isApproved: true },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        category: true,
-        tag: true,
-        websiteUrl: true,
-        logoUrl: true,
-      },
-    });
-  } catch (error) {
-    console.error("[marketplace] Could not load approved business listings:", error);
-    return null;
-  }
+export async function getActiveBusinessListings(): Promise<BusinessListingItem[]> {
+  return prisma.businessListing.findMany({
+    where: { isApproved: true },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      category: true,
+      tag: true,
+      websiteUrl: true,
+      logoUrl: true,
+    },
+  });
 }

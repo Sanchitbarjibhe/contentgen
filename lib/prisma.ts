@@ -1,6 +1,5 @@
 // lib/prisma.ts
-// Standard Next.js-safe Prisma singleton (prevents exhausting DB connections
-// from hot-reloaded route handlers in dev).
+// Reuse one Prisma client across module reloads and warm serverless instances.
 import { PrismaClient } from "@prisma/client";
 
 declare global {
@@ -14,6 +13,4 @@ export const prisma =
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
-}
+global.prisma = prisma;
