@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, X } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ArrowRight } from "lucide-react";
 import BusinessListingForm from "@/components/BusinessListingForm";
 
 export default function BusinessListingDialog() {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
+    dialogRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
@@ -40,35 +41,31 @@ export default function BusinessListingDialog() {
         <ArrowRight aria-hidden="true" className="size-4" />
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/85 p-3 backdrop-blur-md sm:p-6"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) setOpen(false);
-          }}
-        >
-          <section
-            aria-labelledby="listing-dialog-title"
-            aria-modal="true"
-            className="relative my-auto w-full max-w-2xl rounded-3xl border border-slate-700/80 bg-slate-950 p-3 shadow-2xl shadow-purple-950/40 sm:p-5"
-            role="dialog"
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/85 px-3 pb-3 pt-20 backdrop-blur-md sm:px-6 sm:pb-6 sm:pt-24"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setOpen(false);
+            }}
           >
-            <h2 className="sr-only" id="listing-dialog-title">
-              Add your business to the directory
-            </h2>
-            <button
-              aria-label="Close business listing form"
-              className="absolute right-5 top-5 z-10 rounded-lg border border-slate-700 bg-slate-950/90 p-2 text-slate-400 transition hover:border-slate-500 hover:text-white"
-              onClick={() => setOpen(false)}
-              ref={closeRef}
-              type="button"
+            <div
+              aria-labelledby="listing-dialog-title"
+              aria-modal="true"
+              className="my-3 w-full max-w-2xl sm:my-6"
+              ref={dialogRef}
+              role="dialog"
+              tabIndex={-1}
             >
-              <X aria-hidden="true" className="size-5" />
-            </button>
-            <BusinessListingForm />
-          </section>
-        </div>
-      )}
+              <h2 className="sr-only" id="listing-dialog-title">
+                Add your business to the directory
+              </h2>
+              <BusinessListingForm onClose={() => setOpen(false)} />
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, BadgeCheck, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Check, Sparkles, X } from "lucide-react";
 
 const CATEGORIES = ["Tech", "Food", "Retail", "SaaS", "Services"] as const;
 
@@ -31,7 +31,11 @@ const INITIAL_DETAILS: ListingDetails = {
 const fieldClassName =
   "mt-2 w-full rounded-xl border border-slate-700/80 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/20";
 
-export default function BusinessListingForm() {
+export default function BusinessListingForm({
+  onClose,
+}: {
+  onClose?: () => void;
+}) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [details, setDetails] = useState<ListingDetails>(INITIAL_DETAILS);
@@ -114,10 +118,20 @@ export default function BusinessListingForm() {
   }
 
   return (
-    <section
+    <div
       id="list-your-business"
-      className="rounded-3xl border border-slate-800 bg-slate-900/50 p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-xl sm:p-8"
+      className="relative w-full max-w-2xl rounded-3xl border border-slate-800 bg-slate-900/50 p-6 text-white shadow-2xl shadow-purple-950/10 backdrop-blur-xl sm:p-8"
     >
+      {onClose && (
+        <button
+          aria-label="Close"
+          className="absolute top-4 right-4 z-20 rounded-full bg-slate-800 p-2 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
+          onClick={onClose}
+          type="button"
+        >
+          <X aria-hidden="true" className="size-5" />
+        </button>
+      )}
       {submitted ? (
         <div className="flex min-h-[28rem] flex-col items-center justify-center text-center">
           <div className="flex size-14 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
@@ -145,7 +159,7 @@ export default function BusinessListingForm() {
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4 pt-10">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                 <Sparkles aria-hidden="true" className="size-3.5" />
@@ -430,6 +444,6 @@ export default function BusinessListingForm() {
           </form>
         </>
       )}
-    </section>
+    </div>
   );
 }
