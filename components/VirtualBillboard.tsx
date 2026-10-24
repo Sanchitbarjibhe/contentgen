@@ -203,7 +203,7 @@ export default function VirtualBillboard({
                 aria-hidden="true"
                 className="size-1.5 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_9px_rgba(110,231,183,0.85)]"
               />
-              THE HOME TALK AD EXCHANGE
+              THE HookTos AD EXCHANGE
             </span>
             <h1
               className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl"

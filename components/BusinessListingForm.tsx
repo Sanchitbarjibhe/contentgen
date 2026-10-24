@@ -78,9 +78,9 @@ export default function BusinessListingForm() {
       if (!response.ok) {
         const error =
           typeof responseBody === "object" &&
-          responseBody !== null &&
-          "error" in responseBody &&
-          typeof responseBody.error === "string"
+            responseBody !== null &&
+            "error" in responseBody &&
+            typeof responseBody.error === "string"
             ? responseBody.error
             : "Unable to save your listing. Please try again.";
         throw new Error(error);
@@ -126,7 +126,7 @@ export default function BusinessListingForm() {
           <h2 className="mt-5 text-2xl font-bold text-white">You&apos;re on the list!</h2>
           <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
             <span className="font-semibold text-slate-200">{details.businessName}</span>{" "}
-            has been saved to the Home Talk directory.
+            has been saved to the HookTos directory.
           </p>
           <p className="mt-2 text-xs text-slate-500">Listing slug: {createdSlug}</p>
           <button
@@ -155,7 +155,7 @@ export default function BusinessListingForm() {
                 Get your business listed
               </h2>
               <p className="mt-1 text-sm leading-6 text-slate-400">
-                Join the Home Talk directory in just a few quick steps.
+                Join the HookTos directory in just a few quick steps.
               </p>
             </div>
             <span className="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1.5 text-xs font-medium text-slate-300">
@@ -170,11 +170,10 @@ export default function BusinessListingForm() {
             {[1, 2, 3].map((stepNumber) => (
               <div
                 key={stepNumber}
-                className={`h-1 rounded-full ${
-                  stepNumber <= step
+                className={`h-1 rounded-full ${stepNumber <= step
                     ? "bg-gradient-to-r from-purple-500 to-blue-500"
                     : "bg-slate-800"
-                }`}
+                  }`}
               />
             ))}
           </div>

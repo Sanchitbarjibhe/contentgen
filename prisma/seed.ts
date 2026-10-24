@@ -110,7 +110,7 @@ async function main() {
         category,
         tag,
         websiteUrl: `https://${slug}.example`,
-        description: `${tag} from the Home Talk community.`,
+        description: `${tag} from the HookTos community.`,
       },
       update: { name, category, tag },
     });

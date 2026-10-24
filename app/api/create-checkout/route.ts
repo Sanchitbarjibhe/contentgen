@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
               currency: currency.toLowerCase(),
               unit_amount: amount,
               product_data: {
-                name: `Home Talk billboard · ${parsed.data.duration === "week" ? "1 week" : "1 month"}`,
+                name: `HookTos billboard · ${parsed.data.duration === "week" ? "1 week" : "1 month"}`,
                 description: `Ad space #${parsed.data.slot}${bannerName ? ` · ${bannerName}` : ""}`,
               },
             },

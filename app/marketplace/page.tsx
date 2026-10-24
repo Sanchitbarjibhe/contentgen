@@ -10,9 +10,9 @@ import DirectoryPaymentStatus from "@/components/DirectoryPaymentStatus";
 import VirtualBillboard from "@/components/VirtualBillboard";
 
 export const metadata: Metadata = {
-  title: "Home Talk Business Directory",
+  title: "HookTos Business Directory",
   description:
-    "Discover independent businesses, list your company for free for life, and promote your brand on the Home Talk virtual billboard.",
+    "Discover independent businesses, list your company for free for life, and promote your brand on the HookTos virtual billboard.",
 };
 
 export const dynamic = "force-dynamic";
@@ -68,7 +68,7 @@ export default async function MarketplacePage() {
                 </span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7">
-                Explore independent businesses from the Home Talk community.
+                Explore independent businesses from the HookTos community.
                 Your next favorite might be just around the corner.
               </p>
             </div>

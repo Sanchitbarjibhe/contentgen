@@ -378,7 +378,7 @@ export default function AdBookingModal({
         order_id: checkout.data.orderId,
         amount: checkout.data.amount,
         currency: checkout.data.currency,
-        name: "Home Talk",
+        name: "HookTos",
         description: `Billboard ad space #${slot} · ${duration}`,
         theme: { color: "#7c3aed" },
         handler: (paymentResult) => {
@@ -394,7 +394,7 @@ export default function AdBookingModal({
       paymentWindow.on("payment.failed", (paymentFailure) => {
         setError(
           paymentFailure.error?.description ??
-            "Payment failed. Please try again or choose another payment method.",
+          "Payment failed. Please try again or choose another payment method.",
         );
         setLoading(false);
         setRazorpayOpened(false);
@@ -514,11 +514,10 @@ export default function AdBookingModal({
               <div className="mt-3 grid grid-cols-2 gap-3">
                 {(["week", "month"] as const).map((option) => (
                   <label
-                    className={`cursor-pointer rounded-2xl border p-3 transition sm:p-4 ${
-                      duration === option
+                    className={`cursor-pointer rounded-2xl border p-3 transition sm:p-4 ${duration === option
                         ? "border-purple-400/60 bg-purple-500/[0.08] ring-1 ring-purple-400/30"
                         : "border-slate-700 bg-slate-950/50 hover:border-slate-500"
-                    }`}
+                      }`}
                     key={option}
                   >
                     <input

@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 
 
-Set up a dynamic Prisma database schema and server actions for the Home Talk Marketplace and Billboard feature (`app/marketplace/page.tsx`).
+Set up a dynamic Prisma database schema and server actions for the HookTos Marketplace and Billboard feature (`app/marketplace/page.tsx`).
 
 Requirements:
 
