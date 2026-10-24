@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { ArrowDown, Sparkles } from "lucide-react";
 import {
   getActiveBusinessListings,
@@ -8,12 +7,9 @@ import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import DirectoryPaymentStatus from "@/components/DirectoryPaymentStatus";
 import VirtualBillboard from "@/components/VirtualBillboard";
+import { getPageMetadata } from '@/lib/seo.config';
 
-export const metadata: Metadata = {
-  title: "HookTos Business Directory",
-  description:
-    "Discover independent businesses, list your company for free for life, and promote your brand on the HookTos virtual billboard.",
-};
+export const metadata = getPageMetadata('marketplace', '/marketplace');
 
 export const dynamic = "force-dynamic";
 
@@ -25,13 +21,13 @@ export default async function MarketplacePage() {
 
   return (
     <main className="relative isolate overflow-hidden bg-transparent text-slate-100">
-      {/* <div
+      <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
         <div className="absolute -top-48 left-1/3 size-[34rem] rounded-full bg-purple-600/10 blur-[140px]" />
         <div className="absolute right-[-15rem] top-[55rem] size-[32rem] rounded-full bg-blue-600/10 blur-[140px]" />
-      </div> */}
+      </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/*<div className="pt-4">
