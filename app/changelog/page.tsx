@@ -13,16 +13,16 @@ interface ReleaseUpdate {
     description: string;
     changes: {
         category:
-            | 'New Feature'
-            | 'New Feature: Instagram Trending Audio Engine (/audio)'
-            | 'New Feature: High-Converting Hashtag Finder (/hashtag)'
-            | 'Branding & Search Indexing: Official Logo & Favicon Integration'
-            | 'Marketplace & Business Directory'
-            | 'Virtual Billboard & Ad Booking'
-            | 'Payments & Checkout'
-            | 'Improvement'
-            | 'Bug Fix'
-            | 'Improvement & Bug Fixes: UI/UX & Tailwind v4 Architecture';
+        | 'New Feature'
+        | 'New Feature: Instagram Trending Audio Engine (/audio)'
+        | 'New Feature: High-Converting Hashtag Finder (/hashtag)'
+        | 'Branding & Search Indexing: Official Logo & Favicon Integration'
+        | 'Marketplace & Business Directory'
+        | 'Virtual Billboard & Ad Booking'
+        | 'Payments & Checkout'
+        | 'Improvement'
+        | 'Bug Fix'
+        | 'Improvement & Bug Fixes: UI/UX & Tailwind v4 Architecture';
         items: string[];
     }[];
 }
@@ -40,7 +40,7 @@ const releases: ReleaseUpdate[] = [
                 category: 'Marketplace & Business Directory',
                 items: [
                     'Added a dark-glass marketplace with business listings and four continuously scrolling marquee rows.',
-                    'Introduced a three-step business listing form with a free lifetime listing badge.',
+                    'Introduced a three-step business listing form with a Free Listing badge.',
                     'Added a /directory compatibility route that forwards visitors to the marketplace.',
                 ],
             },

@@ -37,7 +37,7 @@ export default function BusinessListingDialog() {
         ref={triggerRef}
         type="button"
       >
-        Get your free lifetime listing
+        Get your Free Listing
         <ArrowRight aria-hidden="true" className="size-4" />
       </button>
 

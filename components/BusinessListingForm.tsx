@@ -163,7 +163,7 @@ export default function BusinessListingForm({
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                 <Sparkles aria-hidden="true" className="size-3.5" />
-                Free Lifetime Listing
+                Free Listing
               </span>
               <h2 className="mt-4 text-2xl font-bold tracking-tight text-white">
                 Get your business listed
@@ -185,8 +185,8 @@ export default function BusinessListingForm({
               <div
                 key={stepNumber}
                 className={`h-1 rounded-full ${stepNumber <= step
-                    ? "bg-gradient-to-r from-purple-500 to-blue-500"
-                    : "bg-slate-800"
+                  ? "bg-gradient-to-r from-purple-500 to-blue-500"
+                  : "bg-slate-800"
                   }`}
               />
             ))}
@@ -366,7 +366,7 @@ export default function BusinessListingForm({
             {step === 3 && (
               <div>
                 <p className="text-sm leading-6 text-slate-400">
-                  Check your details before adding your free lifetime listing.
+                  Check your details before adding your Free Listing.
                 </p>
                 <dl className="mt-5 divide-y divide-slate-800 rounded-2xl border border-slate-800 bg-slate-950/50 px-4">
                   {[
