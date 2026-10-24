@@ -13,6 +13,8 @@ export const metadata = getPageMetadata('marketplace', '/marketplace');
 
 export const dynamic = "force-dynamic";
 
+export const revalidate = 0; // Dynamic data fetching disable caching
+
 export default async function MarketplacePage() {
   const [billboardSlots, businessListings] = await Promise.all([
     getLiveBillboardSlots(),
