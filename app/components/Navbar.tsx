@@ -35,7 +35,7 @@ export default function Navbar() {
             className="flex items-center gap-3.5 whitespace-nowrap text-lg font-extrabold tracking-tight"
           >
             <Image
-              src="/hooktos.svg"
+              src="/android-chrome-512x512.png"
               alt="HookTos AI logo"
               width={44}
               height={44}

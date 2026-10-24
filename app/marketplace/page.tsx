@@ -25,25 +25,25 @@ export default async function MarketplacePage() {
 
   return (
     <main className="relative isolate overflow-hidden bg-transparent text-slate-100">
-      <div
+      {/* <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
         <div className="absolute -top-48 left-1/3 size-[34rem] rounded-full bg-purple-600/10 blur-[140px]" />
         <div className="absolute right-[-15rem] top-[55rem] size-[32rem] rounded-full bg-blue-600/10 blur-[140px]" />
-      </div>
+      </div> */}
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="pt-4">
+        {/*<div className="pt-4">
           <DirectoryPaymentStatus />
         </div>
-        <section
+         <section
           aria-label="Virtual billboard ads"
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
           id="virtual-billboard"
         >
           <VirtualBillboard slots={billboardSlots} />
-        </section>
+        </section> */}
 
         <div aria-hidden="true" className="border-t border-slate-800/70" />
 
