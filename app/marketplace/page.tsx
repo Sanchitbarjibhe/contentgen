@@ -5,7 +5,6 @@ import {
 } from "@/app/actions/marketplace";
 import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
-import DirectoryPaymentStatus from "@/components/DirectoryPaymentStatus";
 import VirtualBillboard from "@/components/VirtualBillboard";
 import { getPageMetadata } from '@/lib/seo.config';
 
@@ -32,16 +31,13 @@ export default async function MarketplacePage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/*<div className="pt-4">
-          <DirectoryPaymentStatus />
-        </div>
-         <section
+        <section
           aria-label="Virtual billboard ads"
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
           id="virtual-billboard"
         >
           <VirtualBillboard slots={billboardSlots} />
-        </section> */}
+        </section>
 
         <div aria-hidden="true" className="border-t border-slate-800/70" />
 
