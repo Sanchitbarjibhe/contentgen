@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------------------------------------------------------------------------
@@ -143,4 +144,34 @@ model GeneratedHook {
   createdAt         DateTime @default(now())
 
   @@index([userId, createdAt])
+}
+
+model BusinessListing {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  category    String
+  tag         String
+  websiteUrl  String
+  logoUrl     String?
+  description String?
+  isApproved  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model AdSlot {
+  id           String   @id @default(cuid())
+  title        String
+  category     String
+  tier         String
+  pricePerWeek Int
+  views        Int      @default(0)
+  clicks       Int      @default(0)
+  imageUrl     String?
+  websiteUrl   String?
+  isLive       Boolean  @default(true)
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([isLive, expiresAt])
 }

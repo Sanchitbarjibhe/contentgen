@@ -7,6 +7,7 @@ import Image from "next/image";
 
 const links = [
   { href: "/changelog", label: "What's New" },
+  { href: "/marketplace", label: "Marketplace" },
   { href: "/audio", label: "Trending Audio" },
   { href: "/hashtag", label: "Top Hashtags" },
   { href: "/about", label: "About" },
@@ -34,7 +35,7 @@ export default function Navbar() {
             className="flex items-center gap-3.5 whitespace-nowrap text-lg font-extrabold tracking-tight"
           >
             <Image
-              src="/hooktos.svg"
+              src="/android-chrome-512x512.png"
               alt="HookTos AI logo"
               width={44}
               height={44}
@@ -55,8 +56,8 @@ export default function Navbar() {
                   href={href}
                   aria-current={active ? "page" : undefined}
                   className={`relative whitespace-nowrap py-2 transition-colors duration-200 hover:text-white ${active
-                      ? "text-white after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-purple-400"
-                      : ""
+                    ? "text-white after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-purple-400"
+                    : ""
                     }`}
                 >
                   {label}

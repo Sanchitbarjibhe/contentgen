@@ -1,10 +1,8 @@
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//     experimental: {
-//         instantInsights: {
-//             validationLevel: 'manual-warning' // संपूर्ण ॲपचे ब्लॉकिंग बंद करण्यासाठी
-//         }
-//     }
-// };
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    inlineCss: true,
+  },
+};
 
-// module.exports = nextConfig;
+export default nextConfig;

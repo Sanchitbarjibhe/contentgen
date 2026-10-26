@@ -24,3 +24,48 @@
     text-wrap: balance;
   }
 }
+
+@keyframes business-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.business-marquee-track {
+  animation: business-marquee-scroll 48s linear infinite;
+  will-change: transform;
+}
+
+.business-marquee-row-one {
+  animation-duration: 44s;
+}
+
+.business-marquee-row-two {
+  animation-duration: 52s;
+}
+
+.business-marquee-row-three {
+  animation-duration: 48s;
+}
+
+.business-marquee-row-four {
+  animation-duration: 56s;
+}
+
+.business-marquee-reverse {
+  animation-direction: reverse;
+}
+
+.business-marquee:hover .business-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}

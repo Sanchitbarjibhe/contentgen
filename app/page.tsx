@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+import { getPageMetadata } from '@/optimizations/SEO/seo.config';
 
-export const metadata = {
-  title: 'HookTos AI — Viral Hook Generator & Social Content Assistant',
-  description:
-    'Generate psychology-backed viral hooks, retention scores, SEO descriptions, and hashtags for Instagram Reels, YouTube Shorts, and TikTok.',
-};
+
+export const metadata: Metadata = getPageMetadata('home', '/');
+
 
 export default function HomePage() {
   return (
@@ -21,14 +21,17 @@ export default function HomePage() {
 
         {/* Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
-          Stop losing viewers in the <br className="hidden sm:inline" />
+          AI viral hook generator for <br className="hidden sm:inline" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">
-            first 3 seconds.
+            Reels, Shorts & TikTok
           </span>
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-slate-400 text-base sm:text-xl max-w-2xl mx-auto font-normal leading-relaxed">
+        <h2 className="text-slate-300 text-base sm:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+          Create scroll-stopping content in seconds
+        </h2>
+
+        <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
           Generate 10 psychology-backed hooks, a retention score, an SEO description, and 15 hashtags — for every Reel, Short, and TikTok you make.
         </p>
 

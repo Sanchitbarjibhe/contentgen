@@ -1,19 +1,19 @@
 # HookTos AI
 
-HookTos AI helps creators develop short-form social video content. Its content-generation workflow provides ten hook ideas, a retention score, an SEO description, and fifteen hashtags for Instagram Reels, YouTube Shorts, and TikTok.
+> HookTos AI is an AI hook generator and creator studio for Instagram Reels, YouTube Shorts and TikTok. It writes 10 psychology-backed opening hooks per video with a predicted retention score, finds trending Instagram audio, and suggests niche hashtags.
 
-## Primary pages
+HookTos AI serves content creators, social media managers and digital agencies. A free plan is available; paid plans are billed in USD (Stripe) or INR (Razorpay).
 
-- [Home](https://www.hooktos.com/): HookTos AI content generation overview.
-- [Blog](https://www.hooktos.com/blog): Guides and strategies for short-form content.
+## Tools
+- [AI Hook Generator](https://www.hooktos.com/): 10 hooks per idea with retention scores and SEO video descriptions
+- [Trending Instagram Audio](https://www.hooktos.com/audio): viral Reels sounds ranked by growth velocity, updated daily
+- [Hashtag Finder](https://www.hooktos.com/hashtag): niche hashtag stacks with reach estimates
+- [Creator Directory & Billboard](https://www.hooktos.com/directory): ad slots for brands from $5/week
 
-## Blog articles
+## Guides
+- [Blog](https://www.hooktos.com/blog): hooks, trending audio, hashtags and Reels retention
 
-- [10 Proven Content Hook Formulas](https://www.hooktos.com/blog/10_proven_content_hook_formulas_to_create_viral_content)
-- [10 Viral Hooks for Reels](https://www.hooktos.com/blog/10-viral-hooks-for-reels)
-- [AI Content Generation and SEO](https://www.hooktos.com/blog/ai_content_generation_blog_seo_optimization_guide)
-- [Dealing With Algorithm Changes](https://www.hooktos.com/blog/dealing_with_algorithm_changes)
-- [Monetize a Small Audience](https://www.hooktos.com/blog/monetize_a_small_audience)
-- [Short-Form Content Strategy](https://www.hooktos.com/blog/short_form_content_strategy)
-- [The Brand Pitch Email Template](https://www.hooktos.com/blog/the_pitch_email_template_that_gets_brands_to_pay_you_more)
-- [The Truth About Going Viral](https://www.hooktos.com/blog/the_truth_about_going_viral_in_2026_skill_vs_luck)
+## Company
+- [About](https://www.hooktos.com/about)
+- [Pricing](https://www.hooktos.com/pricing)
+- [Changelog](https://www.hooktos.com/changelog)
