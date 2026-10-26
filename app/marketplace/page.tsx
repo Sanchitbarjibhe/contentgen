@@ -6,7 +6,7 @@ import {
 import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import VirtualBillboard from "@/components/VirtualBillboard";
-import { getPageMetadata } from '@/lib/seo.config';
+import { getPageMetadata } from '@/optimizations/SEO/seo.config';
 
 export const metadata = getPageMetadata('marketplace', '/marketplace');
 
