@@ -7,8 +7,9 @@ import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import VirtualBillboard from "@/components/VirtualBillboard";
 import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import { Metadata } from "next";
 
-export const metadata = getPageMetadata('marketplace', '/marketplace');
+export const metadata: Metadata = getPageMetadata('marketplace', '/marketplace');
 
 export const dynamic = "force-dynamic";
 
