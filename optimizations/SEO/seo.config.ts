@@ -17,7 +17,7 @@ export const pageSEOConfig: Record<string, { title: string; description: string;
         keywords: getKeywords('marketplace'),
     },
     blogs: {
-        title: 'Blogs & Guides | HookTos AI',
+        title: 'Blogs & Guides',
         description: 'Read the latest tips, strategies, and insights on growing your social media presence.',
         image: '/android-chrome-512x512.png',
         keywords: getKeywords('blog'),
@@ -32,6 +32,7 @@ export function getPageMetadata(pageKey: keyof typeof pageSEOConfig, path: strin
     return {
         title: config.title,
         description: config.description,
+        keywords: config.keywords, // <--
         metadataBase: new URL(baseUrl),
         alternates: {
             canonical: fullUrl,

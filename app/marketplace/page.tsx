@@ -32,13 +32,13 @@ export default async function MarketplacePage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <section
+        {/* <section
           aria-label="Virtual billboard ads"
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
           id="virtual-billboard"
         >
           <VirtualBillboard slots={billboardSlots} />
-        </section>
+        </section> */}
 
         <div aria-hidden="true" className="border-t border-slate-800/70" />
 
