@@ -5,6 +5,10 @@ import type {
   BillboardSlot,
   BusinessListingItem,
 } from "@/lib/marketplace-types";
+import {
+  getFallbackFreeListingStats,
+  getFreeListingStatsForCount,
+} from "@/lib/marketplace-listings";
 
 const FALLBACK_BILLBOARD_SLOTS: BillboardSlot[] = [
   {
@@ -81,6 +85,12 @@ const FALLBACK_BUSINESS_LISTINGS: BusinessListingItem[] = [
   },
 ];
 
+export interface FreeListingStats {
+  claimed: number;
+  capacity: number;
+  remaining: number;
+}
+
 export async function getLiveBillboardSlots(): Promise<BillboardSlot[]> {
   console.info("[marketplace] Fetching live billboard slots from Prisma.");
 
@@ -155,5 +165,21 @@ export async function getActiveBusinessListings(): Promise<BusinessListingItem[]
       error,
     );
     return FALLBACK_BUSINESS_LISTINGS;
+  }
+}
+
+export async function getFreeListingStats(): Promise<FreeListingStats> {
+  try {
+    const claimed = await prisma.businessListing.count({
+      where: { isApproved: true },
+    });
+
+    return getFreeListingStatsForCount(claimed);
+  } catch (error) {
+    console.error(
+      "[marketplace] Could not load approved listing count; using the 20-listing display estimate:",
+      error,
+    );
+    return getFallbackFreeListingStats();
   }
 }

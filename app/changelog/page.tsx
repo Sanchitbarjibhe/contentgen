@@ -29,9 +29,39 @@ interface ReleaseUpdate {
 
 const releases: ReleaseUpdate[] = [
     {
-        version: 'v1.4.0',
+        version: 'v1.5.0',
         date: 'October 2026',
         badge: 'Latest Release',
+        title: 'Creator Marketplace business listing for free & Geo-Payments',
+        description:
+            'Live listing availability, geo-targeted checkout, and improved database connection handling.',
+        changes: [
+            {
+                category: 'Marketplace & Business Directory',
+                items: [
+                    'Added a listing counter showing 20 of 100 claimed and 80 free spots remaining.',
+                    'Added a glowing scarcity banner and creator ticker featuring Feastables, Prime Hydration, and Viewstats.',
+                    'Replaced the unavailable counter error with a fallback estimate on /marketplace and /claim-spot.',
+                ],
+            },
+            {
+                category: 'Payments & Checkout',
+                items: [
+                    'Routes Indian visitors to Razorpay (₹2,000 INR) and global visitors to Stripe ($29 USD).',
+                    'Automatically requires payment after the 100 free listing slots are filled.',
+                ],
+            },
+            {
+                category: 'Improvement',
+                items: [
+                    'Configured Prisma direct connections on port 5432 and Vercel transaction-pooler connections on port 6543.',
+                ],
+            },
+        ],
+    },
+    {
+        version: 'v1.4.0',
+        date: 'October 2026',
         title: 'Marketplace, Business Directory & Virtual Billboard',
         description:
             'Discover businesses in the new marketplace, explore interactive billboard ad spaces, and preview a country-aware checkout experience for ad bookings.',

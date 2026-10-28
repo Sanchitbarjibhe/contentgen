@@ -112,7 +112,7 @@ async function main() {
         websiteUrl: `https://${slug}.example`,
         description: `${tag} from the HookTos community.`,
       },
-      update: { name, category, tag },
+      update: { name, category, tag, isPaid: false },
     });
   }
 

@@ -2,7 +2,17 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, BadgeCheck, Check, Sparkles, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
+  Check,
+  CreditCard,
+  Sparkles,
+  X,
+} from "lucide-react";
+import type { RazorpayPaymentResponse } from "@/lib/razorpay-types";
+import { getListingCountryHint } from "@/lib/marketplace-listings";
 
 const CATEGORIES = ["Tech", "Food", "Retail", "SaaS", "Services"] as const;
 
@@ -31,10 +41,25 @@ const INITIAL_DETAILS: ListingDetails = {
 const fieldClassName =
   "mt-2 w-full rounded-xl border border-slate-700/80 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/20";
 
+function loadRazorpay() {
+  if (window.Razorpay) return Promise.resolve(true);
+
+  return new Promise<boolean>((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(Boolean(window.Razorpay));
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 export default function BusinessListingForm({
   onClose,
+  freeSpotsRemaining,
 }: {
   onClose?: () => void;
+  freeSpotsRemaining?: number | null;
 }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -44,6 +69,11 @@ export default function BusinessListingForm({
   const [errorMessage, setErrorMessage] = useState("");
   const [createdSlug, setCreatedSlug] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const [currentFreeSpots, setCurrentFreeSpots] = useState(freeSpotsRemaining);
+  const freeListingsAvailable =
+    currentFreeSpots === undefined || currentFreeSpots === null
+      ? null
+      : currentFreeSpots > 0;
 
   function updateDetails<K extends keyof ListingDetails>(
     field: K,
@@ -52,8 +82,56 @@ export default function BusinessListingForm({
     setDetails((current) => ({ ...current, [field]: value }));
   }
 
-  function advanceStep() {
+  async function checkFreeSpots() {
+    const locale = navigator.language;
+    const response = await fetch(
+      `/api/listings/check-slots?locale=${encodeURIComponent(locale)}`,
+      { cache: "no-store" },
+    );
+    const body: unknown = await response.json().catch(() => null);
+    if (
+      !response.ok ||
+      typeof body !== "object" ||
+      body === null ||
+      !("remainingSlots" in body) ||
+      typeof body.remainingSlots !== "number"
+    ) {
+      const message =
+        typeof body === "object" &&
+        body !== null &&
+        "error" in body &&
+        typeof body.error === "string"
+          ? body.error
+          : "Unable to check free listing availability. Please try again.";
+      throw new Error(message);
+    }
+
+    setCurrentFreeSpots(body.remainingSlots);
+    return body.remainingSlots;
+  }
+
+  async function advanceStep() {
     if (!formRef.current?.reportValidity()) return;
+
+    if (step === 2) {
+      setLoading(true);
+      setErrorMessage("");
+      try {
+        await checkFreeSpots();
+        setStep(3);
+      } catch (error: unknown) {
+        console.error("[business listing] availability check failed:", error);
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to check free listing availability.",
+        );
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     setStep((current) => Math.min(current + 1, 3));
   }
 
@@ -65,6 +143,9 @@ export default function BusinessListingForm({
     setErrorMessage("");
 
     try {
+      const countryHint = getListingCountryHint(navigator.language);
+      await checkFreeSpots();
+
       const response = await fetch("/api/listings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,6 +155,7 @@ export default function BusinessListingForm({
           tag: details.tag,
           websiteUrl: details.website,
           logoUrl: details.logoUrl || undefined,
+          countryHint,
           description: `${details.description.trim()}\n\nLocation: ${details.city.trim()}, ${details.country.trim()}`,
         }),
       });
@@ -88,6 +170,102 @@ export default function BusinessListingForm({
             ? responseBody.error
             : "Unable to save your listing. Please try again.";
         throw new Error(error);
+      }
+
+      if (
+        typeof responseBody === "object" &&
+        responseBody !== null &&
+        "paymentRequired" in responseBody &&
+        responseBody.paymentRequired === true
+      ) {
+        if (
+          !("gateway" in responseBody) ||
+          (responseBody.gateway !== "stripe" && responseBody.gateway !== "razorpay")
+        ) {
+          throw new Error("The payment provider response was invalid.");
+        }
+
+        if (responseBody.gateway === "stripe") {
+          if (!("checkoutUrl" in responseBody) || typeof responseBody.checkoutUrl !== "string") {
+            throw new Error("Stripe checkout could not be initialized.");
+          }
+          window.location.assign(responseBody.checkoutUrl);
+          return;
+        }
+
+        if (
+          !("keyId" in responseBody) ||
+          typeof responseBody.keyId !== "string" ||
+          !("orderId" in responseBody) ||
+          typeof responseBody.orderId !== "string" ||
+          !("amount" in responseBody) ||
+          typeof responseBody.amount !== "number" ||
+          !("currency" in responseBody) ||
+          typeof responseBody.currency !== "string" ||
+          !("pendingListingId" in responseBody) ||
+          typeof responseBody.pendingListingId !== "string"
+        ) {
+          throw new Error("Razorpay checkout could not be initialized.");
+        }
+
+        if (!(await loadRazorpay()) || !window.Razorpay) {
+          throw new Error("Unable to load Razorpay Checkout. Please try again.");
+        }
+
+        const razorpay = new window.Razorpay({
+          key: responseBody.keyId,
+          amount: responseBody.amount,
+          currency: responseBody.currency,
+          name: "HookTos",
+          description: "Featured business listing",
+          order_id: responseBody.orderId,
+          theme: { color: "#8b5cf6" },
+          modal: { ondismiss: () => setLoading(false) },
+          handler: async (paymentResponse: RazorpayPaymentResponse) => {
+            try {
+              const verifyResponse = await fetch("/api/verify-listing-payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  pendingListingId: responseBody.pendingListingId,
+                  ...paymentResponse,
+                }),
+              });
+              const verifyBody: unknown = await verifyResponse.json().catch(() => null);
+              if (
+                !verifyResponse.ok ||
+                typeof verifyBody !== "object" ||
+                verifyBody === null ||
+                !("verified" in verifyBody) ||
+                verifyBody.verified !== true ||
+                !("slug" in verifyBody) ||
+                typeof verifyBody.slug !== "string"
+              ) {
+                const message =
+                  typeof verifyBody === "object" &&
+                  verifyBody !== null &&
+                  "error" in verifyBody &&
+                  typeof verifyBody.error === "string"
+                    ? verifyBody.error
+                    : "Payment could not be verified. Please contact support if you were charged.";
+                throw new Error(message);
+              }
+
+              setCreatedSlug(verifyBody.slug);
+              setSubmitted(true);
+              router.refresh();
+            } catch (error: unknown) {
+              console.error("[business listing] Razorpay verification failed:", error);
+              setErrorMessage(
+                error instanceof Error ? error.message : "Unable to verify payment.",
+              );
+            } finally {
+              setLoading(false);
+            }
+          },
+        });
+        razorpay.open();
+        return;
       }
 
       if (
@@ -163,13 +341,15 @@ export default function BusinessListingForm({
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                 <Sparkles aria-hidden="true" className="size-3.5" />
-                Free Listing
+                {freeListingsAvailable === false ? "Featured Paid Listing" : "Free Listing"}
               </span>
               <h2 className="mt-4 text-2xl font-bold tracking-tight text-white">
                 Get your business listed
               </h2>
               <p className="mt-1 text-sm leading-6 text-slate-400">
-                Join the HookTos directory in just a few quick steps.
+                {freeListingsAvailable === false
+                  ? "Free spots are filled. Reserve your featured placement."
+                  : "Join the HookTos directory in just a few quick steps."}
               </p>
             </div>
             <span className="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1.5 text-xs font-medium text-slate-300">
@@ -366,7 +546,7 @@ export default function BusinessListingForm({
             {step === 3 && (
               <div>
                 <p className="text-sm leading-6 text-slate-400">
-                  Check your details before adding your Free Listing.
+                  Check your details before submitting your listing.
                 </p>
                 <dl className="mt-5 divide-y divide-slate-800 rounded-2xl border border-slate-800 bg-slate-950/50 px-4">
                   {[
@@ -391,10 +571,19 @@ export default function BusinessListingForm({
                     </div>
                   ))}
                 </dl>
-                <p className="mt-4 flex items-center gap-2 text-sm font-medium text-emerald-200">
-                  <BadgeCheck aria-hidden="true" className="size-4 shrink-0" />
-                  Free listing. No credit card required.
-                </p>
+                {freeListingsAvailable === false ? (
+                  <p className="mt-4 flex items-center gap-2 text-sm font-medium text-purple-200">
+                    <CreditCard aria-hidden="true" className="size-4 shrink-0" />
+                    Featured listing: $29 USD or ₹2,000 INR. Payment is required to publish.
+                  </p>
+                ) : (
+                  <p className="mt-4 flex items-center gap-2 text-sm font-medium text-emerald-200">
+                    <BadgeCheck aria-hidden="true" className="size-4 shrink-0" />
+                    {freeListingsAvailable === true
+                      ? "Free listing. No credit card required."
+                      : "Free spots may still be available; payment is only required once they fill."}
+                  </p>
+                )}
               </div>
             )}
 
@@ -423,12 +612,13 @@ export default function BusinessListingForm({
               )}
               {step < 3 ? (
                 <button
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-purple-950/30 transition hover:from-purple-500 hover:to-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-purple-950/30 transition hover:from-purple-500 hover:to-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300 disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={advanceStep}
+                  disabled={loading}
                   type="button"
                 >
-                  Continue
-                  <ArrowRight aria-hidden="true" className="size-4" />
+                  {loading && step === 2 ? "Checking availability..." : "Continue"}
+                  {!loading && <ArrowRight aria-hidden="true" className="size-4" />}
                 </button>
               ) : (
                 <button
@@ -437,7 +627,13 @@ export default function BusinessListingForm({
                   type="submit"
                 >
                   <Check aria-hidden="true" className="size-4" />
-                  {loading ? "Saving listing..." : "Add free listing"}
+                  {loading
+                    ? freeListingsAvailable === false
+                      ? "Opening secure checkout..."
+                      : "Submitting listing..."
+                    : freeListingsAvailable === false
+                      ? "Continue to payment"
+                      : "Submit listing"}
                 </button>
               )}
             </div>

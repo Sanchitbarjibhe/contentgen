@@ -5,7 +5,11 @@ import { createPortal } from "react-dom";
 import { ArrowRight } from "lucide-react";
 import BusinessListingForm from "@/components/BusinessListingForm";
 
-export default function BusinessListingDialog() {
+export default function BusinessListingDialog({
+  freeSpotsRemaining,
+}: {
+  freeSpotsRemaining?: number | null;
+}) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -37,7 +41,7 @@ export default function BusinessListingDialog() {
         ref={triggerRef}
         type="button"
       >
-        Get your Free Listing
+        {freeSpotsRemaining === 0 ? "Get your Featured Listing" : "Get your Free Listing"}
         <ArrowRight aria-hidden="true" className="size-4" />
       </button>
 
@@ -61,7 +65,10 @@ export default function BusinessListingDialog() {
               <h2 className="sr-only" id="listing-dialog-title">
                 Add your business to the directory
               </h2>
-              <BusinessListingForm onClose={() => setOpen(false)} />
+              <BusinessListingForm
+                freeSpotsRemaining={freeSpotsRemaining}
+                onClose={() => setOpen(false)}
+              />
             </div>
           </div>,
           document.body,

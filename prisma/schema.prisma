@@ -156,7 +156,30 @@ model BusinessListing {
   logoUrl     String?
   description String?
   isApproved  Boolean  @default(true)
+  isPaid      Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  @@index([isPaid])
+}
+
+model ListingPayment {
+  id                  String    @id @default(cuid())
+  name                String
+  category            String
+  tag                 String
+  websiteUrl          String
+  logoUrl             String?
+  description         String
+  gateway             String
+  amount              Int
+  currency            String
+  stripeSessionId     String?   @unique
+  razorpayOrderId     String?   @unique
+  businessListingId   String?   @unique
+  completedAt         DateTime?
+  createdAt           DateTime  @default(now())
+
+  @@index([gateway, createdAt])
 }
 
 model AdSlot {
