@@ -17,7 +17,7 @@ const blogPosts = [
         category: 'Instagram Strategy',
     },
     {
-        slug: 'monetize_a_small_audience',
+        slug: 'monetize-a-small-audience',
         title: 'The Solopreneur Playbook: How to Monetize Your Audience in 2026',
         description:
             'Learn how full-time creators and solopreneurs build 6-figure businesses using digital products, brand sponsorships, and paid communities.',
@@ -26,7 +26,7 @@ const blogPosts = [
         category: 'Monetization',
     },
     {
-        slug: 'short_form_content_strategy',
+        slug: 'short-form-content-strategy',
         title: 'Short-Form Content Strategy for YouTube Shorts & TikTok',
         description:
             'Master the algorithm with data-backed retention tactics, pacing secrets, and storytelling hooks built for rapid growth.',
@@ -35,7 +35,7 @@ const blogPosts = [
         category: 'Growth Tactics',
     },
     {
-        slug: 'dealing_with_algorithm_changes',
+        slug: 'dealing-with-algorithm-changes',
         title: 'Dealing with Social Media Algorithm Changes Without Burning Out',
         description:
             'How to adapt your content creation workflow when algorithms shift, keeping your reach consistent and high-converting.',
@@ -44,7 +44,7 @@ const blogPosts = [
         category: 'Algorithm',
     },
     {
-        slug: 'the_pitch_email_template_that_gets_brands_to_pay_you_more',
+        slug: 'the-pitch-email-template-that-gets-brands-to-pay-you-more',
         title: 'The Pitch Email Template That Gets Brands to Pay You More',
         description:
             'A proven outreach script and negotiation framework designed to help creators land premium brand sponsorships.',
@@ -53,7 +53,7 @@ const blogPosts = [
         category: 'Sponsorships',
     },
     {
-        slug: 'the_truth_about_going_viral_in_2026_skill_vs_luck',
+        slug: 'the-truth-about-going-viral-in-2026-skill-vs-luck',
         title: 'The Truth About Going Viral in 2026: Skill vs Luck',
         description:
             'An in-depth analysis of short-form video metrics and why viral distribution is a repeatable skill rather than random chance.',
