@@ -25,8 +25,14 @@ export const siteKeywords = {
         ]
     },
     marketplace: {
-        high: ["AI content generator", "SaaS marketplace"],
-        medium: ["buy AI startup", "discover AI software"],
+        high: [
+            "AI content generator",
+            "SaaS marketplace",
+            "business listing directory",
+            "creator marketplace",
+            "startup marketplace",
+        ],
+        medium: ["buy AI startup", "discover AI software", "buy creator business"],
         low: ["affordable AI tools for small business 2026",
             "best AI tools workflow for beginners",
             "business listing site",

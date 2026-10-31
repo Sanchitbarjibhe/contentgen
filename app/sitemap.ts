@@ -36,6 +36,13 @@ const STATIC_ROUTES: {
   { path: '/audio',      changeFrequency: 'daily',   priority: 0.9 }, // trending audio, ISR-synced daily
   { path: '/hashtag',    changeFrequency: 'weekly',  priority: 0.9 },
   { path: '/marketplace', changeFrequency: 'daily',  priority: 0.8 }, // billboard slots change often
+  { path: '/marketplace/ai-tools', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/saas-tools', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/content-creators', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/youtube-creators', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/instagram-creators', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/marketing-agencies', changeFrequency: 'daily', priority: 0.7 },
+  { path: '/marketplace/startups', changeFrequency: 'daily', priority: 0.7 },
   { path: '/blog',       changeFrequency: 'daily',   priority: 0.8 },
   { path: '/about',      changeFrequency: 'monthly', priority: 0.6, updated: '2026-10-19' },
   { path: '/changelog',  changeFrequency: 'weekly',  priority: 0.5, updated: '2026-10-19' },

@@ -11,6 +11,8 @@ import ListingPaymentStatus from "@/components/ListingPaymentStatus";
 import ScarcityBanner from "@/components/ScarcityBanner";
 import { getPageMetadata } from '@/optimizations/SEO/seo.config';
 import { Metadata } from "next";
+import Link from "next/link";
+import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
 
 export const metadata: Metadata = getPageMetadata('marketplace', '/marketplace');
 
@@ -37,6 +39,18 @@ export default async function MarketplacePage() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ScarcityBanner stats={freeListingStats} listings={businessListings} />
+
+        <nav aria-label="Browse marketplace categories" className="mb-8 flex flex-wrap justify-center gap-2">
+          {Object.values(marketplaceCategories).map((category) => (
+            <Link
+              className="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-purple-400/60 hover:text-white sm:text-sm"
+              href={`/marketplace/${category.slug}`}
+              key={category.slug}
+            >
+              {category.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* <section
           aria-label="Virtual billboard ads"
