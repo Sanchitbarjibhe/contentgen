@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/components/Navbar";
 import ConsentBanner from "@/components/ConsentBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import JsonLd from "@/components/JsonLd";

@@ -12,6 +12,7 @@
 import type { MetadataRoute } from 'next';
 import fs from 'node:fs';
 import path from 'node:path';
+import { HOOK_PAGES } from '@/lib/hook-pages';
 
 const BASE_URL = 'https://www.hooktos.com';
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blogs');
@@ -143,6 +144,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(post.cover ? { images: [absoluteUrl(post.cover)] } : {}),
   }));
 
+  const hookGuideEntries: MetadataRoute.Sitemap = HOOK_PAGES.map(
+    ({ platform, hookType }) => ({
+      url: `${BASE_URL}/hooks/${platform.slug}/${hookType.slug}`,
+      lastModified: BUILD_TIME,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    }),
+  );
+
   // Optional: database-driven pages (e.g. public business profiles in /directory).
   // Uncomment and adapt if such pages exist:
   //
@@ -158,5 +168,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   //   priority: 0.5,
   // }));
 
-  return [...staticEntries, ...blogEntries];
+  return [...staticEntries, ...blogEntries, ...hookGuideEntries];
 }
