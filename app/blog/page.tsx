@@ -2,66 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import { BlogPosts } from '@/lib/BlogPosts';
+
 
 export const metadata: Metadata = getPageMetadata('blogs', '/blogs');
-
-// Blog Posts Data
-const blogPosts = [
-    {
-        slug: '10-viral-hooks-for-reels',
-        title: '10 Viral Hooks to Skyrocket Your Instagram Reels in 2026',
-        description:
-            'Discover the top 10 AI-proven hooks that grab attention in the first 3 seconds and massively increase your engagement and views.',
-        date: '2026-09-25',
-        readTime: '4 min read',
-        category: 'Instagram Strategy',
-    },
-    {
-        slug: 'monetize-a-small-audience',
-        title: 'The Solopreneur Playbook: How to Monetize Your Audience in 2026',
-        description:
-            'Learn how full-time creators and solopreneurs build 6-figure businesses using digital products, brand sponsorships, and paid communities.',
-        date: '2026-09-26',
-        readTime: '6 min read',
-        category: 'Monetization',
-    },
-    {
-        slug: 'short-form-content-strategy',
-        title: 'Short-Form Content Strategy for YouTube Shorts & TikTok',
-        description:
-            'Master the algorithm with data-backed retention tactics, pacing secrets, and storytelling hooks built for rapid growth.',
-        date: '2026-09-27',
-        readTime: '5 min read',
-        category: 'Growth Tactics',
-    },
-    {
-        slug: 'dealing-with-algorithm-changes',
-        title: 'Dealing with Social Media Algorithm Changes Without Burning Out',
-        description:
-            'How to adapt your content creation workflow when algorithms shift, keeping your reach consistent and high-converting.',
-        date: '2026-09-28',
-        readTime: '4 min read',
-        category: 'Algorithm',
-    },
-    {
-        slug: 'the-pitch-email-template-that-gets-brands-to-pay-you-more',
-        title: 'The Pitch Email Template That Gets Brands to Pay You More',
-        description:
-            'A proven outreach script and negotiation framework designed to help creators land premium brand sponsorships.',
-        date: '2026-09-29',
-        readTime: '3 min read',
-        category: 'Sponsorships',
-    },
-    {
-        slug: 'the-truth-about-going-viral-in-2026-skill-vs-luck',
-        title: 'The Truth About Going Viral in 2026: Skill vs Luck',
-        description:
-            'An in-depth analysis of short-form video metrics and why viral distribution is a repeatable skill rather than random chance.',
-        date: '2026-09-30',
-        readTime: '7 min read',
-        category: 'Analytics',
-    },
-];
 
 export default function BlogListingPage() {
     return (
@@ -81,7 +25,7 @@ export default function BlogListingPage() {
 
             {/* Blog Grid / Cards Container */}
             <div className="max-w-4xl mx-auto mt-14 space-y-6">
-                {blogPosts.map((post) => (
+                {BlogPosts.map((post: any) => (
                     <Link
                         key={post.slug}
                         href={`/blog/${post.slug}`}
