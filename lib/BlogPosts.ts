@@ -1,5 +1,13 @@
 export const BlogPosts = [
     {
+        slug: 'how-to-use-ai-prompt-for-seo',
+        title: 'How to Use AI Prompts for SEO (Rank #1 on Google)',
+        description: 'Learn how to effectively use AI prompts for Keyword Research, Competitor Analysis, and generating human-like content to rank #1 on Google.',
+        date: '2026-11-02',
+        readTime: '8 min read',
+        category: 'optimizations & Ranking',
+    },
+    {
         slug: '10-proven-content-hook-formulas-to-create-viral-content',
         title: '10 Proven Content Hook Formulas To Create Viral Content',
         description: 'Master the art of high-converting content hooks to capture immediate audience attention, lower bounce rates, and drive organic viral reach.',
@@ -17,7 +25,7 @@ export const BlogPosts = [
     },
     {
         slug: 'the-ultimate-guide-to-seo-aeo-geo-aio-sxo-for-creators',
-        title: 'The Evolution of Search Optimization SEO TO SXO',
+        title: 'The Ultimate 2026 Guide to Search Optimization: From SEO to AEO, GEO, AIO, and SXO',
         description: 'The Ultimate 2026 Guide to Search Optimization: From SEO to AEO, GEO, AIO, and SXO',
         date: '2026-11-02',
         readTime: '8 min read',
@@ -25,7 +33,7 @@ export const BlogPosts = [
     },
     {
         slug: 'the-evolution-of-search-optimization-seo-to-sxo',
-        title: 'The Ultimate Guide to SEO, AEO, GEO, AIO & SXO: How to Dominate Search in 2026',
+        title: 'The Evolution Of Search Optimization SEO TO SXO',
         description: 'Master the full progression of search optimization from traditional SEO to SXO. Learn how to optimize your content for Google AI Overviews, ChatGPT, Perplexity, and direct user conversions.',
         date: '2026-11-02',
         readTime: '8 min read',
