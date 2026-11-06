@@ -107,10 +107,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           ]}
         />
         <GoogleAnalytics />
-        <Analytics />
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
           <Navbar />
           {children}
+          <Analytics />
         </ClerkProvider>
         <ConsentBanner />
       </body>
