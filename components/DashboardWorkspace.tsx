@@ -37,7 +37,7 @@ export function DashboardWorkspace({ initialUsage, initialRecent }: DashboardWor
     return (
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3">
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Quick generate</h2>
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-indigo-300">Quick generate</h2>
                 <DashboardGenerator initialUsage={initialUsage} onGenerated={handleGenerated} />
             </div>
             <div className="lg:col-span-2">
