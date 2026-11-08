@@ -4,7 +4,11 @@ import matter from "gray-matter";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { marked, type Tokens } from "marked";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { blogMdxComponents } from "@/components/BlogMdxComponents";
 
 interface BlogProps {
     params: Promise<{ slug: string }>;
@@ -48,6 +52,58 @@ function getFileSlug(fileName: string) {
     return fileName.replace(/(?:\.(?:md|mdx))+$/i, "");
 }
 
+function stripMdxImports(content: string): string {
+    const lines = content.split(/\r?\n/);
+    let firstContentLine = 0;
+
+    while (
+        firstContentLine < lines.length &&
+        (!lines[firstContentLine].trim() || /^\s*import\b/.test(lines[firstContentLine]))
+    ) {
+        firstContentLine++;
+    }
+
+    return lines.slice(firstContentLine).join("\n");
+}
+
+function latexToText(expression: string): string {
+    return expression
+        .replace(/\\(?:longrightarrow|rightarrow|to)\b/g, "→")
+        .replace(/\\times\b/g, "×")
+        .replace(/\\LaTeX\b/g, "LaTeX")
+        .replace(/\\text\{([^{}]*)\}/g, "$1")
+        .replace(/\\mathrm\{([^{}]*)\}/g, "$1")
+        .replace(/_\{([^{}]*)\}/g, " ($1)")
+        .replace(/\^\{([^{}]*)\}/g, "^$1")
+        .replace(/\\%/g, "%")
+        .replace(/\\[a-zA-Z]+/g, "")
+        .replace(/\\([{}])/g, "$1")
+        .replace(/</g, "&lt;")
+        .replace(/[ \t]+/g, " ")
+        .trim();
+}
+
+function normalizeLatex(content: string): string {
+    return content
+        .replace(/\$\$([\s\S]*?)\$\$/g, (_match, expression: string) => `\n${latexToText(expression)}\n`)
+        .replace(/\$([^$\r\n]*\\(?:[a-zA-Z]+|%)[^$\r\n]*)\$/g, (_match, expression: string) => latexToText(expression))
+        .replace(/\$([^$\r\n]*[<>][^$\r\n]*)\$/g, (_match, expression: string) => latexToText(expression))
+        .replace(/\$(\d+(?:\.\d+)?\s*[-–]\s*\d+(?:\.\d+)?)\$/g, "$1");
+}
+
+function cleanMdxContent(content: string): string {
+    const withoutImports = stripMdxImports(content)
+        .replace(/<script\b(?=[^>]*type=["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/gi, "");
+    const lines = normalizeLatex(withoutImports).split(/\r?\n/);
+    const firstContentLine = lines.findIndex((line) => line.trim());
+
+    if (firstContentLine !== -1 && /^#\s+/.test(lines[firstContentLine])) {
+        lines.splice(firstContentLine, 1);
+    }
+
+    return lines.join("\n");
+}
+
 function getBlogFiles(directory: string): BlogFile[] {
     if (!fs.existsSync(directory)) return [];
 
@@ -70,6 +126,15 @@ function getBlogPostFromFile(file: BlogFile): BlogPost | null {
     const parsed = matter(fs.readFileSync(file.filePath, "utf-8"));
     if (parsed.data.draft === true || parsed.data.draft === "true") return null;
 
+    const metadataSlug = getString(parsed.data.slug);
+    if (metadataSlug?.includes("/") || metadataSlug?.includes("\\")) {
+        throw new Error(`Blog slug must be a single URL segment: ${metadataSlug}`);
+    }
+    const slug = normalizeSlug(getFileSlug(metadataSlug || file.slug));
+    if (!slug || slug.includes("/") || slug.includes("\\")) {
+        throw new Error(`Blog post has an invalid slug: ${metadataSlug || file.slug}`);
+    }
+
     const fileStats = fs.statSync(file.filePath);
     const publishedDate = toDateString(
         parsed.data.publishedAt ?? parsed.data.date,
@@ -78,15 +143,31 @@ function getBlogPostFromFile(file: BlogFile): BlogPost | null {
 
     return {
         data: parsed.data as Record<string, unknown>,
-        content: parsed.content,
-        slug: file.slug,
+        content: cleanMdxContent(parsed.content),
+        slug,
         publishedDate,
     };
 }
 
+function getAllBlogPosts(): BlogPost[] {
+    const posts = getAllBlogFiles().flatMap((file) => {
+        const post = getBlogPostFromFile(file);
+        return post ? [post] : [];
+    });
+    const seenSlugs = new Set<string>();
+
+    for (const post of posts) {
+        if (seenSlugs.has(post.slug)) {
+            throw new Error(`Duplicate blog slug found: ${post.slug}`);
+        }
+        seenSlugs.add(post.slug);
+    }
+
+    return posts;
+}
+
 function getBlogPost(slug: string): BlogPost | null {
-    const matchedFile = getAllBlogFiles().find((file) => file.slug === normalizeSlug(slug));
-    return matchedFile ? getBlogPostFromFile(matchedFile) : null;
+    return getAllBlogPosts().find((post) => post.slug === normalizeSlug(slug)) ?? null;
 }
 
 function toDateString(value: unknown, fallback: Date): string {
@@ -171,6 +252,32 @@ function getFaqItems(content: string, title: string): FaqItem[] {
     }];
 }
 
+function getExplicitFaqSection(content: string): {
+    items: FaqItem[];
+    start: number;
+    end: number;
+} | null {
+    const headings = [...content.matchAll(/^##\s+(.+)\s*$/gm)];
+    const faqHeadingIndex = headings.findIndex((heading) =>
+        /^(?:frequently asked questions|faq)$/i.test(heading[1].trim())
+    );
+    if (faqHeadingIndex === -1) return null;
+
+    const faqHeading = headings[faqHeadingIndex];
+    const start = faqHeading.index ?? 0;
+    const end = headings[faqHeadingIndex + 1]?.index ?? content.length;
+    const section = content.slice(start, end);
+    const questions = [...section.matchAll(/^###\s+(.+)\s*$/gm)];
+    const items = questions.flatMap((question, index) => {
+        const answerStart = (question.index ?? 0) + question[0].length;
+        const answerEnd = questions[index + 1]?.index ?? section.length;
+        const answer = toPlainText(section.slice(answerStart, answerEnd));
+        return answer ? [{ question: question[1].trim(), answer }] : [];
+    });
+
+    return items.length ? { items, start, end } : null;
+}
+
 function getHowToSteps(content: string): { name: string; text: string }[] {
     const orderedList = marked.lexer(content).find(
         (token): token is Tokens.List => token.type === "list" && token.ordered
@@ -194,22 +301,12 @@ function getHowToSteps(content: string): { name: string; text: string }[] {
         .slice(0, 5);
 }
 
-function normalizeRenderedHeadings(html: string): string {
-    let hasSectionHeading = false;
-    return html.replace(/<h([1-6])\b([^>]*)>([\s\S]*?)<\/h\1>/gi, (_match, rawLevel: string, attributes: string, text: string) => {
-        const sourceLevel = Number(rawLevel);
-        const level = sourceLevel <= 2 || !hasSectionHeading ? 2 : 3;
-        if (level === 2) hasSectionHeading = true;
-        return `<h${level}${attributes}>${text}</h${level}>`;
-    });
-}
-
 function absoluteUrl(value: string): string {
     return /^https?:\/\//i.test(value) ? value : `https://www.hooktos.com${value.startsWith("/") ? "" : "/"}${value}`;
 }
 
 export function generateStaticParams() {
-    return getAllBlogFiles().flatMap((file) => getBlogPostFromFile(file) ? [{ slug: file.slug }] : []);
+    return getAllBlogPosts().map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: BlogProps): Promise<Metadata> {
@@ -225,7 +322,7 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
 
     // Dynamic Title & Description Optimization
     const rawTitle = getString(post.data.title) || normalizedSlug.replace(/-/g, " ");
-    const title = `${rawTitle} | HookTos AI`;
+    const title = post.data.titleExact === true ? rawTitle : `${rawTitle} | HookTos AI`;
     const description = getString(post.data.description) || getDescription(post.content);
     const author = getString(post.data.author) || "HookTos AI Team";
     const keywords = getKeywords(post.data.keywords);
@@ -274,13 +371,14 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const rawTitle = getString(data.title) || normalizedSlug.replace(/-/g, " ");
     const keywords = getKeywords(data.keywords);
     const primaryKeyword = getPrimaryKeyword(keywords, rawTitle, normalizedSlug);
-    const displayTitle = rawTitle.toLowerCase().includes(primaryKeyword.toLowerCase())
+    const displayTitle = data.titleExact === true || rawTitle.toLowerCase().includes(primaryKeyword.toLowerCase())
         ? rawTitle
         : `${rawTitle} — ${primaryKeyword}`;
     const author = getString(data.author) || "HookTos AI Team";
     const description = getString(data.description) || getDescription(content);
     const cover = getString(data.cover) || getString(data.image);
     const howToSteps = getHowToSteps(content);
+    const explicitFaqSection = getExplicitFaqSection(content);
     const modifiedDate = toDateString(data.updated, new Date(publishedDate));
     const canonical = `https://www.hooktos.com/blog/${normalizedSlug}`;
     const articleSchema = {
@@ -316,19 +414,27 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                 text: step.text,
             })),
         },
+        ...(explicitFaqSection ? [{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: explicitFaqSection.items.map((item) => ({
+                "@type": "Question",
+                name: item.question,
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: item.answer,
+                },
+            })),
+        }] : []),
     ];
 
-    const parsedHtml = await marked.parse(content, { gfm: true });
-    const htmlWithoutInlineSchema = parsedHtml.replace(
-        /<script\b(?=[^>]*type=["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/gi,
-        ""
-    );
-    const htmlWithoutSourceTitle = htmlWithoutInlineSchema.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, "");
-    const htmlContent = normalizeRenderedHeadings(htmlWithoutSourceTitle);
+    const contentForRender = explicitFaqSection
+        ? content.slice(0, explicitFaqSection.start) + content.slice(explicitFaqSection.end)
+        : content;
     const bodyText = toPlainText(content).toLowerCase();
     const firstHundredWords = bodyText.split(/\s+/).slice(0, 100).join(" ");
     const needsKeywordIntroduction = !firstHundredWords.includes(primaryKeyword.toLowerCase());
-    const faqItems = getFaqItems(content, rawTitle);
+    const faqItems = explicitFaqSection?.items ?? getFaqItems(content, rawTitle);
 
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100">
@@ -338,25 +444,28 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                     <time dateTime={publishedDate} className="text-sm text-purple-400 font-medium">{publishedDate.slice(0, 10)}</time>
                 </header>
 
-                {needsKeywordIntroduction && (
-                    <p className="mb-6 text-slate-300">
-                        This guide covers {primaryKeyword} with practical examples and advice you can apply.
-                    </p>
-                )}
                 <JsonLd data={schema} />
-                <div className="prose prose-invert prose-purple lg:prose-lg max-w-none">
-                    <div
-                        className="
-                        prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
-                        prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-slate-800 prose-h2:pb-2
-                        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-                        prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-6
-                        prose-a:text-purple-400 prose-a:font-semibold prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-purple-300
-                        prose-strong:text-white prose-strong:font-bold
-                        prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6 prose-ul:space-y-2
-                        prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6 prose-ol:space-y-2
-                        prose-blockquote:border-l-4 prose-blockquote:border-purple-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-400"
-                        dangerouslySetInnerHTML={{ __html: htmlContent }}
+                <div className="prose prose-invert prose-purple prose-lg max-w-none
+                    prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
+                    prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-slate-800 prose-h2:pb-2
+                    prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                    prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-6
+                    prose-a:text-purple-400 prose-a:font-semibold prose-a:underline prose-a:underline-offset-4 prose-a:hover:text-purple-300
+                    prose-strong:text-white prose-strong:font-bold
+                    prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6 prose-ul:space-y-2
+                    prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6 prose-ol:space-y-2
+                    prose-blockquote:border-l-4 prose-blockquote:border-purple-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-400
+                    prose-pre:overflow-x-auto prose-pre:border prose-pre:border-slate-800 prose-pre:bg-slate-900
+                    prose-th:text-slate-100 prose-td:text-slate-300">
+                    {needsKeywordIntroduction && (
+                        <p>
+                            This guide covers {primaryKeyword} with practical examples and advice you can apply.
+                        </p>
+                    )}
+                    <MDXRemote
+                        source={contentForRender}
+                        components={blogMdxComponents}
+                        options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
                     />
                     {faqItems.length > 0 && (
                         <section aria-labelledby="faq-title">
@@ -370,6 +479,32 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                         </section>
                     )}
                 </div>
+                <aside className="mt-12 overflow-hidden rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950 via-slate-900 to-blue-950 p-7 shadow-2xl shadow-purple-950/30 sm:p-10">
+                    <p className="text-sm font-bold uppercase tracking-[0.18em] text-purple-300">
+                        Make your next idea count
+                    </p>
+                    <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                        Turn attention into opportunity.
+                    </h2>
+                    <p className="mt-3 max-w-2xl leading-7 text-slate-300">
+                        Generate scroll-stopping hooks for your next video, or explore the HookTos AI
+                        Marketplace to discover creator-friendly businesses and list your own for free.
+                    </p>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        <Link
+                            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-purple-400 px-6 py-3 font-bold text-slate-950 transition hover:bg-purple-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-200"
+                            href="/dashboard"
+                        >
+                            Generate Hooks
+                        </Link>
+                        <Link
+                            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-600 bg-slate-900/60 px-6 py-3 font-bold text-slate-100 transition hover:border-purple-300/70 hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-200"
+                            href="/marketplace"
+                        >
+                            Explore the Marketplace
+                        </Link>
+                    </div>
+                </aside>
             </article>
         </main>
     );

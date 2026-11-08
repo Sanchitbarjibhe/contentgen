@@ -1,6 +1,14 @@
 export const BlogPosts = [
     {
-        slug: 'how-to-use-ai-prompt-for-seo',
+        slug: 'best-viral-video-hooks-for-reels-2026',
+        title: 'Best Viral Video Hooks for Reels & Shorts (2026 Updated Examples)',
+        description: 'Discover top-performing viral video hooks for reels and shorts in 2026. Learn how to use emotional triggers like anxious attachment to explode your reach.',
+        date: '2026-11-08',
+        readTime: '7 min read',
+        category: 'Instagram Strategy',
+    },
+    {
+        slug: 'how-to-use-ai-prompts-for-seo',
         title: 'How to Use AI Prompts for SEO (Rank #1 on Google)',
         description: 'Learn how to effectively use AI prompts for Keyword Research, Competitor Analysis, and generating human-like content to rank #1 on Google.',
         date: '2026-11-02',
@@ -32,7 +40,7 @@ export const BlogPosts = [
         category: 'optimizations & Ranking',
     },
     {
-        slug: 'the-evolution-of-search-optimization-seo-to-sxo',
+        slug: 'seo-to-sxo-evolution-guide',
         title: 'The Evolution Of Search Optimization SEO TO SXO',
         description: 'Master the full progression of search optimization from traditional SEO to SXO. Learn how to optimize your content for Google AI Overviews, ChatGPT, Perplexity, and direct user conversions.',
         date: '2026-11-02',
@@ -40,7 +48,7 @@ export const BlogPosts = [
         category: 'optimizations & Ranking',
     },
     {
-        slug: 'how-to-master-ai-video-hooks-to-10x-content-engagement',
+        slug: 'how-to-master-ai-video-hooks',
         title: 'How To Master AI Video Hooks to 10x Content engagement',
         description: 'Learn how to use AI-powered hook generators to craft viral video hooks for Instagram Reels, YouTube Shorts, and TikTok. Includes real-world examples, a step-by-step roadmap, and proven data points.',
         date: '2026-11-02',
