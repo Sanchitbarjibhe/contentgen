@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateHooks, HookGenerationError } from "@/lib/openai";
+import { generateHooks } from "@/lib/openai";
 import {
     ANON_COOKIE_MAX_AGE,
     ANON_ID_COOKIE,
@@ -109,19 +109,19 @@ export async function POST(req: NextRequest) {
             userId
         );
     } catch (error) {
+        console.error("AI Generation Error:", error);
+
         if (usage.consumed) {
-            await prisma.userUsage.update({
-                where: { userId },
-                data: { freeCreditsLeft: { increment: 1 } },
-            });
+            try {
+                await prisma.userUsage.update({
+                    where: { userId },
+                    data: { freeCreditsLeft: { increment: 1 } },
+                });
+            } catch (refundError) {
+                console.error("[generate] failed to refund generation credit:", refundError);
+            }
         }
 
-        if (error instanceof HookGenerationError) {
-            console.error("[generate] hook generation failed:", error.message, error.cause);
-            return respond({ error: "The AI engine couldn't produce hooks for that input. Please try rephrasing your topic." }, 502, !existingAnonId, userId);
-        }
-
-        console.error("[generate] unexpected error:", error);
         return respond({ error: "Something went wrong. Please try again." }, 500, !existingAnonId, userId);
     }
 }

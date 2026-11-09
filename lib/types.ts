@@ -89,6 +89,7 @@ export interface GenerationResult {
   description: string;
   hashtags: HashtagGroup;
   avgRetentionScore: number;
+  generationMode?: "AI" | "TEMPLATE";
 }
 
 export interface GenerateRequestBody {

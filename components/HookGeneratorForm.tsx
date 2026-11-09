@@ -46,7 +46,7 @@ export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage }: Hook
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Something went wrong.");
+        setError(data.message ?? data.error ?? "Something went wrong.");
         if (data.usage) setUsage(data.usage);
         return;
       }

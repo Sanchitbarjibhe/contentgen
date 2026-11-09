@@ -1,7 +1,7 @@
 // components/DashboardGenerator.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HookGeneratorForm } from "@/components/HookGeneratorForm";
 import { OutputCards } from "@/components/OutputCards";
 import { PaywallModal } from "@/components/PaywallModal";
@@ -24,6 +24,12 @@ interface DashboardGeneratorProps {
 export function DashboardGenerator({ initialUsage, onGenerated }: DashboardGeneratorProps) {
   const [result, setResult] = useState<(GenerationResult & { id: string }) | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!result) return;
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [result]);
 
   return (
     <div className="space-y-8">
@@ -35,7 +41,11 @@ export function DashboardGenerator({ initialUsage, onGenerated }: DashboardGener
         }}
         onUpgrade={() => setPaywallOpen(true)}
       />
-      {result && <OutputCards result={result} />}
+      {result && (
+        <div ref={resultsRef} className="scroll-mt-24 min-w-0" id="generated-hooks">
+          <OutputCards result={result} />
+        </div>
+      )}
       <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} />
     </div>
   );

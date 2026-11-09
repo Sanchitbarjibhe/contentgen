@@ -43,8 +43,9 @@ Rules:
   misleading (no fabricated "97% of doctors agree" style claims).
 - Keep language platform-appropriate: TikTok/Reels skew punchier and more
   informal than YouTube Shorts.
-- Output ONLY valid JSON matching the schema you are given. No markdown
-  fences, no commentary, no trailing text.`;
+- Return exactly one JSON object matching the requested schema, including
+  exactly 10 hook objects and all three groups of 5 hashtags.
+- Output ONLY valid JSON. No markdown fences, commentary, or trailing text.`;
 
 export function buildUserPrompt(input: {
   topic: string;
