@@ -67,8 +67,24 @@ export async function POST(req: NextRequest) {
         );
     }
 
+    let result: Awaited<ReturnType<typeof generateHooks>>;
     try {
-        const result = await generateHooks({ topic, niche, platform });
+        result = await generateHooks({ topic, niche, platform });
+    } catch (error) {
+        console.error("AI Generation Failed:", error);
+        await refundCredit(userId, usage.consumed);
+        return respond(
+            {
+                error: "AI_GENERATION_FAILED",
+                message: "Hook generation failed. Please try again.",
+            },
+            502,
+            !existingAnonId,
+            userId
+        );
+    }
+
+    try {
         const generation = await prisma.generatedHook.create({
             data: {
                 userId,
@@ -109,20 +125,27 @@ export async function POST(req: NextRequest) {
             userId
         );
     } catch (error) {
-        console.error("AI Generation Error:", error);
+        console.error("[generate] failed to persist generation:", error);
+        await refundCredit(userId, usage.consumed);
+        return respond(
+            { error: "GENERATION_SAVE_FAILED", message: "Generated hooks could not be saved." },
+            500,
+            !existingAnonId,
+            userId
+        );
+    }
+}
 
-        if (usage.consumed) {
-            try {
-                await prisma.userUsage.update({
-                    where: { userId },
-                    data: { freeCreditsLeft: { increment: 1 } },
-                });
-            } catch (refundError) {
-                console.error("[generate] failed to refund generation credit:", refundError);
-            }
-        }
+async function refundCredit(userId: string, consumed: boolean) {
+    if (!consumed) return;
 
-        return respond({ error: "Something went wrong. Please try again." }, 500, !existingAnonId, userId);
+    try {
+        await prisma.userUsage.update({
+            where: { userId },
+            data: { freeCreditsLeft: { increment: 1 } },
+        });
+    } catch (error) {
+        console.error("[generate] failed to refund generation credit:", error);
     }
 }
 

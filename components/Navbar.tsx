@@ -163,7 +163,7 @@ export default function Navbar() {
 
           <nav
             aria-label="Main navigation"
-            className="hidden items-center gap-6 text-sm font-semibold text-slate-300 md:flex sm:gap-8 sm:text-base"
+            className="hidden items-center gap-3 text-sm font-semibold text-slate-300 md:flex lg:gap-5 xl:gap-8"
           >
             {links.slice(0, 2).map(({ href, label }) => {
               const active = isActiveLink(pathname, href);
@@ -465,6 +465,15 @@ export default function Navbar() {
             })}
           </nav>
 
+          <Link
+            href="/dashboard"
+            aria-current={pathname === "/dashboard" ? "page" : undefined}
+            className="hidden whitespace-nowrap rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-950/40 transition-all duration-200 hover:from-purple-500 hover:to-indigo-500 hover:shadow-indigo-500/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 md:inline-flex"
+          >
+            <span aria-hidden="true">✨</span>
+            <span className="ml-1.5">Generate Hooks</span>
+          </Link>
+
           <button
             type="button"
             className="inline-flex size-10 items-center justify-center rounded-lg border border-slate-700/80 text-slate-200 transition hover:border-[#2962FF]/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2962FF] md:hidden"
@@ -599,6 +608,16 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            <Link
+              href="/dashboard"
+              aria-current={pathname === "/dashboard" ? "page" : undefined}
+              tabIndex={isOpen ? 0 : -1}
+              onClick={() => setIsOpen(false)}
+              className="mx-3 my-2 inline-flex items-center justify-center whitespace-nowrap rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-950/40 transition-all duration-200 hover:from-purple-500 hover:to-indigo-500 hover:shadow-indigo-500/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
+            >
+              <span aria-hidden="true">✨</span>
+              <span className="ml-1.5">Generate Hooks</span>
+            </Link>
           </nav>
         </div>
       </div>

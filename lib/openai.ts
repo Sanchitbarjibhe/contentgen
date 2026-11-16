@@ -1,3 +1,4 @@
+import { ChatOllama } from "@langchain/ollama";
 import OpenAI from "openai";
 import { z } from "zod";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/prompts";
@@ -36,26 +37,60 @@ type Provider = {
 export async function generateHooks(input: GenerationInput): Promise<GenerationResult> {
   const providers = getProviders();
   if (providers.length === 0) {
-    console.error("AI Generation Error:", "No AI provider is configured.");
-    return generateTemplateHooks(input);
+    throw new Error(
+      "No AI provider is configured. Set Ollama_API_KEY, OLLAMA_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, or GOOGLE_API_KEY to enable AI generation."
+    );
   }
 
+  const providerErrors: unknown[] = [];
   for (const provider of providers) {
     try {
       const raw = await provider.generate(input);
       return parseGenerationOutput(raw, input);
     } catch (error) {
-      console.error(`AI Generation Error (${provider.name}):`, error);
+      console.error(
+        `AI Generation Error (${provider.name}):`,
+        error instanceof Error ? error.stack ?? error.message : error
+      );
+      providerErrors.push(error);
     }
   }
 
-  return generateTemplateHooks(input);
+  throw new AggregateError(providerErrors, "All configured AI providers failed.");
 }
 
 function getProviders(): Provider[] {
   const providers: Provider[] = [];
+  const ollamaKey = process.env.Ollama_API_KEY?.trim() || process.env.OLLAMA_API_KEY?.trim();
   const openAiKey = process.env.OPENAI_API_KEY?.trim();
   const geminiKey = process.env.GEMINI_API_KEY?.trim() || process.env.GOOGLE_API_KEY?.trim();
+
+  if (ollamaKey) {
+    providers.push({
+      name: "Ollama",
+      generate: async (input) => {
+        const model = new ChatOllama({
+          model: process.env.OLLAMA_MODEL?.trim() || "llama3",
+          baseUrl:
+            process.env.OLLAMA_BASE_URL?.trim() ||
+            "https://ollama.com",
+          temperature: 0.9,
+          headers: { Authorization: `Bearer ${ollamaKey}` },
+        });
+        const response = await model.invoke(`${SYSTEM_PROMPT}\n\n${buildUserPrompt(input)}`);
+        if (typeof response.content === "string") return response.content;
+
+        const content = response.content
+          .map((part) => {
+            if (typeof part === "string") return part;
+            return "text" in part && typeof part.text === "string" ? part.text : "";
+          })
+          .join("");
+        if (!content) throw new Error("Ollama returned an empty response.");
+        return content;
+      },
+    });
+  }
 
   if (openAiKey) {
     providers.push({
@@ -155,62 +190,6 @@ function parseGenerationOutput(raw: string, input: GenerationInput): GenerationR
     parsed.data.hooks.reduce((sum, hook) => sum + hook.retentionScore, 0) / parsed.data.hooks.length
   );
   return { ...parsed.data, avgRetentionScore, generationMode: "AI" };
-}
-
-function generateTemplateHooks(input: GenerationInput): GenerationResult {
-  const topic = input.topic.trim().replace(/\s+/g, " ").replace(/[.!?]+$/, "").slice(0, 180);
-  const niche = input.niche.toLowerCase();
-  const platform = {
-    REELS: "Instagram Reels",
-    SHORTS: "YouTube Shorts",
-    TIKTOK: "TikTok",
-  }[input.platform];
-  const frameworkOrder = [
-    FRAMEWORKS[0], FRAMEWORKS[0],
-    FRAMEWORKS[1], FRAMEWORKS[1],
-    FRAMEWORKS[2], FRAMEWORKS[2],
-    FRAMEWORKS[3], FRAMEWORKS[3],
-    FRAMEWORKS[4], FRAMEWORKS[4],
-  ];
-  const hookTexts = [
-    `Show ${topic} written on a card, then say: "I tested this so you don't have to."`,
-    `Start with the most surprising detail about ${topic}, then ask: "Would you try it?"`,
-    `What really happens when you try ${topic}? Here's the part I didn't expect.`,
-    `I thought I understood ${topic} until I tried it. This is what changed my mind.`,
-    `Stop making this common mistake when you think about ${topic}.`,
-    `Before you try ${topic}, watch out for this one easy-to-miss detail.`,
-    `Unpopular opinion: ${topic} isn't for everyone, and here's why.`,
-    `Everyone talks about ${topic} one way. I think we're missing a better question.`,
-    `Trying to figure out ${topic}? Start with this simple first step.`,
-    `Here's a practical way to explore ${topic} and see if it works for you.`,
-  ];
-  const scores = [76, 72, 81, 74, 69, 73, 78, 71, 80, 75];
-  const hooks = hookTexts.map((hook, index) => ({
-    framework: frameworkOrder[index],
-    hook,
-    retentionScore: scores[index],
-    rationale: "Template suggestion; score is illustrative, not an AI prediction.",
-  }));
-  const topicTag = topic
-    .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .split(/\s+/)
-    .filter((word) => word.length > 2)
-    .slice(0, 2)
-    .join("");
-  const platformTag = input.platform.toLowerCase();
-
-  return {
-    hooks,
-    description: `Exploring ${topic} from a ${niche} perspective for ${platform}. Use these starter hooks to shape a short-form video around your own experience.`,
-    hashtags: {
-      broad: [niche, "creator", platformTag, "shortvideo", "content"],
-      medium: ["contentideas", "videotips", "creatorcommunity", platformTag, niche],
-      lowCompetition: [topicTag || niche, "hookwriting", "shortformideas", platformTag, "creatorjourney"],
-    },
-    avgRetentionScore: Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length),
-    generationMode: "TEMPLATE",
-  };
 }
 
 function extractJson(text: string): string | null {
