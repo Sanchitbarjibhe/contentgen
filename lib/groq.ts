@@ -1,10 +1,9 @@
-import { ChatOllama } from "@langchain/ollama";
 import OpenAI from "openai";
 import { z } from "zod";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/prompts";
 import { FRAMEWORKS, type Framework, type GenerationResult, type Niche, type Platform } from "@/lib/types";
 
-const AI_TIMEOUT_MS = 20_000;
+const GROQ_BASE_URL = "https://api.groq.com/openai/v1";
 
 const hookSchema = z.object({
   framework: z.enum(FRAMEWORKS),
@@ -29,136 +28,27 @@ type GenerationInput = {
   platform: Platform;
 };
 
-type Provider = {
-  name: string;
-  generate: (input: GenerationInput) => Promise<string>;
-};
-
 export async function generateHooks(input: GenerationInput): Promise<GenerationResult> {
-  const providers = getProviders();
-  if (providers.length === 0) {
-    throw new Error(
-      "No AI provider is configured. Set Ollama_API_KEY, OLLAMA_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, or GOOGLE_API_KEY to enable AI generation."
-    );
-  }
+  const apiKey = process.env.GROQ_API_KEY?.trim();
+  if (!apiKey) throw new Error("GROQ_API_KEY is not configured.");
 
-  const providerErrors: unknown[] = [];
-  for (const provider of providers) {
-    try {
-      const raw = await provider.generate(input);
-      return parseGenerationOutput(raw, input);
-    } catch (error) {
-      console.error(
-        `AI Generation Error (${provider.name}):`,
-        error instanceof Error ? error.stack ?? error.message : error
-      );
-      providerErrors.push(error);
-    }
-  }
+  const groq = new OpenAI({
+    apiKey,
+    baseURL: GROQ_BASE_URL,
+  });
+  const completion = await groq.chat.completions.create({
+    model: "openai/gpt-oss-120b",
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: buildUserPrompt(input) },
+    ],
+    response_format: { type: "json_object" },
+    temperature: 0.7,
+  });
+  const raw = completion.choices[0]?.message?.content;
 
-  throw new AggregateError(providerErrors, "All configured AI providers failed.");
-}
-
-function getProviders(): Provider[] {
-  const providers: Provider[] = [];
-  const ollamaKey = process.env.Ollama_API_KEY?.trim() || process.env.OLLAMA_API_KEY?.trim();
-  const openAiKey = process.env.OPENAI_API_KEY?.trim();
-  const geminiKey = process.env.GEMINI_API_KEY?.trim() || process.env.GOOGLE_API_KEY?.trim();
-
-  if (ollamaKey) {
-    providers.push({
-      name: "Ollama",
-      generate: async (input) => {
-        const model = new ChatOllama({
-          model: process.env.OLLAMA_MODEL?.trim() || "llama3",
-          baseUrl:
-            process.env.OLLAMA_BASE_URL?.trim() ||
-            "https://ollama.com",
-          temperature: 0.9,
-          headers: { Authorization: `Bearer ${ollamaKey}` },
-        });
-        const response = await model.invoke(`${SYSTEM_PROMPT}\n\n${buildUserPrompt(input)}`);
-        if (typeof response.content === "string") return response.content;
-
-        const content = response.content
-          .map((part) => {
-            if (typeof part === "string") return part;
-            return "text" in part && typeof part.text === "string" ? part.text : "";
-          })
-          .join("");
-        if (!content) throw new Error("Ollama returned an empty response.");
-        return content;
-      },
-    });
-  }
-
-  if (openAiKey) {
-    providers.push({
-      name: "OpenAI",
-      generate: async (input) => {
-        const client = new OpenAI({ apiKey: openAiKey, timeout: AI_TIMEOUT_MS, maxRetries: 0 });
-        const response = await client.chat.completions.create({
-          model: process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini",
-          temperature: 0.9,
-          response_format: { type: "json_object" },
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: buildUserPrompt(input) },
-          ],
-        });
-        const content = response.choices[0]?.message?.content;
-        if (!content) throw new Error("OpenAI returned an empty response.");
-        return content;
-      },
-    });
-  }
-
-  if (geminiKey) {
-    providers.push({
-      name: "Gemini",
-      generate: async (input) => {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), AI_TIMEOUT_MS);
-        try {
-          const model = process.env.GEMINI_MODEL?.trim() || "gemini-2.0-flash";
-          const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "x-goog-api-key": geminiKey,
-              },
-              body: JSON.stringify({
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                contents: [{ role: "user", parts: [{ text: buildUserPrompt(input) }] }],
-                generationConfig: {
-                  temperature: 0.9,
-                  responseMimeType: "application/json",
-                },
-              }),
-              signal: controller.signal,
-            }
-          );
-          if (!response.ok) {
-            const details = (await response.text()).slice(0, 500);
-            throw new Error(`Gemini request failed (${response.status}): ${details}`);
-          }
-
-          const payload = (await response.json()) as {
-            candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-          };
-          const content = payload.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (!content) throw new Error("Gemini returned an empty response.");
-          return content;
-        } finally {
-          clearTimeout(timeout);
-        }
-      },
-    });
-  }
-
-  return providers;
+  if (!raw) throw new Error("Groq returned an empty response.");
+  return parseGenerationOutput(raw, input);
 }
 
 function parseGenerationOutput(raw: string, input: GenerationInput): GenerationResult {

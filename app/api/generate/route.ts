@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateHooks } from "@/lib/openai";
+import { generateHooks } from "@/lib/groq";
 import {
     ANON_COOKIE_MAX_AGE,
     ANON_ID_COOKIE,
@@ -36,55 +36,43 @@ const requestSchema = z.preprocess((value) => {
 }));
 
 export async function POST(req: NextRequest) {
-    const existingAnonId = req.cookies.get(ANON_ID_COOKIE)?.value;
-    const userId = existingAnonId ?? newAnonId();
-
-    let body: unknown;
+    let existingAnonId: string | undefined;
+    let userId: string | undefined;
+    let consumedCredit = false;
     try {
-        body = await req.json();
-    } catch {
-        return respond({ error: "Request body must be JSON." }, 400, !existingAnonId, userId);
-    }
+        existingAnonId = req.cookies.get(ANON_ID_COOKIE)?.value;
+        userId = existingAnonId ?? newAnonId();
 
-    const parsed = requestSchema.safeParse(body);
-    if (!parsed.success) {
-        return respond({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, 422, !existingAnonId, userId);
-    }
+        let body: unknown;
+        try {
+            body = await req.json();
+        } catch {
+            return respond({ error: "Request body must be JSON." }, 400, !existingAnonId, userId);
+        }
 
-    const { topic, niche, platform } = parsed.data;
-    const usage = await reserveCredit(userId);
+        const parsed = requestSchema.safeParse(body);
+        if (!parsed.success) {
+            return respond({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, 422, !existingAnonId, userId);
+        }
 
-    if (!usage.allowed) {
-        return respond(
-            {
-                error: "LIMIT_REACHED",
-                message: "Daily free generations limit reached.",
-                usage: usageSnapshot(usage.record.freeCreditsLeft, usage.record.isPremium),
-            },
-            403,
-            !existingAnonId,
-            userId
-        );
-    }
+        const { topic, niche, platform } = parsed.data;
+        const usage = await reserveCredit(userId);
+        consumedCredit = usage.consumed;
 
-    let result: Awaited<ReturnType<typeof generateHooks>>;
-    try {
-        result = await generateHooks({ topic, niche, platform });
-    } catch (error) {
-        console.error("AI Generation Failed:", error);
-        await refundCredit(userId, usage.consumed);
-        return respond(
-            {
-                error: "AI_GENERATION_FAILED",
-                message: "Hook generation failed. Please try again.",
-            },
-            502,
-            !existingAnonId,
-            userId
-        );
-    }
+        if (!usage.allowed) {
+            return respond(
+                {
+                    error: "LIMIT_REACHED",
+                    message: "Daily free generations limit reached.",
+                    usage: usageSnapshot(usage.record.freeCreditsLeft, usage.record.isPremium),
+                },
+                403,
+                !existingAnonId,
+                userId
+            );
+        }
 
-    try {
+        const result = await generateHooks({ topic, niche, platform });
         const generation = await prisma.generatedHook.create({
             data: {
                 userId,
@@ -125,14 +113,10 @@ export async function POST(req: NextRequest) {
             userId
         );
     } catch (error) {
-        console.error("[generate] failed to persist generation:", error);
-        await refundCredit(userId, usage.consumed);
-        return respond(
-            { error: "GENERATION_SAVE_FAILED", message: "Generated hooks could not be saved." },
-            500,
-            !existingAnonId,
-            userId
-        );
+        console.error("API Generate Error:", error);
+        if (userId) await refundCredit(userId, consumedCredit);
+        const message = error instanceof Error ? error.message : String(error);
+        return respond({ error: message }, 500, !!userId && !existingAnonId, userId ?? "");
     }
 }
 

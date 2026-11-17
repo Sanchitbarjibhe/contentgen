@@ -90,7 +90,7 @@ export function OutputCards({ result }: OutputCardsProps) {
     <div className="w-full min-w-0 space-y-8">
       {result.generationMode === "TEMPLATE" && (
         <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
-          AI is temporarily unavailable, so these are template-based starting points. Retention scores are illustrative, not AI predictions. Configure an Ollama API key, an OpenAI key with active API credits, or a valid Gemini key to restore AI-generated results.
+          AI is temporarily unavailable, so these are template-based starting points. Retention scores are illustrative, not AI predictions. Configure GROQ_API_KEY to restore AI-generated results.
         </div>
       )}
 
