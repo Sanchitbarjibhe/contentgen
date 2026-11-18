@@ -43,7 +43,7 @@ export default function HeroButtons({
                 className="relative group px-5 py-3 rounded-xl bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/30 hover:border-purple-400 text-purple-200 hover:text-white font-medium text-sm sm:text-base transition-all duration-300 backdrop-blur-md flex items-center justify-center gap-2 shadow-sm hover:shadow-purple-500/20 w-full sm:w-auto"
             >
                 <LayoutDashboard className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                <span>Explore Dashboard</span>
+                <span>Generate Hook</span>
             </motion.button>
 
             {/* 3. Ghost Button: Read Blogs */}

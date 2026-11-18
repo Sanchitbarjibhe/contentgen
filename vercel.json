@@ -1,0 +1,24 @@
+{
+    "redirects": [
+        {
+            "source": "https://www.hooktos.com/blog/short_form_content_strategy",
+            "destination": "https://www.hooktos.com/blog/short-form-content-strategy",
+            "permanent": true
+        },
+        {
+            "source": "https://www.hooktos.com/blog/the_truth_about_going_viral_in_2026_skill_vs_luck",
+            "destination": "https://www.hooktos.com/blog/the-truth-about-going-viral-in-2026-skill-vs-luck",
+            "permanent": true
+        },
+        {
+            "source": "https://www.hooktos.com/blog/dealing_with_algorithm_changes",
+            "destination": "https://www.hooktos.com/blog/dealing-with-algorithm-changes",
+            "permanent": true
+        },
+        {
+            "source": "https://www.hooktos.com/blog/monetize_a_small_audience",
+            "destination": "https://www.hooktos.com/blog/monetize-a-small-audience",
+            "permanent": true
+        }
+    ]
+}

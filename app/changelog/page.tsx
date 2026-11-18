@@ -3,6 +3,7 @@ import React from 'react';
 export const metadata = {
     title: "What's New — HookTos AI",
     description: 'Stay updated with the latest features, improvements, and releases for HookTos AI and HookCraft.',
+    alternates: { canonical: 'https://www.hooktos.com/changelog' },
 };
 
 interface ReleaseUpdate {

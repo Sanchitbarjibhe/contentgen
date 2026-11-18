@@ -322,8 +322,22 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
 
     // Dynamic Title & Description Optimization
     const rawTitle = getString(post.data.title) || normalizedSlug.replace(/-/g, " ");
-    const title = post.data.titleExact === true ? rawTitle : `${rawTitle} | HookTos AI`;
-    const description = getString(post.data.description) || getDescription(post.content);
+    const seoOverrides: Record<string, { title: string; description: string }> = {
+        "10-viral-hooks-for-reels": {
+            title: "10 Viral Hooks for Reels in 2026 (Boost Engagement Fast) | HookTos",
+            description: "Discover 10 proven viral hook formulas for Instagram Reels & Shorts in 2026. Grab attention in 3 seconds and skyrocket your reach. Try them today!",
+        },
+        "monetize-a-small-audience": {
+            title: "How to Monetize a Small Audience in 2026 (Step-by-Step) | HookTos",
+            description: "Learn actionable strategies to monetize a small following on Instagram, YouTube, & TikTok without millions of subscribers.",
+        },
+    };
+    const seoOverride = seoOverrides[normalizedSlug];
+    const title = seoOverride?.title
+        ?? (post.data.titleExact === true ? rawTitle : `${rawTitle} | HookTos AI`);
+    const description = seoOverride?.description
+        ?? getString(post.data.description)
+        ?? getDescription(post.content);
     const author = getString(post.data.author) || "HookTos AI Team";
     const keywords = getKeywords(post.data.keywords);
     const publishedDate = post.publishedDate;
@@ -381,6 +395,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const explicitFaqSection = getExplicitFaqSection(content);
     const modifiedDate = toDateString(data.updated, new Date(publishedDate));
     const canonical = `https://www.hooktos.com/blog/${normalizedSlug}`;
+    const faqItems = explicitFaqSection?.items ?? getFaqItems(content, rawTitle);
     const articleSchema = {
         "@context": "https://schema.org",
         "@type": "Article",
@@ -414,10 +429,10 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                 text: step.text,
             })),
         },
-        ...(explicitFaqSection ? [{
+        ...(faqItems.length ? [{
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: explicitFaqSection.items.map((item) => ({
+            mainEntity: faqItems.map((item) => ({
                 "@type": "Question",
                 name: item.question,
                 acceptedAnswer: {
@@ -434,8 +449,6 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const bodyText = toPlainText(content).toLowerCase();
     const firstHundredWords = bodyText.split(/\s+/).slice(0, 100).join(" ");
     const needsKeywordIntroduction = !firstHundredWords.includes(primaryKeyword.toLowerCase());
-    const faqItems = explicitFaqSection?.items ?? getFaqItems(content, rawTitle);
-
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100">
             <article className="max-w-4xl mx-auto px-6 py-12">
@@ -496,6 +509,12 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                             href="/dashboard"
                         >
                             Generate Hooks
+                        </Link>
+                        <Link
+                            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-600 bg-slate-900/60 px-6 py-3 font-bold text-slate-100 transition hover:border-purple-300/70 hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-200"
+                            href="/hooks/instagram-reels/curiosity"
+                        >
+                            Explore Reels Hook Guides
                         </Link>
                         <Link
                             className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-600 bg-slate-900/60 px-6 py-3 font-bold text-slate-100 transition hover:border-purple-300/70 hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-200"

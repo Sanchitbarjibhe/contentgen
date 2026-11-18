@@ -5,7 +5,7 @@ import { getPageMetadata } from '@/optimizations/SEO/seo.config';
 import { BlogPosts } from '@/lib/BlogPosts';
 
 
-export const metadata: Metadata = getPageMetadata('blogs', '/blogs');
+export const metadata: Metadata = getPageMetadata('blogs', '/blog');
 
 export default function BlogListingPage() {
     return (

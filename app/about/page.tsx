@@ -3,6 +3,7 @@ import React from 'react';
 export const metadata = {
     title: 'About Us — HookTos AI',
     description: 'Learn about HookTos AI, our mission, vision, and the story behind the viral hook generator.',
+    alternates: { canonical: 'https://www.hooktos.com/about' },
 };
 
 export default function AboutPage() {

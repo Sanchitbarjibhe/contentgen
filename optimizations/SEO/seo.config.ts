@@ -5,7 +5,7 @@ const baseUrl = 'https://www.hooktos.com';
 
 export const pageSEOConfig: Record<string, { title: string; description: string; image?: string; keywords: ReturnType<typeof getKeywords> }> = {
     home: {
-        title: 'HookTos AI | AI Viral Hook Generator',
+        title: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
         description: 'Generate viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
         image: '/android-chrome-512x512.png',
         keywords: getKeywords('home'),

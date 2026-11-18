@@ -108,7 +108,11 @@ function getBlogEntries(): BlogEntry[] {
         const fileTime = fs.statSync(fullPath).mtime;
         const published = toDate(fm.date, fileTime);
         return {
-          slug: file.replace(/(?:\.(?:md|mdx))+$/i, ''),
+          slug: file
+            .replace(/(?:\.(?:md|mdx))+$/i, '')
+            .replace(/_/g, '-')
+            .replace(/-+/g, '-')
+            .toLowerCase(),
           lastModified: toDate(fm.updated, published),
           cover: fm.cover,
         };

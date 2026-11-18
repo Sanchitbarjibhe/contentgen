@@ -2,6 +2,34 @@ import { NextRequest, NextResponse } from "next/server";
 import { ANON_COOKIE_MAX_AGE, ANON_ID_COOKIE, newAnonId } from "@/lib/anonymous";
 
 export default function proxy(request: NextRequest) {
+    const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+    const host = (forwardedHost ?? request.nextUrl.host).toLowerCase().replace(/:\d+$/, "");
+    const protocol = (request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim()
+        ?? request.nextUrl.protocol.slice(0, -1)).toLowerCase();
+    const url = request.nextUrl.clone();
+    let shouldRedirect = false;
+
+    if (host === "hooktos.com" || host === "www.hooktos.com") {
+        if (host !== "www.hooktos.com" || protocol !== "https") {
+            url.hostname = "www.hooktos.com";
+            url.protocol = "https:";
+            url.port = "";
+            shouldRedirect = true;
+        }
+    }
+
+    if (/^\/blog\/[^/]+/.test(url.pathname)) {
+        const normalizedPath = url.pathname.replace(/(?:_|%5f)/gi, "-");
+        if (normalizedPath !== url.pathname) {
+            url.pathname = normalizedPath;
+            shouldRedirect = true;
+        }
+    }
+
+    if (shouldRedirect) {
+        return NextResponse.redirect(url, 301);
+    }
+
     const anonId = request.cookies.get(ANON_ID_COOKIE)?.value ?? newAnonId();
     const requestHeaders = new Headers(request.headers);
     if (!request.cookies.has(ANON_ID_COOKIE)) {

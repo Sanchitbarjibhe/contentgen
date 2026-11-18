@@ -20,7 +20,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.hooktos.com'),
   title: {
-    default: 'HookTos AI | AI Viral Hook Generator',
+    default: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
     template: '%s | HookTos AI',
   },
   description:
@@ -86,9 +86,6 @@ export const metadata: Metadata = {
       'Create viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
     images: ['/android-chrome-512x512.png'],
     creator: '@HookTosai',
-  },
-  alternates: {
-    canonical: 'https://www.hooktos.com',
   },
 };
 
