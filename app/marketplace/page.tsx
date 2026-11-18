@@ -9,12 +9,16 @@ import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import VirtualBillboard from "@/components/VirtualBillboard";
 import ListingPaymentStatus from "@/components/ListingPaymentStatus";
 import ScarcityBanner from "@/components/ScarcityBanner";
-import { getPageMetadata } from '@/optimizations/SEO/seo.config';
 import { Metadata } from "next";
 import Link from "next/link";
 import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = getPageMetadata('marketplace', '/marketplace');
+export const metadata: Metadata = buildMetadata({
+  title: 'Marketplace | Explore Creator Businesses',
+  description: 'Discover top global creator businesses, brands, and tools in the verified HookTos Marketplace.',
+  path: '/marketplace',
+});
 
 export const dynamic = "force-dynamic";
 

@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { blogMdxComponents } from "@/components/BlogMdxComponents";
+import { buildMetadata } from "@/lib/seo/metadata";
 
 interface BlogProps {
     params: Promise<{ slug: string }>;
@@ -302,7 +303,7 @@ function getHowToSteps(content: string): { name: string; text: string }[] {
 }
 
 function absoluteUrl(value: string): string {
-    return /^https?:\/\//i.test(value) ? value : `https://www.hooktos.com${value.startsWith("/") ? "" : "/"}${value}`;
+    return /^https?:\/\//i.test(value) ? value : `https://hooktos.com${value.startsWith("/") ? "" : "/"}${value}`;
 }
 
 export function generateStaticParams() {
@@ -342,32 +343,29 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
     const keywords = getKeywords(post.data.keywords);
     const publishedDate = post.publishedDate;
     const modifiedDate = toDateString(post.data.updated, new Date(publishedDate));
-    const canonical = `https://www.hooktos.com/blog/${normalizedSlug}`;
     const cover = getString(post.data.cover) || getString(post.data.image);
-    const images = [absoluteUrl(cover || "/opengraph-image.png")];
+    const metadata = buildMetadata({
+        title,
+        description,
+        path: `/blog/${normalizedSlug}`,
+        image: cover || "/opengraph-image.png",
+        type: "article",
+    });
 
     return {
-        title: { absolute: title },
-        description,
+        ...metadata,
         keywords: keywords.length ? keywords : [getPrimaryKeyword([], rawTitle, normalizedSlug)],
         authors: [{ name: author }],
-        alternates: { canonical },
         openGraph: {
             type: "article",
             title,
             description,
-            url: canonical,
+            url: `${"https://hooktos.com"}/blog/${normalizedSlug}`,
             siteName: "HookTos AI",
+            images: [absoluteUrl(cover || "/opengraph-image.png")],
             authors: [author],
             publishedTime: publishedDate,
             modifiedTime: modifiedDate,
-            images,
-        },
-        twitter: {
-            card: "summary_large_image",
-            title,
-            description,
-            images,
         },
     };
 }
@@ -394,7 +392,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const howToSteps = getHowToSteps(content);
     const explicitFaqSection = getExplicitFaqSection(content);
     const modifiedDate = toDateString(data.updated, new Date(publishedDate));
-    const canonical = `https://www.hooktos.com/blog/${normalizedSlug}`;
+    const canonical = `https://hooktos.com/blog/${normalizedSlug}`;
     const faqItems = explicitFaqSection?.items ?? getFaqItems(content, rawTitle);
     const articleSchema = {
         "@context": "https://schema.org",

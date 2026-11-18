@@ -8,8 +8,7 @@ import {
   PLATFORMS,
   getHookPage,
 } from "@/lib/hook-pages";
-
-const BASE_URL = "https://www.hooktos.com";
+import { buildMetadata } from "@/lib/seo/metadata";
 
 type PageProps = {
   params: Promise<{ platform: string; hookType: string }>;
@@ -36,34 +35,12 @@ export async function generateMetadata({
 
   const title = `15 Viral ${page.hookType.name} Hooks for ${page.platform.name} (2026 Guide)`;
   const description = `Explore 15 ${page.hookType.intent} for ${page.platform.name}, with ready-to-customize examples, proven formulas, and practical tips for your next post.`;
-  const canonical = `${BASE_URL}/hooks/${page.platform.slug}/${page.hookType.slug}`;
-
-  return {
+  return buildMetadata({
     title,
     description,
-    alternates: { canonical },
-    openGraph: {
-      type: "article",
-      url: canonical,
-      title: `${title} | HookTos AI`,
-      description,
-      siteName: "HookTos AI",
-      images: [
-        {
-          url: "/android-chrome-512x512.png",
-          width: 512,
-          height: 512,
-          alt: "HookTos AI",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | HookTos AI`,
-      description,
-      images: ["/android-chrome-512x512.png"],
-    },
-  };
+    path: `/hooks/${page.platform.slug}/${page.hookType.slug}`,
+    type: "article",
+  });
 }
 
 export default async function HookTypePage({ params }: PageProps) {

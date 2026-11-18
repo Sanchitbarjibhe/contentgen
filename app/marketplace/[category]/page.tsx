@@ -10,6 +10,7 @@ import {
   marketplaceCategories,
   type MarketplaceCategorySlug,
 } from "@/optimizations/SEO/marketplace-categories";
+import { buildMetadata } from "@/lib/seo/metadata";
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -36,20 +37,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ),
   );
 
-  return {
+  return buildMetadata({
     title: category.metaTitle,
     description: category.metaDescription,
-    keywords: [...category.primaryKeywords, ...category.longTailKeywords, ...keywordMatrix],
-    alternates: {
-      canonical: `https://www.hooktos.com/marketplace/${category.slug}`,
-    },
-    openGraph: {
-      title: category.metaTitle,
-      description: category.metaDescription,
-      url: `https://www.hooktos.com/marketplace/${category.slug}`,
-      type: "website",
-    },
-  };
+    path: `/marketplace/${category.slug}`,
+  });
 }
 
 export default async function MarketplaceCategoryPage({ params }: PageProps) {

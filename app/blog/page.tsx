@@ -1,11 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import { buildMetadata } from '@/lib/seo/metadata';
 import { BlogPosts } from '@/lib/BlogPosts';
 
 
-export const metadata: Metadata = getPageMetadata('blogs', '/blog');
+export const metadata: Metadata = buildMetadata({
+  title: 'Blogs & Guides',
+  description: 'Read the latest tips, strategies, and insights on growing your social media presence.',
+  path: '/blog',
+});
 
 export default function BlogListingPage() {
     return (

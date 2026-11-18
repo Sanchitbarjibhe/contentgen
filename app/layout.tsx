@@ -18,7 +18,7 @@ import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.hooktos.com'),
+  metadataBase: new URL('https://hooktos.com'),
   title: {
     default: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
     template: '%s | HookTos AI',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.hooktos.com',
+    url: 'https://hooktos.com',
     siteName: 'HookTos AI',
     title: 'HookTos AI | Viral Hooks for Social Video',
     description:

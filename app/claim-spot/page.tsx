@@ -6,13 +6,14 @@ import {
   getFreeListingStats,
 } from "@/app/actions/marketplace";
 import ScarcityBanner from "@/components/ScarcityBanner";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Claim Your Marketplace Listing",
   description:
     "Claim a free HookTos Marketplace listing while creator spots remain, or reserve a featured placement.",
-  alternates: { canonical: "https://www.hooktos.com/claim-spot" },
-};
+  path: "/claim-spot",
+});
 
 export const dynamic = "force-dynamic";
 

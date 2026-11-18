@@ -1,15 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import { buildMetadata } from '@/lib/seo/metadata';
 
-
-export const metadata: Metadata = {
-  ...getPageMetadata('home', '/'),
-  title: {
-    absolute: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
-  },
-};
+export const metadata: Metadata = buildMetadata({
+  title: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
+  description: 'Generate viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
+  path: '/',
+});
 
 
 export default function HomePage() {

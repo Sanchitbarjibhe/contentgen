@@ -10,20 +10,28 @@ export default function proxy(request: NextRequest) {
     let shouldRedirect = false;
 
     if (host === "hooktos.com" || host === "www.hooktos.com") {
-        if (host !== "www.hooktos.com" || protocol !== "https") {
-            url.hostname = "www.hooktos.com";
+        if (host !== "hooktos.com" || protocol !== "https") {
+            url.hostname = "hooktos.com";
             url.protocol = "https:";
             url.port = "";
             shouldRedirect = true;
         }
     }
 
-    if (/^\/blog\/[^/]+/.test(url.pathname)) {
-        const normalizedPath = url.pathname.replace(/(?:_|%5f)/gi, "-");
-        if (normalizedPath !== url.pathname) {
-            url.pathname = normalizedPath;
-            shouldRedirect = true;
-        }
+    if (url.pathname.includes("_")) {
+        url.pathname = url.pathname.replace(/_/g, "-");
+        shouldRedirect = true;
+    }
+
+    if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+        url.pathname = url.pathname.slice(0, -1);
+        shouldRedirect = true;
+    }
+
+    const lowerPath = url.pathname.toLowerCase();
+    if (lowerPath !== url.pathname) {
+        url.pathname = lowerPath;
+        shouldRedirect = true;
     }
 
     if (shouldRedirect) {
@@ -54,7 +62,6 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!_next|[^?]*\\.[\\w]+$|_next/image).*)',
-        '/(api|trpc)(.*)',
+        '/((?!_next|api|[^?]*\\.[\\w]+$|_next/image).*)',
     ],
 };

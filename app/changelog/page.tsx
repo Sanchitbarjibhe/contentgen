@@ -1,10 +1,11 @@
 import React from 'react';
+import { buildMetadata } from '@/lib/seo/metadata';
 
-export const metadata = {
-    title: "What's New — HookTos AI",
-    description: 'Stay updated with the latest features, improvements, and releases for HookTos AI and HookCraft.',
-    alternates: { canonical: 'https://www.hooktos.com/changelog' },
-};
+export const metadata = buildMetadata({
+  title: "What's New — HookTos AI",
+  description: 'Stay updated with the latest features, improvements, and releases for HookTos AI and HookCraft.',
+  path: '/changelog',
+});
 
 interface ReleaseUpdate {
     version: string;
