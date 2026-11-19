@@ -14,8 +14,10 @@ import {
 } from "@/lib/trending-data";
 
 const links = [
+  { href: "/hooks", label: "Hooks" },
   { href: "/changelog", label: "What's New" },
   { href: "/marketplace", label: "Marketplace" },
+  { href: "/tools", label: "Tools" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
 ];

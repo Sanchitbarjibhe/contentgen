@@ -10,6 +10,8 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { blogMdxComponents } from "@/components/BlogMdxComponents";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { autoLink } from "@/lib/seo/autoLink";
+import RelatedLinks from "@/components/seo/RelatedLinks";
 
 interface BlogProps {
     params: Promise<{ slug: string }>;
@@ -450,15 +452,25 @@ export default async function SingleBlogPost({ params }: BlogProps) {
         }] : []),
     ];
 
-    const contentForRender = explicitFaqSection
-        ? content.slice(0, explicitFaqSection.start) + content.slice(explicitFaqSection.end)
-        : content;
+    const contentForRender = autoLink(
+        explicitFaqSection
+            ? content.slice(0, explicitFaqSection.start) + content.slice(explicitFaqSection.end)
+            : content,
+        `/blog/${normalizedSlug}`,
+    );
     const bodyText = toPlainText(content).toLowerCase();
     const firstHundredWords = bodyText.split(/\s+/).slice(0, 100).join(" ");
     const needsKeywordIntroduction = !firstHundredWords.includes(primaryKeyword.toLowerCase());
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100">
             <article className="max-w-4xl mx-auto px-6 py-12">
+                <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm text-slate-400">
+                    <Link className="hover:text-purple-300" href="/">Home</Link>
+                    <span aria-hidden="true">/</span>
+                    <Link className="hover:text-purple-300" href="/blog">Blog</Link>
+                    <span aria-hidden="true">/</span>
+                    <span aria-current="page" className="text-slate-200">{displayTitle}</span>
+                </nav>
                 <header className="mb-10 text-center space-y-4">
                     <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">{displayTitle}</h1>
                     <time dateTime={publishedDate} className="text-sm text-purple-400 font-medium">{publishedDate.slice(0, 10)}</time>
@@ -499,6 +511,15 @@ export default async function SingleBlogPost({ params }: BlogProps) {
                         </section>
                     )}
                 </div>
+                <RelatedLinks
+                    title="Related HookTos resources"
+                    links={[
+                        { href: "/hooks/instagram-reels", label: "Instagram Reels hook guides" },
+                        { href: "/hooks/tiktok", label: "TikTok hook guides" },
+                        { href: "/hooks/youtube-shorts", label: "YouTube Shorts hook guides" },
+                        { href: "/marketplace", label: "Explore creator businesses" },
+                    ]}
+                />
                 <aside className="mt-12 overflow-hidden rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950 via-slate-900 to-blue-950 p-7 shadow-2xl shadow-purple-950/30 sm:p-10">
                     <p className="text-sm font-bold uppercase tracking-[0.18em] text-purple-300">
                         Make your next idea count

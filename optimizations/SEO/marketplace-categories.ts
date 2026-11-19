@@ -5,6 +5,7 @@ export interface MarketplaceCategoryConfig {
   tagline: string;
   headline: string;
   description: string;
+  introText: string;
   metaTitle: string;
   metaDescription: string;
   focusKeyword: string;
@@ -25,6 +26,8 @@ export const marketplaceCategories = {
     headline: "Top AI Tools & Creator Businesses Directory",
     description:
       "Discover AI tools, automation software, and creator-built products in a curated business listing directory.",
+    introText:
+      "Placeholder final copy: This HookTos AI tools directory helps creators and small businesses discover independent software, automation products, and AI-powered services. Use the listings to compare category fit, visit each company's official website, and evaluate features, pricing, and support directly with the provider.",
     metaTitle: "Top AI Tools & Creator Businesses Directory",
     metaDescription:
       "Explore AI tools in a creator marketplace and business listing directory. Compare independent software, discover AI businesses, and find free business listing sites.",
@@ -60,6 +63,8 @@ export const marketplaceCategories = {
     headline: "SaaS Tools in a Creator Marketplace & Directory",
     description:
       "Explore SaaS products and founder-led software companies in a searchable business listing directory for independent businesses.",
+    introText:
+      "Placeholder final copy: Explore independently built SaaS products and online software through the HookTos creator marketplace. This category helps teams compare founder-led tools, understand where each product may fit, and contact providers without an intermediary.",
     metaTitle: "SaaS Tools & Software Business Listing Directory",
     metaDescription:
       "Discover founder-led SaaS products in a creator marketplace and business listing directory. Compare software and find free business listing sites for your company.",
@@ -95,6 +100,8 @@ export const marketplaceCategories = {
     headline: "Content Creator Marketplace & Business Directory",
     description:
       "Find creator-led brands, content businesses, and services in a business listing directory built to help people discover independent creators.",
+    introText:
+      "Placeholder final copy: This content creator marketplace directory brings together creator-led brands, media businesses, and independent services. Browse listings to discover specialists, review their public information, and visit their websites before starting a collaboration or partnership.",
     metaTitle: "Content Creator Marketplace & Business Directory",
     metaDescription:
       "Explore creator businesses in a content creator marketplace and business listing directory. Discover independent brands and find free business listing sites.",
@@ -130,6 +137,8 @@ export const marketplaceCategories = {
     headline: "YouTube Creator Marketplace & Business Directory",
     description:
       "Discover YouTube creators, video-first companies, and creator-built products in a curated online business listing directory.",
+    introText:
+      "Placeholder final copy: The YouTube creators directory highlights video-first businesses, creator-led brands, and independent services connected to the YouTube ecosystem. Listings provide a practical starting point for audiences and partners to find official profiles and evaluate opportunities directly.",
     metaTitle: "YouTube Creator Marketplace & Business Directory",
     metaDescription:
       "Find YouTube creator businesses in a creator marketplace and business listing directory. Explore video-led brands, tools, and free business listing sites.",
@@ -165,6 +174,8 @@ export const marketplaceCategories = {
     headline: "Instagram Creator Marketplace & Business Directory",
     description:
       "Explore Instagram creators, Reels-first businesses, and creator-led brands in a searchable online business listing directory.",
+    introText:
+      "Placeholder final copy: Discover Instagram-first creators, Reels-focused brands, and social media businesses in this HookTos directory. Compare public listing details and continue to each business website for current services, pricing, and contact information.",
     metaTitle: "Instagram Creator Marketplace & Business Directory",
     metaDescription:
       "Discover Instagram creator businesses in a creator marketplace and business listing directory. Explore independent brands and free business listing sites.",
@@ -200,6 +211,8 @@ export const marketplaceCategories = {
     headline: "Marketing Agency Business Listing Directory",
     description:
       "Compare independent marketing agencies, creator-led studios, and growth services in a curated business listing directory.",
+    introText:
+      "Placeholder final copy: This marketing agencies directory helps businesses discover independent firms, creator-led studios, and growth services. Use the listings as a shortlisting tool, then verify capabilities and commercial terms directly with each agency.",
     metaTitle: "Marketing Agency Business Listing Directory",
     metaDescription:
       "Explore independent agencies in a business listing directory and creator marketplace. Compare marketing services and find free business listing sites.",
@@ -235,6 +248,8 @@ export const marketplaceCategories = {
     headline: "Startup Marketplace & Creator Business Directory",
     description:
       "Discover early-stage companies and founder-led brands in a startup marketplace built for exploring independent businesses.",
+    introText:
+      "Placeholder final copy: Explore founder-led startups and early-stage businesses through this HookTos marketplace category. Listings provide a discovery path to independent companies, while final due diligence and commercial conversations remain between users and providers.",
     metaTitle: "Startup Marketplace & Creator Business Directory",
     metaDescription:
       "Explore the startup marketplace to discover founder-led companies, buy creator business opportunities, and list your startup in a business listing directory.",

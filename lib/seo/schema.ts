@@ -49,7 +49,9 @@ export function breadcrumbSchema(items: { name: string; url: string }[]) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: `${SITE.url}${item.url}`,
+      item: /^https?:\/\//i.test(item.url)
+        ? item.url
+        : `${SITE.url}${item.url}`,
     })),
   };
 }

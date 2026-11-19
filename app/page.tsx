@@ -137,7 +137,13 @@ export default function HomePage() {
 
       {/* Subtle Footer */}
       <footer className="max-w-7xl mx-auto w-full px-6 py-8 text-center text-xs text-slate-600 border-t border-slate-900">
-        &copy; {new Date().getFullYear()} HookTos AI. All rights reserved.
+        <nav aria-label="Footer" className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+          <Link href="/hooks" className="hover:text-slate-300">Hooks</Link>
+          <Link href="/marketplace" className="hover:text-slate-300">Marketplace</Link>
+          <Link href="/tools" className="hover:text-slate-300">Tools</Link>
+          <Link href="/blog" className="hover:text-slate-300">Blog</Link>
+        </nav>
+        <p className="mt-4">&copy; {new Date().getFullYear()} HookTos AI. All rights reserved.</p>
       </footer>
     </div>
   );

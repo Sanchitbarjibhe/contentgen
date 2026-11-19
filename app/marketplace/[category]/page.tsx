@@ -11,6 +11,8 @@ import {
   type MarketplaceCategorySlug,
 } from "@/optimizations/SEO/marketplace-categories";
 import { buildMetadata } from "@/lib/seo/metadata";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema, faqSchema, itemListSchema } from "@/lib/seo/schema";
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -53,23 +55,36 @@ export default async function MarketplaceCategoryPage({ params }: PageProps) {
     getCategoryBusinessListings(slug as MarketplaceCategorySlug),
     getFreeListingStats(),
   ]);
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: category.faqs.map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: { "@type": "Answer", text: answer },
-    })),
-  };
+  const categoryItems = listings.map((listing) => ({
+    name: listing.name,
+    url:
+      getSafeExternalUrl(listing.websiteUrl) ??
+      `/marketplace/${category.slug}`,
+  }));
 
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-slate-100">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c"),
-        }}
+      <JsonLd
+        data={[
+          breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Marketplace", url: "/marketplace" },
+            { name: category.label, url: `/marketplace/${category.slug}` },
+          ]),
+          faqSchema(
+            category.faqs.map((faq) => ({
+              q: faq.question,
+              a: faq.answer,
+            })),
+          ),
+          itemListSchema(
+            `${category.label} listings`,
+            categoryItems.map((item) => ({
+              name: item.name,
+              url: item.url,
+            })),
+          ),
+        ]}
       />
       <div
         aria-hidden="true"
@@ -107,8 +122,7 @@ export default async function MarketplaceCategoryPage({ params }: PageProps) {
             {category.description}
           </p>
           <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-            Discover independent brands in a creator marketplace and business listing directory.
-            Find free business listing sites and explore businesses built by creators and founders.
+            {category.introText}
           </p>
         </header>
 
@@ -234,6 +248,24 @@ export default async function MarketplaceCategoryPage({ params }: PageProps) {
             ))}
           </div>
         </section>
+
+        <nav aria-label="Related marketplace categories" className="mx-auto mt-12 max-w-4xl">
+          <h2 className="text-xl font-bold text-white">Related categories</h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {Object.values(marketplaceCategories)
+              .filter((item) => item.slug !== category.slug)
+              .slice(0, 5)
+              .map((item) => (
+                <Link
+                  key={item.slug}
+                  href={`/marketplace/${item.slug}`}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-purple-400/60 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+          </div>
+        </nav>
       </div>
     </main>
   );

@@ -87,3 +87,22 @@
 - `npm run seo:audit-pseo`: showed all 35 existing combinations at score 85, with uniqueness content remaining an implementation TODO.
 - `npm run seo:generate-pseo:dry-run`: produced valid structured sample JSON and did not write production data.
 - `npm run build`: compiled, type-checked, and statically generated 114 routes, then exited on the Next.js 16.4.0 security-vulnerability gate.
+
+## Phase 4 decisions
+
+- Added build-time Markdown auto-linking with a six-link maximum, one link per target, heading/code/existing-link protection, and no self-links.
+- Blog posts now have visible breadcrumbs, related HookTos resources, and existing Try HookTos/Marketplace CTA cards.
+- Marketplace category copy uses `introText` fields in the existing `marketplaceCategories` TypeScript data source. Prisma was not changed because category definitions are static, versioned configuration in this repository.
+- Category pages now emit BreadcrumbList, FAQPage, and ItemList JSON-LD and include related-category links.
+- The `/tools` hub is a real static route linking existing `/hooks`, `/hashtag`, and `/audio` tools. No fabricated tool-category listings or pricing were added.
+
+## Phase 4 TODO
+
+- Replace each `Placeholder final copy:` marketplace intro with final 200-400 word category copy.
+
+## Phase 4 validation
+
+- `npm run lint`: passed.
+- `npx tsc --noEmit`: passed.
+- `npm run seo:check-slugs`: passed.
+- `npm run build`: route compilation and static generation completed for 115 routes, then Next.js 16.4.0 exited on the security-vulnerability gate.
