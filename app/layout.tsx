@@ -14,7 +14,11 @@ import {
 } from "@/lib/schema";
 import { Analytics } from "@vercel/analytics/next"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://hooktos.com'),

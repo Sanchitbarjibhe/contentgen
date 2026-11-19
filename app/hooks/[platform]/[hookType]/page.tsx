@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import HookPreview from "./HookPreview";
 import JsonLd from "@/components/seo/JsonLd";
 import { buildMetadata } from "@/lib/seo/metadata";
 import {
@@ -10,6 +10,12 @@ import {
   faqSchema,
 } from "@/lib/seo/schema";
 import { getAllHookPages, getPageContent } from "@/lib/pseo/data";
+
+const HookPreview = dynamic(() => import("./HookPreview"), {
+  loading: () => (
+    <div className="min-h-96 animate-pulse rounded-3xl border border-slate-800 bg-slate-900/50" />
+  ),
+});
 
 export const revalidate = 86400;
 export const dynamicParams = false;

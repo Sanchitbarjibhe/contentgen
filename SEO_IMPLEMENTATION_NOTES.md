@@ -106,3 +106,27 @@
 - `npx tsc --noEmit`: passed.
 - `npm run seo:check-slugs`: passed.
 - `npm run build`: route compilation and static generation completed for 115 routes, then Next.js 16.4.0 exited on the security-vulnerability gate.
+
+## Phase 5 decisions
+
+- The existing `HookPreview` client widget is now lazy-loaded with `next/dynamic`; H1, intro, examples, FAQ, JSON-LD, and related links remain server-rendered.
+- Inter keeps `display: "swap"` through `next/font/google`.
+- The navbar logo uses `next/image` with an explicit `44px` `sizes` value.
+- The reusable `OptimizedImage` helper remains lazy-loaded and requires meaningful alt text. There were no existing page-level content images identified that use priority loading.
+
+## Phase 5 validation
+
+- `npm run lint`: passed.
+- `npx tsc --noEmit`: passed.
+- `npm run seo:check-slugs`: passed.
+- `npm run build`: compiled and statically generated 115 routes, then Next.js 16.4.0 exited on the security-vulnerability gate.
+- Build route report: no unusually large route group or route-specific bundle size was reported in the terminal output. A final browser bundle-size audit requires the successfully upgraded build and Lighthouse/DevTools inspection.
+
+## Final verification commands
+
+- `curl -I https://hooktos.com/blog/monetize_a_small_audience` — expected 301 to `/blog/monetize-a-small-audience`.
+- `curl -I https://www.hooktos.com/blog/monetize-a-small-audience` — expected 301 to non-www canonical.
+- Open `https://hooktos.com/sitemap.xml` and confirm canonical indexable URLs.
+- Open `https://hooktos.com/robots.txt` and confirm private routes and the sitemap URL.
+- Validate blog, hook, FAQ, and marketplace JSON-LD in Google Rich Results Test.
+- Run Lighthouse mobile and desktop reports for `/`, `/hooks`, `/hooks/instagram-reels/curiosity`, `/blog/10-viral-hooks-for-reels`, `/marketplace/ai-tools`.

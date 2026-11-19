@@ -156,6 +156,7 @@ export default function Navbar() {
               alt="HookTos AI logo"
               width={44}
               height={44}
+              sizes="44px"
               className="size-11 rounded-full border border-slate-700 object-cover shadow-sm"
             />
             <span className="bg-gradient-to-r from-[#2962FF] to-cyan-300 bg-clip-text text-transparent">
