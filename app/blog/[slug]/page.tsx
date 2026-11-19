@@ -416,6 +416,15 @@ export default async function SingleBlogPost({ params }: BlogProps) {
         articleSchema,
         {
             "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://hooktos.com/" },
+                { "@type": "ListItem", position: 2, name: "Blog", item: "https://hooktos.com/blog" },
+                { "@type": "ListItem", position: 3, name: displayTitle, item: canonical },
+            ],
+        },
+        {
+            "@context": "https://schema.org",
             "@type": "HowTo",
             name: `How to apply the guidance in ${rawTitle}`,
             description,

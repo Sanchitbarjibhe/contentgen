@@ -10,7 +10,6 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import JsonLd from "@/components/JsonLd";
 import {
   organizationSchema,
-  softwareApplicationSchema,
   websiteSchema,
 } from "@/lib/schema";
 import { Analytics } from "@vercel/analytics/next"
@@ -100,7 +99,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           data={[
             organizationSchema,
             websiteSchema,
-            softwareApplicationSchema,
           ]}
         />
         <GoogleAnalytics />

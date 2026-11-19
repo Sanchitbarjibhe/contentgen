@@ -8,6 +8,11 @@ import { UsageChart } from "@/components/UsageChart";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import type { RecentGeneration } from "@/components/RecentGenerations";
 import { Badge } from "@/components/ui/Badge";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export const dynamic = "force-dynamic";
 

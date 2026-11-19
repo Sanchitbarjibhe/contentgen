@@ -1,176 +1,128 @@
-// app/sitemap.ts  (HookTos AI — v2)
-// Next.js serves it automatically at https://www.hooktos.com/sitemap.xml
-//
-// What changed vs v1:
-//  - Added missing routes: /audio, /hashtag, /marketplace, /blog, /changelog
-//  - Blog posts read "date" / "updated" / "draft" / "cover" from MDX front-matter
-//    (v1 stamped every URL with new Date() on every build, which Google learns to ignore)
-//  - Draft posts and files starting with "_" are excluded
-//  - Blog cover images are listed for Google Images
-//  - Single source of truth for the domain (always https://www.hooktos.com)
+import type { MetadataRoute } from "next";
+import fs from "node:fs";
+import path from "node:path";
+import { HOOK_PAGES, PLATFORMS } from "@/lib/hook-pages";
+import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
+import { SITE } from "@/lib/seo/config";
 
-import type { MetadataRoute } from 'next';
-import fs from 'node:fs';
-import path from 'node:path';
-import { HOOK_PAGES } from '@/lib/hook-pages';
-
-const BASE_URL = 'https://www.hooktos.com';
-const BLOG_DIR = path.join(process.cwd(), 'content', 'blogs');
-
-// Re-generate the sitemap at most once per hour on Vercel (blog + audio pages change often).
 export const revalidate = 3600;
 
-type ChangeFrequency = NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>;
-
-// ---------------------------------------------------------------------------
-// 1. Static routes — edit "updated" when you meaningfully change a page.
-// ---------------------------------------------------------------------------
-const BUILD_TIME = new Date();
-
-const STATIC_ROUTES: {
-  path: string;
-  changeFrequency: ChangeFrequency;
-  priority: number;
-  updated?: string; // YYYY-MM-DD. Omit = build time (use for pages whose data changes daily).
-}[] = [
-  { path: '/',           changeFrequency: 'daily',   priority: 1.0 },
-  { path: '/audio',      changeFrequency: 'daily',   priority: 0.9 }, // trending audio, ISR-synced daily
-  { path: '/hashtag',    changeFrequency: 'weekly',  priority: 0.9 },
-  { path: '/marketplace', changeFrequency: 'daily',  priority: 0.8 }, // billboard slots change often
-  { path: '/marketplace/ai-tools', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/saas-tools', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/content-creators', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/youtube-creators', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/instagram-creators', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/marketing-agencies', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/marketplace/startups', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/blog',       changeFrequency: 'daily',   priority: 0.8 },
-  { path: '/about',      changeFrequency: 'monthly', priority: 0.6, updated: '2026-10-19' },
-  { path: '/changelog',  changeFrequency: 'weekly',  priority: 0.5, updated: '2026-10-19' },
-  // Add free tool pages here once they exist, e.g.:
-  // { path: '/tools/hook-generator',             changeFrequency: 'weekly', priority: 0.9 },
-  // { path: '/tools/video-description-generator', changeFrequency: 'weekly', priority: 0.8 },
-];
-
-// ---------------------------------------------------------------------------
-// 2. Tiny front-matter reader (no extra npm package needed)
-// ---------------------------------------------------------------------------
 type FrontMatter = {
+  slug?: string;
   date?: string;
   updated?: string;
   draft?: string;
   cover?: string;
 };
 
-function readFrontMatter(fileContent: string): FrontMatter {
-  const match = fileContent.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/);
+const BLOG_DIR = path.join(process.cwd(), "content", "blogs");
+
+function readFrontMatter(content: string): FrontMatter {
+  const match = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const data: Record<string, string> = {};
   for (const line of match[1].split(/\r?\n/)) {
     const kv = line.match(/^([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
     if (!kv) continue;
-    // strip inline comments and wrapping quotes
-    const value = kv[2].replace(/\s+#.*$/, '').trim().replace(/^["']|["']$/g, '');
-    data[kv[1]] = value;
+    data[kv[1]] = kv[2]
+      .replace(/\s+#.*$/, "")
+      .trim()
+      .replace(/^["']|["']$/g, "");
   }
-  return data as FrontMatter;
+  return data;
 }
 
 function toDate(value: string | undefined, fallback: Date): Date {
   if (!value) return fallback;
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? fallback : d;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? fallback : date;
 }
 
-function absoluteUrl(p: string): string {
-  if (/^https?:\/\//i.test(p)) return p;
-  return `${BASE_URL}${p.startsWith('/') ? '' : '/'}${p}`;
+function absoluteUrl(url: string): string {
+  return /^https?:\/\//i.test(url)
+    ? url
+    : `${SITE.url}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
-// ---------------------------------------------------------------------------
-// 3. Blog posts from content/blogs/*.md(x)
-// ---------------------------------------------------------------------------
-type BlogEntry = { slug: string; lastModified: Date; cover?: string };
-
-function getBlogEntries(): BlogEntry[] {
-  try {
-    if (!fs.existsSync(BLOG_DIR)) return [];
-
-    return fs
-      .readdirSync(BLOG_DIR)
-      .filter((file) => /\.mdx?$/.test(file) && !file.startsWith('_'))
-      .map((file): BlogEntry | null => {
-        const fullPath = path.join(BLOG_DIR, file);
-        const raw = fs.readFileSync(fullPath, 'utf8');
-        const fm = readFrontMatter(raw);
-        if (fm.draft === 'true') return null;
-
-        const fileTime = fs.statSync(fullPath).mtime;
-        const published = toDate(fm.date, fileTime);
-        return {
-          slug: file
-            .replace(/(?:\.(?:md|mdx))+$/i, '')
-            .replace(/_/g, '-')
-            .replace(/-+/g, '-')
-            .toLowerCase(),
-          lastModified: toDate(fm.updated, published),
-          cover: fm.cover,
-        };
-      })
-      .filter((e): e is BlogEntry => e !== null)
-      .sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
-  } catch (error) {
-    console.error('[sitemap] Could not read blog directory:', error);
-    return [];
-  }
-}
-
-// ---------------------------------------------------------------------------
-// 4. Build the sitemap
-// ---------------------------------------------------------------------------
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = getBlogEntries();
-  const newestPost = posts[0]?.lastModified ?? BUILD_TIME;
+  const buildTime = new Date();
+  const staticEntries: MetadataRoute.Sitemap = [
+    { url: SITE.url, changeFrequency: "daily", priority: 1, lastModified: buildTime },
+    { url: `${SITE.url}/hooks`, changeFrequency: "weekly", priority: 0.9, lastModified: buildTime },
+    { url: `${SITE.url}/marketplace`, changeFrequency: "daily", priority: 0.9, lastModified: buildTime },
+    { url: `${SITE.url}/blog`, changeFrequency: "daily", priority: 0.8, lastModified: buildTime },
+    { url: `${SITE.url}/audio`, changeFrequency: "daily", priority: 0.8, lastModified: buildTime },
+    { url: `${SITE.url}/hashtag`, changeFrequency: "weekly", priority: 0.8, lastModified: buildTime },
+    { url: `${SITE.url}/about`, changeFrequency: "monthly", priority: 0.6, lastModified: new Date("2026-10-19") },
+    { url: `${SITE.url}/changelog`, changeFrequency: "weekly", priority: 0.5, lastModified: new Date("2026-10-19") },
+  ];
 
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((r) => ({
-    url: r.path === '/' ? BASE_URL : `${BASE_URL}${r.path}`,
-    lastModified:
-      r.path === '/blog' ? newestPost : toDate(r.updated, BUILD_TIME),
-    changeFrequency: r.changeFrequency,
-    priority: r.priority,
-  }));
-
-  const blogEntries: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: post.lastModified,
-    changeFrequency: 'monthly' as const,
+  const categoryEntries: MetadataRoute.Sitemap = Object.values(
+    marketplaceCategories,
+  ).map((category) => ({
+    url: `${SITE.url}/marketplace/${category.slug}`,
+    changeFrequency: "weekly",
     priority: 0.7,
-    ...(post.cover ? { images: [absoluteUrl(post.cover)] } : {}),
+    lastModified: buildTime,
   }));
 
-  const hookGuideEntries: MetadataRoute.Sitemap = HOOK_PAGES.map(
+  const platformEntries: MetadataRoute.Sitemap = PLATFORMS.map((platform) => ({
+    url: `${SITE.url}/hooks/${platform.slug}`,
+    changeFrequency: "weekly",
+    priority: 0.8,
+    lastModified: buildTime,
+  }));
+
+  const hookEntries: MetadataRoute.Sitemap = HOOK_PAGES.map(
     ({ platform, hookType }) => ({
-      url: `${BASE_URL}/hooks/${platform.slug}/${hookType.slug}`,
-      lastModified: BUILD_TIME,
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      url: `${SITE.url}/hooks/${platform.slug}/${hookType.slug}`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      lastModified: buildTime,
     }),
   );
 
-  // Optional: database-driven pages (e.g. public business profiles in /directory).
-  // Uncomment and adapt if such pages exist:
-  //
-  // import { prisma } from '@/lib/prisma';
-  // const listings = await prisma.listing.findMany({
-  //   where: { isPublic: true },
-  //   select: { slug: true, updatedAt: true },
-  // });
-  // const listingEntries = listings.map((l) => ({
-  //   url: `${BASE_URL}/directory/${l.slug}`,
-  //   lastModified: l.updatedAt,
-  //   changeFrequency: 'weekly' as const,
-  //   priority: 0.5,
-  // }));
+  let blogEntries: MetadataRoute.Sitemap = [];
+  if (fs.existsSync(BLOG_DIR)) {
+    blogEntries = fs
+      .readdirSync(BLOG_DIR)
+      .filter((file) => /\.(md|mdx)$/i.test(file) && !file.startsWith("_"))
+      .flatMap((file): MetadataRoute.Sitemap => {
+        const fullPath = path.join(BLOG_DIR, file);
+        const raw = fs.readFileSync(fullPath, "utf8");
+        const frontMatter = readFrontMatter(raw);
+        if (frontMatter.draft === "true") return [];
 
-  return [...staticEntries, ...blogEntries, ...hookGuideEntries];
+        const fileSlug = file
+          .replace(/(?:\.(?:md|mdx))+$/i, "")
+          .replace(/_/g, "-")
+          .replace(/-+/g, "-")
+          .toLowerCase();
+        const slug = (frontMatter.slug ?? fileSlug)
+          .replace(/_/g, "-")
+          .replace(/-+/g, "-")
+          .toLowerCase();
+        const fileTime = fs.statSync(fullPath).mtime;
+        const published = toDate(frontMatter.date, fileTime);
+        const lastModified = toDate(frontMatter.updated, published);
+
+        return [{
+          url: `${SITE.url}/blog/${slug}`,
+          changeFrequency: "monthly",
+          priority: 0.7,
+          lastModified,
+          ...(frontMatter.cover
+            ? { images: [absoluteUrl(frontMatter.cover)] }
+            : {}),
+        }];
+      });
+  }
+
+  return [
+    ...staticEntries,
+    ...categoryEntries,
+    ...platformEntries,
+    ...hookEntries,
+    ...blogEntries,
+  ];
 }

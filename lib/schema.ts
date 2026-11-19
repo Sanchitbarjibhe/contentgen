@@ -6,7 +6,7 @@
 //  - Never add ratings, reviews or prices that are not real and visible on the page —
 //    Google can issue a manual penalty for fake structured data.
 
-const SITE = 'https://www.hooktos.com';
+const SITE = 'https://hooktos.com';
 const ORG_ID = `${SITE}/#organization`;
 const WEBSITE_ID = `${SITE}/#website`;
 const APP_ID = `${SITE}/#software`;
