@@ -75,10 +75,10 @@ export const metadata: Metadata = {
       'Create high-retention hooks and SEO-ready content for TikTok, Instagram Reels, and YouTube Shorts in seconds.',
     images: [
       {
-        url: '/android-chrome-512x512.png',
-        width: 512,
-        height: 512,
-        alt: 'HookTos AI Logo',
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'HookTos AI — Viral Hooks for Social Video',
       },
     ],
   },
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     title: 'AI Viral Hook Generator | HookTos AI',
     description:
       'Create viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
-    images: ['/android-chrome-512x512.png'],
+    images: ['/opengraph-image'],
     creator: '@HookTosai',
   },
 };

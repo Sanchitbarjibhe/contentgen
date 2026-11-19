@@ -3,5 +3,5 @@ export const SITE = {
   url: "https://hooktos.com",
   year: 2026,
   twitter: "@HookTosai",
-  defaultOg: "/opengraph-image.png",
+  defaultOg: "/opengraph-image",
 } as const;

@@ -121,9 +121,11 @@ export default async function MarketplaceCategoryPage({ params }: PageProps) {
           <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">
             {category.description}
           </p>
-          <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-            {category.introText}
-          </p>
+          <div className="mx-auto mt-3 max-w-3xl space-y-3 text-left text-sm leading-6 text-slate-400">
+            {category.introText.split(/\n\n/).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </header>
 
         <ScarcityBanner stats={freeListingStats} listings={listings} />

@@ -350,7 +350,7 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
         title,
         description,
         path: `/blog/${normalizedSlug}`,
-        image: cover || "/opengraph-image.png",
+        image: cover || "/opengraph-image",
         type: "article",
     });
 
@@ -364,7 +364,7 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
             description,
             url: `${"https://hooktos.com"}/blog/${normalizedSlug}`,
             siteName: "HookTos AI",
-            images: [absoluteUrl(cover || "/opengraph-image.png")],
+            images: [absoluteUrl(cover || "/opengraph-image")],
             authors: [author],
             publishedTime: publishedDate,
             modifiedTime: modifiedDate,
@@ -412,7 +412,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
         publisher: { "@type": "Organization", name: "HookTos AI" },
         keywords: keywords.length ? keywords : [primaryKeyword],
         inLanguage: "en",
-        image: absoluteUrl(cover || "/opengraph-image.png"),
+        image: absoluteUrl(cover || "/opengraph-image"),
     };
     const schema = [
         articleSchema,

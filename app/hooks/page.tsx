@@ -54,6 +54,9 @@ export default function HooksPage() {
         >
           Try the hook generator
         </Link>
+        <p className="mt-4 text-sm text-slate-400">
+          Start with the free plan. Premium is $9.99 per month.
+        </p>
       </header>
       <section className="mt-14">
         <h2 className="text-2xl font-bold text-white">Choose a platform</h2>

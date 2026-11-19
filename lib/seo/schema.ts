@@ -74,7 +74,7 @@ export function articleSchema(article: {
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
-    image: article.image ? `${SITE.url}${article.image}` : `${SITE.url}/opengraph-image.png`,
+    image: article.image ? `${SITE.url}${article.image}` : `${SITE.url}/opengraph-image`,
     author: { "@type": "Organization", name: SITE.name },
     publisher: { "@id": `${SITE.url}/#organization` },
   };
@@ -89,12 +89,23 @@ export function softwareAppSchema() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     url: `${SITE.url}/hooks`,
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      url: `${SITE.url}/hooks`,
-    },
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Free",
+        price: "0",
+        priceCurrency: "USD",
+        url: `${SITE.url}/hooks`,
+      },
+      {
+        "@type": "Offer",
+        name: "Premium",
+        price: "9.99",
+        priceCurrency: "USD",
+        description: "Monthly subscription",
+        url: `${SITE.url}/hooks`,
+      },
+    ],
   };
 }
 

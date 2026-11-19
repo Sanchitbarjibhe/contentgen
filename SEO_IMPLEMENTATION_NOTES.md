@@ -8,12 +8,11 @@
 - Existing blog data already normalizes underscore filenames and frontmatter slugs. Middleware handles legacy underscore URLs as 301 redirects to hyphenated canonical paths.
 - Central metadata now uses `lib/seo/metadata.ts` for the home, blog, blog post, marketplace, marketplace category, hooks, changelog, about, audio, hashtag, and claim-spot pages.
 
-## Phase 1 TODO
+## Phase 1 follow-up completion
 
-- Confirm the real Twitter/X site handle; `@HookTosai` is retained pending confirmation.
-- Replace or add 1200x630 page-specific OG artwork.
-- Supply final marketplace category copy.
-- Replace any TODO pricing/schema values once real pricing is verified.
+- The `@HookTosai` handle matches the existing HookTos X profile.
+- Added a generated 1200x630 Open Graph image at `/opengraph-image` and updated default metadata and article-schema fallbacks to use it.
+- Premium pricing is shown as $9.99/month in the existing paywall. The `/hooks` page and SoftwareApplication offers use that same amount; no other unverified paid tiers are advertised.
 
 ## Phase 2 decisions
 
@@ -96,9 +95,10 @@
 - Category pages now emit BreadcrumbList, FAQPage, and ItemList JSON-LD and include related-category links.
 - The `/tools` hub is a real static route linking existing `/hooks`, `/hashtag`, and `/audio` tools. No fabricated tool-category listings or pricing were added.
 
-## Phase 4 TODO
+## Phase 4 follow-up completion
 
-- Replace each `Placeholder final copy:` marketplace intro with final 200-400 word category copy.
+- Replaced all seven placeholder marketplace category introductions with distinct, factual copy of 200-400 words each. The four requested categories (content creators, YouTube creators, SaaS tools, AI tools) are covered, as are Instagram creators, marketing agencies, and startups.
+- Category introductions render as separate paragraphs for readability.
 
 ## Phase 4 validation
 
@@ -119,8 +119,23 @@
 - `npm run lint`: passed.
 - `npx tsc --noEmit`: passed.
 - `npm run seo:check-slugs`: passed.
-- `npm run build`: compiled and statically generated 115 routes, then Next.js 16.4.0 exited on the security-vulnerability gate.
-- Build route report: no unusually large route group or route-specific bundle size was reported in the terminal output. A final browser bundle-size audit requires the successfully upgraded build and Lighthouse/DevTools inspection.
+- `npm run build`: compiled and statically generated 115 routes, then Next.js 16.4.0 exited on the security-vulnerability gate. Next.js was subsequently upgraded to 16.4.6 in a separate follow-up.
+- Build route report: no unusually large route group or route-specific bundle size was reported in the terminal output.
+
+## Post-phase completion
+
+- Next.js is upgraded to 16.4.6 to clear the security-vulnerability build gate. The updated production build and current source changes are revalidated below.
+- Marketplace intros no longer contain placeholder text; each category description is 200-400 words, avoids claims of vetting or guaranteed outcomes, and explains that listings are for discovery.
+- Added a 1200x630 generated social-sharing image. Twitter handle and visible Premium price are aligned with existing product information.
+- Lighthouse/PageSpeed was run against the public homepage before these latest local changes. It reported mobile scores of 100 for Performance, Accessibility, Best Practices, and SEO (LCP 1.2s, TBT 20ms, CLS 0). The deployed page did not yet match this checkout, so this is not a measurement of the new SEO changes.
+- Post-upgrade main-checkout verification:
+  - `npm run lint`: passed.
+  - `npx tsc --noEmit`: passed.
+  - `npm run seo:check-slugs`: passed.
+  - `npm run build`: passed on Next.js 16.4.6; generated all 116 static pages, including `/opengraph-image`.
+  - Production smoke test: `/opengraph-image` returned HTTP 200 with `image/png` and a valid PNG signature; `/hooks` and `/marketplace/ai-tools` returned HTTP 200 and rendered the expected metadata, price text, and category introduction.
+- The pSEO audit still reports `uniqueness<0.6` on all 35 pages; each scores 85 and remains above the 70 indexing threshold. This is an editorial differentiation follow-up, not a build or quality-threshold failure.
+- Remaining checks require deployment: test redirects, sitemap/robots, and structured data against the deployed version, then run Lighthouse on the updated routes and inspect Google Search Console.
 
 ## Final verification commands
 
@@ -128,5 +143,5 @@
 - `curl -I https://www.hooktos.com/blog/monetize-a-small-audience` — expected 301 to non-www canonical.
 - Open `https://hooktos.com/sitemap.xml` and confirm canonical indexable URLs.
 - Open `https://hooktos.com/robots.txt` and confirm private routes and the sitemap URL.
-- Validate blog, hook, FAQ, and marketplace JSON-LD in Google Rich Results Test.
-- Run Lighthouse mobile and desktop reports for `/`, `/hooks`, `/hooks/instagram-reels/curiosity`, `/blog/10-viral-hooks-for-reels`, `/marketplace/ai-tools`.
+- Validate blog, hook, FAQ, and marketplace JSON-LD in Google Rich Results Test after deployment.
+- Run Lighthouse mobile and desktop reports for `/`, `/hooks`, `/hooks/instagram-reels/curiosity`, `/blog/10-viral-hooks-for-reels`, `/marketplace/ai-tools` after deployment.
