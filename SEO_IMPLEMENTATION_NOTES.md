@@ -31,3 +31,59 @@
 - `npx tsc --noEmit`: passed.
 - `npm run seo:check-slugs`: passed.
 - `npm run build`: route compilation and static generation completed successfully, then Next.js 16.4.0 exited on the runtime security-vulnerability gate. Upgrade remains a separate follow-up.
+
+## Phase 3 decisions
+
+- Existing JSON hook data is the pSEO source of truth; no database migration or request-time LLM generation was added.
+- Existing hook slugs remain unchanged. The quality gate indexes pages with a score of at least 70 and excludes lower-quality pages from sitemap/static params.
+- Platform and hook metadata, dos/donts, FAQs, examples, freshness, JSON-LD, breadcrumbs, and sibling links are rendered server-side.
+- The offline generator requires `OPENAI_API_KEY` for live generation and supports `--dry-run`. It has not been run against production data.
+
+## Phase 3 pSEO audit
+
+| slug | score | failing checks |
+| --- | ---: | --- |
+| /hooks/tiktok/curiosity | 85 | uniqueness<0.6 |
+| /hooks/tiktok/controversial | 85 | uniqueness<0.6 |
+| /hooks/tiktok/statistics-based | 85 | uniqueness<0.6 |
+| /hooks/tiktok/storytelling | 85 | uniqueness<0.6 |
+| /hooks/tiktok/problem-solution | 85 | uniqueness<0.6 |
+| /hooks/tiktok/negativity-bias | 85 | uniqueness<0.6 |
+| /hooks/tiktok/question-based | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/curiosity | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/controversial | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/statistics-based | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/storytelling | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/problem-solution | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/negativity-bias | 85 | uniqueness<0.6 |
+| /hooks/instagram-reels/question-based | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/curiosity | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/controversial | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/statistics-based | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/storytelling | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/problem-solution | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/negativity-bias | 85 | uniqueness<0.6 |
+| /hooks/youtube-shorts/question-based | 85 | uniqueness<0.6 |
+| /hooks/linkedin/curiosity | 85 | uniqueness<0.6 |
+| /hooks/linkedin/controversial | 85 | uniqueness<0.6 |
+| /hooks/linkedin/statistics-based | 85 | uniqueness<0.6 |
+| /hooks/linkedin/storytelling | 85 | uniqueness<0.6 |
+| /hooks/linkedin/problem-solution | 85 | uniqueness<0.6 |
+| /hooks/linkedin/negativity-bias | 85 | uniqueness<0.6 |
+| /hooks/linkedin/question-based | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/curiosity | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/controversial | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/statistics-based | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/storytelling | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/problem-solution | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/negativity-bias | 85 | uniqueness<0.6 |
+| /hooks/twitter-x/question-based | 85 | uniqueness<0.6 |
+
+## Phase 3 validation
+
+- `npm run lint`: passed.
+- `npx tsc --noEmit`: passed.
+- `npm run seo:check-slugs`: passed.
+- `npm run seo:audit-pseo`: showed all 35 existing combinations at score 85, with uniqueness content remaining an implementation TODO.
+- `npm run seo:generate-pseo:dry-run`: produced valid structured sample JSON and did not write production data.
+- `npm run build`: compiled, type-checked, and statically generated 114 routes, then exited on the Next.js 16.4.0 security-vulnerability gate.

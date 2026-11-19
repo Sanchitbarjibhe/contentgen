@@ -2,27 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import HookPreview from "./HookPreview";
-import {
-  HOOK_PAGES,
-  HOOK_TYPES,
-  PLATFORMS,
-  getHookPage,
-} from "@/lib/hook-pages";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildMetadata } from "@/lib/seo/metadata";
+import {
+  articleSchema,
+  breadcrumbSchema,
+  faqSchema,
+} from "@/lib/seo/schema";
+import { getAllHookPages, getPageContent } from "@/lib/pseo/data";
+
+export const revalidate = 86400;
+export const dynamicParams = false;
 
 type PageProps = {
   params: Promise<{ platform: string; hookType: string }>;
 };
 
-export const dynamicParams = false;
-
-export function generateStaticParams(): Array<{
-  platform: string;
-  hookType: string;
-}> {
-  return HOOK_PAGES.map(({ platform, hookType }) => ({
-    platform: platform.slug,
-    hookType: hookType.slug,
+export function generateStaticParams() {
+  return getAllHookPages({ onlyIndexable: true }).map((page) => ({
+    platform: page.platformSlug,
+    hookType: page.hookTypeSlug,
   }));
 }
 
@@ -30,44 +29,62 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { platform, hookType } = await params;
-  const page = getHookPage(platform, hookType);
-  if (!page) notFound();
+  const page = getPageContent(platform, hookType);
+  if (!page) return buildMetadata({
+    title: "Hook Guide",
+    description: "Explore HookTos hook guides.",
+    path: "/hooks",
+  });
 
-  const title = `15 Viral ${page.hookType.name} Hooks for ${page.platform.name} (2026 Guide)`;
-  const description = `Explore 15 ${page.hookType.intent} for ${page.platform.name}, with ready-to-customize examples, proven formulas, and practical tips for your next post.`;
   return buildMetadata({
-    title,
-    description,
-    path: `/hooks/${page.platform.slug}/${page.hookType.slug}`,
+    title: `${page.hookType.name} Hooks for ${page.platform.name} (2026): ${page.examples.length}+ Viral Examples`,
+    description: `Copy ${page.examples.length}+ ${page.hookType.name.toLowerCase()} hooks for ${page.platform.name}. Proven formulas, niche examples, and a free AI hook generator.`,
+    path: `/hooks/${platform}/${hookType}`,
     type: "article",
+    noindex: page.qualityScore < 70,
   });
 }
 
 export default async function HookTypePage({ params }: PageProps) {
   const { platform, hookType } = await params;
-  const page = getHookPage(platform, hookType);
+  const page = getPageContent(platform, hookType);
   if (!page) notFound();
 
-  const relatedHookTypes = HOOK_TYPES.filter(
-    (item) => item.slug !== page.hookType.slug,
-  ).slice(0, 4);
-  const relatedPlatforms = PLATFORMS.filter(
-    (item) => item.slug !== page.platform.slug,
-  ).slice(0, 4);
+  const url = `/hooks/${platform}/${hookType}`;
+  const relatedLinks = page.related.map((item) => ({
+    href: `/hooks/${item.platformSlug}/${item.hookTypeSlug}`,
+    label:
+      item.platformSlug === platform
+        ? `${item.hookTypeSlug.replace(/-/g, " ")} hooks for ${page.platform.name}`
+        : `${page.hookType.name} hooks for ${item.platformSlug.replace(/-/g, " ")}`,
+  }));
 
   return (
     <main className="min-h-screen bg-[#0B0F17] px-4 pb-20 pt-12 text-slate-100 sm:px-6 sm:pt-16 lg:px-8">
+      <JsonLd
+        data={[
+          breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Hooks", url: "/hooks" },
+            { name: page.platform.name, url: `/hooks/${platform}` },
+            { name: page.hookType.name, url },
+          ]),
+          faqSchema(page.faqs),
+          articleSchema({
+            headline: `${page.hookType.name} Hooks for ${page.platform.name}`,
+            url,
+            datePublished: page.updatedAt,
+            dateModified: page.updatedAt,
+          }),
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-400">
-          <Link className="transition hover:text-white" href="/">
-            Home
-          </Link>
+          <Link href="/">Home</Link>
           <span className="px-2 text-slate-600">/</span>
-          <Link className="transition hover:text-white" href="/hooks/tiktok/curiosity">
-            Hook guides
-          </Link>
+          <Link href="/hooks">Hooks</Link>
           <span className="px-2 text-slate-600">/</span>
-          <span className="text-slate-300">{page.platform.name}</span>
+          <Link href={`/hooks/${platform}`}>{page.platform.name}</Link>
           <span className="px-2 text-slate-600">/</span>
           <span className="text-slate-300">{page.hookType.name}</span>
         </nav>
@@ -78,97 +95,89 @@ export default async function HookTypePage({ params }: PageProps) {
             {page.platform.name.toUpperCase()} HOOK PLAYBOOK
           </span>
           <h1 className="mt-6 text-balance text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-            15 Viral{" "}
-            <span className="text-[#78a0ff]">{page.hookType.name}</span> Hooks
-            for {page.platform.name}
+            {page.hookType.name} Hooks for {page.platform.name}
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-            {page.hookType.description} Use these ready-to-customize examples
-            for {page.platform.format}.
+            {page.intro}
           </p>
         </header>
 
         <div className="mx-auto mt-10 max-w-4xl">
-          <HookPreview hooks={page.hooks} platformName={page.platform.name} />
+          <HookPreview
+            hooks={page.examples.map((example) => example.hook)}
+            platformName={page.platform.name}
+          />
         </div>
-
-        <section className="mx-auto mt-14 grid max-w-4xl gap-5 md:grid-cols-2">
-          <article className="rounded-2xl border border-slate-800 bg-[#101722] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#00E676]">
-              The framework
-            </p>
-            <h2 className="mt-3 text-xl font-bold text-white">
-              A repeatable {page.hookType.name.toLowerCase()} hook formula
-            </h2>
-            <p className="mt-3 leading-7 text-slate-300">
-              {page.hookType.formula}. Make the opening specific to your
-              audience, keep the promise honest, and deliver the payoff in the
-              content that follows.
-            </p>
-          </article>
-          <article className="rounded-2xl border border-slate-800 bg-[#101722] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-blue-300">
-              Platform fit
-            </p>
-            <h2 className="mt-3 text-xl font-bold text-white">
-              Adapt your opening for {page.platform.name}
-            </h2>
-            <p className="mt-3 leading-7 text-slate-300">
-              {page.platform.audience} can use this format for{" "}
-              {page.platform.format}. Match the first line to the post’s real
-              value, then move quickly into the example, story, or answer.
-            </p>
-          </article>
-        </section>
 
         <section className="mx-auto mt-14 max-w-4xl">
           <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
-            How to use these {page.hookType.name.toLowerCase()} hooks
+            {page.examples.length} ready-to-customize examples
           </h2>
-          <ol className="mt-5 grid gap-3 sm:grid-cols-3">
-            {[
-              "Replace each bracketed prompt with a concrete detail from your topic.",
-              "Choose an opening that fits the audience and format of your post.",
-              "Pay off the hook with a useful answer; do not overpromise for clicks.",
-            ].map((step, index) => (
-              <li
-                key={step}
+          <div className="mt-5 grid gap-3">
+            {page.examples.map((example, index) => (
+              <article
+                key={`${example.niche}-${index}`}
                 className="rounded-xl border border-slate-800 bg-[#101722] p-5"
               >
-                <span className="text-sm font-extrabold text-[#00E676]">
-                  0{index + 1}
-                </span>
-                <p className="mt-2 leading-6 text-slate-300">{step}</p>
-              </li>
+                <p className="text-xs font-bold uppercase tracking-wide text-blue-300">
+                  {example.niche}
+                </p>
+                <p className="mt-2 font-semibold leading-7 text-white">
+                  {example.hook}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                  Why it works: {example.whyItWorks}
+                </p>
+              </article>
             ))}
-          </ol>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-14 grid max-w-4xl gap-5 md:grid-cols-2">
+          <article className="rounded-2xl border border-slate-800 bg-[#101722] p-6">
+            <h2 className="text-xl font-bold text-white">Do</h2>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-300">
+              {page.dos.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </article>
+          <article className="rounded-2xl border border-slate-800 bg-[#101722] p-6">
+            <h2 className="text-xl font-bold text-white">Do not</h2>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-300">
+              {page.donts.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </article>
         </section>
 
         <section className="mx-auto mt-14 max-w-4xl">
-          <h2 className="text-xl font-extrabold text-white">
-            Explore more hook guides
-          </h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {relatedHookTypes.map((item) => (
-              <Link
-                key={item.slug}
-                href={`/hooks/${page.platform.slug}/${item.slug}`}
-                className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-[#2962FF] hover:text-white"
-              >
-                {item.name} hooks for {page.platform.name}
-              </Link>
+          <h2 className="text-2xl font-extrabold text-white">Frequently asked questions</h2>
+          <div className="mt-5 space-y-3">
+            {page.faqs.map((faq) => (
+              <article key={faq.q} className="rounded-xl border border-slate-800 bg-[#101722] p-5">
+                <h3 className="font-bold text-white">{faq.q}</h3>
+                <p className="mt-2 leading-7 text-slate-300">{faq.a}</p>
+              </article>
             ))}
-            {relatedPlatforms.map((item) => (
+          </div>
+        </section>
+
+        <section className="mx-auto mt-14 max-w-4xl">
+          <h2 className="text-xl font-extrabold text-white">Explore more hook guides</h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {relatedLinks.map((link) => (
               <Link
-                key={item.slug}
-                href={`/hooks/${item.slug}/${page.hookType.slug}`}
-                className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-[#2962FF] hover:text-white"
+                key={link.href}
+                href={link.href}
+                className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-[#2962FF] hover:text-white"
               >
-                {page.hookType.name} hooks for {item.name}
+                {link.label}
               </Link>
             ))}
           </div>
         </section>
+
+        <p className="mx-auto mt-10 max-w-4xl text-sm text-slate-500">
+          Updated {page.updatedAt}
+        </p>
       </div>
     </main>
   );

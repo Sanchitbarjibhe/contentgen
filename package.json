@@ -10,7 +10,9 @@
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "prisma:studio": "prisma studio",
-    "seo:check-slugs": "tsx scripts/check-slugs.ts"
+    "seo:check-slugs": "tsx scripts/check-slugs.ts",
+    "seo:audit-pseo": "tsx scripts/audit-pseo-pages.ts",
+    "seo:generate-pseo:dry-run": "tsx scripts/generate-pseo-content.ts tiktok curiosity --dry-run"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.4",

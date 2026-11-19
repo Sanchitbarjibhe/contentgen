@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import fs from "node:fs";
 import path from "node:path";
-import { HOOK_PAGES, PLATFORMS } from "@/lib/hook-pages";
+import { PLATFORMS } from "@/lib/hook-pages";
+import { getAllHookPages } from "@/lib/pseo/data";
 import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
 import { SITE } from "@/lib/seo/config";
 
@@ -73,9 +74,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: buildTime,
   }));
 
-  const hookEntries: MetadataRoute.Sitemap = HOOK_PAGES.map(
-    ({ platform, hookType }) => ({
-      url: `${SITE.url}/hooks/${platform.slug}/${hookType.slug}`,
+  const hookEntries: MetadataRoute.Sitemap = getAllHookPages({ onlyIndexable: true }).map(
+    (page) => ({
+      url: `${SITE.url}/hooks/${page.platformSlug}/${page.hookTypeSlug}`,
       changeFrequency: "monthly",
       priority: 0.6,
       lastModified: buildTime,

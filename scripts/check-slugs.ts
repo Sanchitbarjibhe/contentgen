@@ -42,4 +42,4 @@ if (invalid.length) {
   process.exit(1);
 }
 
-console.log("SEO slug check passed. All audited slugs are lowercase and hyphenated.");
+console.log("🎯 SEO slug check passed. All audited slugs are lowercase and hyphenated.");
