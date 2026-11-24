@@ -198,3 +198,12 @@ model AdSlot {
 
   @@index([isLive, expiresAt])
 }
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  feedback  String?
+  source    String   @default("premium_modal")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
