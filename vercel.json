@@ -1,8 +1,8 @@
 {
     "redirects": [
         {
-            "destination": "blog/short-form-content-strategy",
-            "source": "blog/short_form_content_strategy",
+            "destination": "/blog/short-form-content-strategy",
+            "source": "/blog/short_form_content_strategy",
             "permanent": true
         },
         {
