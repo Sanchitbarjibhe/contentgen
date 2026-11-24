@@ -6,10 +6,10 @@
 //  - Never add ratings, reviews or prices that are not real and visible on the page —
 //    Google can issue a manual penalty for fake structured data.
 
-const SITE = 'https://www.hooktos.com';
+const SITE = 'https://hooktos.com';
 const ORG_ID = `${SITE}/#organization`;
 const WEBSITE_ID = `${SITE}/#website`;
-const APP_ID = `${SITE}/#software`;
+const APP_ID = `${SITE}/hooks#software`;
 
 const ONE_LINE_DESCRIPTION =
   'HookTos AI is an AI hook generator for Instagram Reels, YouTube Shorts and TikTok. It writes 10 psychology-backed hooks per video with retention scores, finds trending Instagram audio and suggests niche hashtags.';
@@ -26,9 +26,9 @@ export const organizationSchema = {
   url: SITE,
   logo: {
     '@type': 'ImageObject',
-    url: `${SITE}/hooktos-icon-192.jpg`,
-    width: 192,
-    height: 192,
+    url: `${SITE}/android-chrome-512x512.png`,
+    width: 512,
+    height: 512,
   },
   description: ONE_LINE_DESCRIPTION,
   email: 'support@hooktos.com', // TODO: real support email
@@ -70,7 +70,7 @@ export const softwareApplicationSchema = {
   applicationSubCategory: 'AI Content Creation Tool',
   operatingSystem: 'Web browser',
   description: ONE_LINE_DESCRIPTION,
-  image: `${SITE}/opengraph-image.png`,
+  image: `${SITE}/opengraph-image`,
   publisher: { '@id': ORG_ID },
   featureList: [
     'AI hook generator: 10 viral hooks per idea',
@@ -78,24 +78,23 @@ export const softwareApplicationSchema = {
     'SEO-optimised video descriptions',
     'Trending Instagram audio tracker updated daily',
     'Niche hashtag finder with reach estimates',
-    'Creator billboard and directory ad slots from $5/week',
   ],
   offers: [
-    // TODO: match your real /pricing page exactly.
     {
       '@type': 'Offer',
       name: 'Free',
       price: '0',
       priceCurrency: 'USD',
-      url: `${SITE}/pricing`,
+      url: `${SITE}/hooks`,
     },
-    // {
-    //   '@type': 'Offer',
-    //   name: 'Pro (monthly)',
-    //   price: '9.00',
-    //   priceCurrency: 'USD',
-    //   url: `${SITE}/pricing`,
-    // },
+    {
+      '@type': 'Offer',
+      name: 'Premium',
+      price: '9.99',
+      priceCurrency: 'USD',
+      description: 'Monthly subscription',
+      url: `${SITE}/hooks`,
+    },
   ],
   // Add ONLY when you have real reviews shown on the site:
   // aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', ratingCount: '57' },
@@ -120,7 +119,7 @@ export const homeFaqs: FaqItem[] = [
   {
     question: 'Is HookTos AI free?',
     answer:
-      'Yes. HookTos AI has a free plan for generating hooks. Paid plans add unlimited generations, trending audio and hashtag tools. You can pay in USD with Stripe or in INR with Razorpay.', // TODO: match real plans
+      'HookTos AI has a free plan. Premium costs $9.99 per month and includes unlimited generations and private generation history.',
   },
   {
     question: 'Does HookTos work for YouTube Shorts and TikTok?',
@@ -130,12 +129,12 @@ export const homeFaqs: FaqItem[] = [
   {
     question: 'How is the retention score calculated?',
     answer:
-      'TODO: explain your real method in 2–3 sentences (inputs, model, what the score predicts).',
+      'The retention score is an AI-generated estimate for comparing hook options, not a measured audience result or a guarantee. Treat it as a decision aid and test how each hook performs with your audience.',
   },
   {
     question: 'How does the trending Instagram audio tool work?',
     answer:
-      'HookTos tracks Instagram Reels audio every day and ranks sounds by growth velocity, so you can use a sound while it is rising instead of after it peaks.',
+      'The audio explorer surfaces trending-sound information from its available data source. Rankings and availability can change, so confirm a sound is still available and suitable on Instagram before using it.',
   },
 ];
 
@@ -174,7 +173,7 @@ export function articleSchema(post: PostMeta) {
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     headline: post.title.slice(0, 110),
     description: post.description,
-    image: post.cover ? `${SITE}${post.cover}` : `${SITE}/opengraph-image.png`,
+    image: post.cover ? `${SITE}${post.cover}` : `${SITE}/opengraph-image`,
     datePublished: post.date,
     dateModified: post.updated ?? post.date,
     author: {

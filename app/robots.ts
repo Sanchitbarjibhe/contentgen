@@ -1,5 +1,5 @@
 // app/robots.ts  (HookTos AI — v2)
-// Next.js serves it automatically at https://www.hooktos.com/robots.txt
+// Next.js serves it automatically at https://hooktos.com/robots.txt
 //
 // Strategy: HookTos wants maximum visibility in Google AND in AI answers
 // (ChatGPT, Claude, Gemini, Perplexity). So every search bot, every AI search bot,
@@ -7,26 +7,23 @@
 // Only private/app areas are blocked, for everyone.
 //
 // What changed vs v1:
-//  - Sitemap URL fixed: v1 pointed to https://hooktos.com (non-www) while the site
-//    canonical is https://www.hooktos.com — that caused an extra redirect for crawlers.
+//  - Sitemap and canonical host both use https://hooktos.com.
 //  - Named AI crawlers explicitly so you can switch any of them off in one place.
 //  - Private paths are repeated for every named bot (a bot that has its own group
 //    ignores the "*" group, so the blocks must be repeated).
 
 import type { MetadataRoute } from 'next';
-
-const BASE_URL = 'https://www.hooktos.com';
+import { SITE } from '@/lib/seo/config';
 
 // Private areas — never crawl. Edit to match your real route names.
 const PRIVATE_PATHS = [
   '/api/',
+  '/dashboard',
   '/admin/',
-  '/dashboard/private/',
-  // Suggested (uncomment if these routes exist and are login-only):
-  // '/dashboard/',
-  // '/checkout/',
-  // '/account/',
-  // '/auth/',
+  '/account',
+  '/sign-in',
+  '/sign-up',
+  '/claim-spot',
 ];
 
 // AI crawlers we WANT (visibility in AI answers + brand knowledge in models).
@@ -78,7 +75,7 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules,
-    sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
+    sitemap: `${SITE.url}/sitemap.xml`,
+    host: SITE.url,
   };
 }

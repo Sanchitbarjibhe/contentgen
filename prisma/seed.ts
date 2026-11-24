@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../lib/prisma";
 
 const listings = [
   ["Northstar Studio", "northstar-studio", "SaaS", "AI Automation"],
@@ -112,7 +110,7 @@ async function main() {
         websiteUrl: `https://${slug}.example`,
         description: `${tag} from the HookTos community.`,
       },
-      update: { name, category, tag },
+      update: { name, category, tag, isPaid: false },
     });
   }
 

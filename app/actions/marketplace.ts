@@ -5,6 +5,14 @@ import type {
   BillboardSlot,
   BusinessListingItem,
 } from "@/lib/marketplace-types";
+import {
+  getFallbackFreeListingStats,
+  getFreeListingStatsForCount,
+} from "@/lib/marketplace-listings";
+import {
+  marketplaceCategories,
+  type MarketplaceCategorySlug,
+} from "@/optimizations/SEO/marketplace-categories";
 
 const FALLBACK_BILLBOARD_SLOTS: BillboardSlot[] = [
   {
@@ -81,6 +89,12 @@ const FALLBACK_BUSINESS_LISTINGS: BusinessListingItem[] = [
   },
 ];
 
+export interface FreeListingStats {
+  claimed: number;
+  capacity: number;
+  remaining: number;
+}
+
 export async function getLiveBillboardSlots(): Promise<BillboardSlot[]> {
   console.info("[marketplace] Fetching live billboard slots from Prisma.");
 
@@ -155,5 +169,118 @@ export async function getActiveBusinessListings(): Promise<BusinessListingItem[]
       error,
     );
     return FALLBACK_BUSINESS_LISTINGS;
+  }
+}
+
+const FALLBACK_CREATOR_BUSINESSES: BusinessListingItem[] = [
+  {
+    id: "fallback-feastables",
+    name: "Feastables",
+    slug: "feastables",
+    category: "Creator Brand",
+    tag: "Consumer Products",
+    websiteUrl: "https://feastables.com",
+    logoUrl: null,
+    description:
+      "A creator-led consumer brand example. Visit its official website to learn more.",
+  },
+  {
+    id: "fallback-prime-hydration",
+    name: "Prime Hydration",
+    slug: "prime-hydration",
+    category: "Creator Brand",
+    tag: "Food & Beverage",
+    websiteUrl: "https://drinkprime.com",
+    logoUrl: null,
+    description:
+      "A creator-led beverage brand example. Visit its official website to learn more.",
+  },
+  {
+    id: "fallback-viewstats",
+    name: "Viewstats",
+    slug: "viewstats",
+    category: "Creator Tools",
+    tag: "Creator Analytics",
+    websiteUrl: "https://viewstats.com",
+    logoUrl: null,
+    description:
+      "A creator-focused analytics platform example. Visit its official website to learn more.",
+  },
+  {
+    id: "fallback-mrbeast-store",
+    name: "MrBeast Store",
+    slug: "mrbeast-store",
+    category: "Creator Brand",
+    tag: "Creator Merchandise",
+    websiteUrl: "https://mrbeast.store",
+    logoUrl: null,
+    description:
+      "A creator merchandise business example. Visit its official website to learn more.",
+  },
+];
+
+export async function getCategoryBusinessListings(
+  categorySlug: MarketplaceCategorySlug,
+): Promise<BusinessListingItem[]> {
+  const category = marketplaceCategories[categorySlug];
+  if (!category) {
+    throw new Error(`Unknown marketplace category: ${categorySlug}`);
+  }
+
+  try {
+    const businesses = await prisma.businessListing.findMany({
+      where: {
+        isApproved: true,
+        OR: [
+          ...category.categoryMatches.map((value) => ({
+            category: { equals: value, mode: "insensitive" as const },
+          })),
+          ...category.tagMatches.map((value) => ({
+            tag: { contains: value, mode: "insensitive" as const },
+          })),
+        ],
+      },
+      orderBy: { createdAt: "desc" },
+      take: 24,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        category: true,
+        tag: true,
+        websiteUrl: true,
+        logoUrl: true,
+        description: true,
+      },
+    });
+
+    if (businesses.length > 0) return businesses;
+
+    console.warn(
+      `[marketplace] No approved listings matched ${categorySlug}; serving creator-business examples.`,
+    );
+    return FALLBACK_CREATOR_BUSINESSES;
+  } catch (error) {
+    console.error(
+      `[marketplace] Could not load listings for ${categorySlug}; serving creator-business examples:`,
+      error,
+    );
+    return FALLBACK_CREATOR_BUSINESSES;
+  }
+}
+
+export async function getFreeListingStats(): Promise<FreeListingStats> {
+  try {
+    const claimed = await prisma.businessListing.count({
+      where: { isApproved: true },
+    });
+
+    return getFreeListingStatsForCount(claimed);
+  } catch (error) {
+    console.error(
+      "[marketplace] Could not load approved listing count; using the 20-listing display estimate:",
+      error,
+    );
+    return getFallbackFreeListingStats();
   }
 }

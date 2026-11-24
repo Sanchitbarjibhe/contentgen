@@ -1,0 +1,24 @@
+{
+    "redirects": [
+        {
+            "destination": "blog/short-form-content-strategy",
+            "source": "blog/short_form_content_strategy",
+            "permanent": true
+        },
+        {
+            "source": "/blog/the_truth_about_going_viral_in_2026_skill_vs_luck",
+            "destination": "/blog/the-truth-about-going-viral-in-2026-skill-vs-luck",
+            "permanent": true
+        },
+        {
+            "destination": "/blog/dealing-with-algorithm-changes",
+            "source": "/blog/dealing_with_algorithm_changes",
+            "permanent": true
+        },
+        {
+            "source": "/blog/monetize_a_small_audience",
+            "destination": "/blog/monetize-a-small-audience",
+            "permanent": true
+        }
+    ]
+}

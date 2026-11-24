@@ -16,6 +16,9 @@ import {
   X,
 } from "lucide-react";
 import { z } from "zod";
+import type {
+  RazorpayPaymentResponse,
+} from "@/lib/razorpay-types";
 import {
   formatAdPrice,
   type AdCurrency,
@@ -52,37 +55,6 @@ const CreateCheckoutResponseSchema = z.discriminatedUnion("gateway", [
 ]);
 
 const ErrorResponseSchema = z.object({ error: z.string() });
-
-interface RazorpaySuccess {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}
-
-interface RazorpayOptions {
-  key: string;
-  order_id: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  theme: { color: string };
-  handler: (result: RazorpaySuccess) => void;
-  modal: { ondismiss: () => void };
-}
-
-interface RazorpayInstance {
-  open: () => void;
-  on: (event: "payment.failed", handler: (response: {
-    error?: { description?: string };
-  }) => void) => void;
-}
-
-declare global {
-  interface Window {
-    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
-  }
-}
 
 let razorpayScriptPromise: Promise<boolean> | undefined;
 
@@ -286,7 +258,7 @@ export default function AdBookingModal({
     setBanner(file);
   }
 
-  async function verifyRazorpayPayment(result: RazorpaySuccess) {
+  async function verifyRazorpayPayment(result: RazorpayPaymentResponse) {
     setLoading(true);
     setError("");
     try {

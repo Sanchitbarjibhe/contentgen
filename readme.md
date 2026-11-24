@@ -51,3 +51,11 @@ The API responses are cached and revalidated every two hours. Keep these credent
 - **Database:** Supabase (PostgreSQL)
 - **ORM:** Prisma
 - **Important:** Do NOT use Mongoose or MongoDB. Stick strictly to Prisma Client.
+
+### PostgreSQL connection pooling
+
+When `DATABASE_URL` uses a PgBouncer transaction-pooling endpoint, include
+`pgbouncer=true` in its query parameters (for example,
+`postgresql://.../postgres?pgbouncer=true`). Configure `DIRECT_URL` with a
+direct PostgreSQL connection for Prisma schema operations; do not use the
+transaction pooler for that URL.

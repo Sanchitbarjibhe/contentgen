@@ -1,24 +1,34 @@
 import { ArrowDown, Sparkles } from "lucide-react";
 import {
+  getFreeListingStats,
   getActiveBusinessListings,
   getLiveBillboardSlots,
 } from "@/app/actions/marketplace";
 import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
 import VirtualBillboard from "@/components/VirtualBillboard";
-import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import ListingPaymentStatus from "@/components/ListingPaymentStatus";
+import ScarcityBanner from "@/components/ScarcityBanner";
 import { Metadata } from "next";
+import Link from "next/link";
+import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = getPageMetadata('marketplace', '/marketplace');
+export const metadata: Metadata = buildMetadata({
+  title: 'Marketplace | Explore Creator Businesses',
+  description: 'Discover top global creator businesses, brands, and tools in the verified HookTos Marketplace.',
+  path: '/marketplace',
+});
 
 export const dynamic = "force-dynamic";
 
 export const revalidate = 0; // Dynamic data fetching disable caching
 
 export default async function MarketplacePage() {
-  const [billboardSlots, businessListings] = await Promise.all([
+  const [billboardSlots, businessListings, freeListingStats] = await Promise.all([
     getLiveBillboardSlots(),
     getActiveBusinessListings(),
+    getFreeListingStats(),
   ]);
 
   return (
@@ -32,6 +42,20 @@ export default async function MarketplacePage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <ScarcityBanner stats={freeListingStats} listings={businessListings} />
+
+        <nav aria-label="Browse marketplace categories" className="mb-8 flex flex-wrap justify-center gap-2">
+          {Object.values(marketplaceCategories).map((category) => (
+            <Link
+              className="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-purple-400/60 hover:text-white sm:text-sm"
+              href={`/marketplace/${category.slug}`}
+              key={category.slug}
+            >
+              {category.label}
+            </Link>
+          ))}
+        </nav>
+
         {/* <section
           aria-label="Virtual billboard ads"
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
@@ -47,6 +71,7 @@ export default async function MarketplacePage() {
           className="flex min-h-[calc(100svh-73px)] flex-col justify-center py-14 sm:py-20"
           id="business-directory"
         >
+          <ListingPaymentStatus />
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/[0.08] px-3 py-1 text-xs font-semibold tracking-wide text-blue-200">
@@ -73,7 +98,9 @@ export default async function MarketplacePage() {
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10">
-              <BusinessListingDialog />
+              <BusinessListingDialog
+                freeSpotsRemaining={freeListingStats?.remaining}
+              />
               <a
                 className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-5 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800"
                 href="#virtual-billboard"

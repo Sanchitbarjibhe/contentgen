@@ -4,22 +4,26 @@ import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/app/globals.css";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/components/Navbar";
 import ConsentBanner from "@/components/ConsentBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import JsonLd from "@/components/JsonLd";
 import {
   organizationSchema,
-  softwareApplicationSchema,
   websiteSchema,
 } from "@/lib/schema";
+import { Analytics } from "@vercel/analytics/next"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.hooktos.com'),
+  metadataBase: new URL('https://hooktos.com'),
   title: {
-    default: 'HookTos AI | AI Viral Hook Generator',
+    default: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
     template: '%s | HookTos AI',
   },
   description:
@@ -64,17 +68,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.hooktos.com',
+    url: 'https://hooktos.com',
     siteName: 'HookTos AI',
     title: 'HookTos AI | Viral Hooks for Social Video',
     description:
       'Create high-retention hooks and SEO-ready content for TikTok, Instagram Reels, and YouTube Shorts in seconds.',
     images: [
       {
-        url: '/android-chrome-512x512.png',
-        width: 512,
-        height: 512,
-        alt: 'HookTos AI Logo',
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'HookTos AI — Viral Hooks for Social Video',
       },
     ],
   },
@@ -83,11 +87,8 @@ export const metadata: Metadata = {
     title: 'AI Viral Hook Generator | HookTos AI',
     description:
       'Create viral hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts.',
-    images: ['/android-chrome-512x512.png'],
+    images: ['/opengraph-image'],
     creator: '@HookTosai',
-  },
-  alternates: {
-    canonical: 'https://www.hooktos.com',
   },
 };
 
@@ -102,13 +103,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           data={[
             organizationSchema,
             websiteSchema,
-            softwareApplicationSchema,
           ]}
         />
         <GoogleAnalytics />
         <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
           <Navbar />
           {children}
+          <Analytics />
         </ClerkProvider>
         <ConsentBanner />
       </body>

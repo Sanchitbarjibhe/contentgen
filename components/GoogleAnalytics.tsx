@@ -13,7 +13,8 @@ import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 
-export const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? '';
+const configuredGAId = process.env.NEXT_PUBLIC_GA_ID?.trim() ?? '';
+export const GA_ID = /^G-[A-Z0-9]+$/.test(configuredGAId) ? configuredGAId : '';
 
 declare global {
   interface Window {

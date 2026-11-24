@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateHooks, HookGenerationError } from "@/lib/openai";
+import { generateHooks } from "@/lib/groq";
 import {
     ANON_COOKIE_MAX_AGE,
     ANON_ID_COOKIE,
@@ -36,38 +36,42 @@ const requestSchema = z.preprocess((value) => {
 }));
 
 export async function POST(req: NextRequest) {
-    const existingAnonId = req.cookies.get(ANON_ID_COOKIE)?.value;
-    const userId = existingAnonId ?? newAnonId();
-
-    let body: unknown;
+    let existingAnonId: string | undefined;
+    let userId: string | undefined;
+    let consumedCredit = false;
     try {
-        body = await req.json();
-    } catch {
-        return respond({ error: "Request body must be JSON." }, 400, !existingAnonId, userId);
-    }
+        existingAnonId = req.cookies.get(ANON_ID_COOKIE)?.value;
+        userId = existingAnonId ?? newAnonId();
 
-    const parsed = requestSchema.safeParse(body);
-    if (!parsed.success) {
-        return respond({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, 422, !existingAnonId, userId);
-    }
+        let body: unknown;
+        try {
+            body = await req.json();
+        } catch {
+            return respond({ error: "Request body must be JSON." }, 400, !existingAnonId, userId);
+        }
 
-    const { topic, niche, platform } = parsed.data;
-    const usage = await reserveCredit(userId);
+        const parsed = requestSchema.safeParse(body);
+        if (!parsed.success) {
+            return respond({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, 422, !existingAnonId, userId);
+        }
 
-    if (!usage.allowed) {
-        return respond(
-            {
-                error: "LIMIT_REACHED",
-                message: "Daily free generations limit reached.",
-                usage: usageSnapshot(usage.record.freeCreditsLeft, usage.record.isPremium),
-            },
-            403,
-            !existingAnonId,
-            userId
-        );
-    }
+        const { topic, niche, platform } = parsed.data;
+        const usage = await reserveCredit(userId);
+        consumedCredit = usage.consumed;
 
-    try {
+        if (!usage.allowed) {
+            return respond(
+                {
+                    error: "LIMIT_REACHED",
+                    message: "Daily free generations limit reached.",
+                    usage: usageSnapshot(usage.record.freeCreditsLeft, usage.record.isPremium),
+                },
+                403,
+                !existingAnonId,
+                userId
+            );
+        }
+
         const result = await generateHooks({ topic, niche, platform });
         const generation = await prisma.generatedHook.create({
             data: {
@@ -109,20 +113,23 @@ export async function POST(req: NextRequest) {
             userId
         );
     } catch (error) {
-        if (usage.consumed) {
-            await prisma.userUsage.update({
-                where: { userId },
-                data: { freeCreditsLeft: { increment: 1 } },
-            });
-        }
+        console.error("API Generate Error:", error);
+        if (userId) await refundCredit(userId, consumedCredit);
+        const message = error instanceof Error ? error.message : String(error);
+        return respond({ error: message }, 500, !!userId && !existingAnonId, userId ?? "");
+    }
+}
 
-        if (error instanceof HookGenerationError) {
-            console.error("[generate] hook generation failed:", error.message, error.cause);
-            return respond({ error: "The AI engine couldn't produce hooks for that input. Please try rephrasing your topic." }, 502, !existingAnonId, userId);
-        }
+async function refundCredit(userId: string, consumed: boolean) {
+    if (!consumed) return;
 
-        console.error("[generate] unexpected error:", error);
-        return respond({ error: "Something went wrong. Please try again." }, 500, !existingAnonId, userId);
+    try {
+        await prisma.userUsage.update({
+            where: { userId },
+            data: { freeCreditsLeft: { increment: 1 } },
+        });
+    } catch (error) {
+        console.error("[generate] failed to refund generation credit:", error);
     }
 }
 

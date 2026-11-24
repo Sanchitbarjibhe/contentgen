@@ -6,6 +6,7 @@ export interface BusinessListingItem {
   tag: string;
   websiteUrl: string;
   logoUrl: string | null;
+  description?: string | null;
 }
 
 export interface BillboardSlot {

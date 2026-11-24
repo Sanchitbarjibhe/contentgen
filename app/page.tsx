@@ -1,69 +1,14 @@
-import React from 'react';
-import Link from 'next/link';
-import { Metadata } from 'next';
-import { getPageMetadata } from '@/optimizations/SEO/seo.config';
+import type { Metadata } from "next";
+import HomeLanding from "@/components/HomeLanding";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-
-export const metadata: Metadata = getPageMetadata('home', '/');
-
+export const metadata: Metadata = buildMetadata({
+  title: "HookTos AI | AI Viral Hook Generator & Creator Marketplace",
+  description:
+    "Generate psychology-backed hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts in seconds.",
+  path: "/",
+});
 
 export default function HomePage() {
-  return (
-    <div className="flex min-h-screen flex-col justify-between bg-transparent text-slate-100 selection:bg-purple-500 selection:text-white">
-      {/* Header Navigation */}
-      {/* Main Hero Section */}
-      <main className="max-w-5xl mx-auto px-6 py-20 text-center space-y-8 my-auto">
-        {/* Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-300 shadow-inner">
-          <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-          Powered by HookTos AI
-        </div>
-
-        {/* Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
-          AI viral hook generator for <br className="hidden sm:inline" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">
-            Reels, Shorts & TikTok
-          </span>
-        </h1>
-
-        <h2 className="text-slate-300 text-base sm:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
-          Create scroll-stopping content in seconds
-        </h2>
-
-        <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
-          Generate 10 psychology-backed hooks, a retention score, an SEO description, and 15 hashtags — for every Reel, Short, and TikTok you make.
-        </p>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <Link
-            href="/dashboard"
-            className="px-6 py-3 rounded-xl font-semibold text-sm bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white transition duration-200 shadow-lg"
-          >
-            Sign In &rarr;
-          </Link>
-
-          <Link
-            href="/dashboard"
-            className="px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition duration-200 shadow-lg shadow-purple-500/20"
-          >
-            Explore Dashboard
-          </Link>
-
-          <Link
-            href="/blog"
-            className="px-6 py-3 rounded-xl font-semibold text-sm bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 text-slate-300 transition duration-200"
-          >
-            Read Blogs
-          </Link>
-        </div>
-      </main>
-
-      {/* Subtle Footer */}
-      <footer className="max-w-7xl mx-auto w-full px-6 py-8 text-center text-xs text-slate-600 border-t border-slate-900">
-        &copy; {new Date().getFullYear()} HookTos AI. All rights reserved.
-      </footer>
-    </div>
-  );
+  return <HomeLanding />;
 }

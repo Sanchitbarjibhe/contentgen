@@ -1,9 +1,11 @@
 import React from 'react';
+import { buildMetadata } from '@/lib/seo/metadata';
 
-export const metadata = {
-    title: 'About Us — HookTos AI',
-    description: 'Learn about HookTos AI, our mission, vision, and the story behind the viral hook generator.',
-};
+export const metadata = buildMetadata({
+  title: 'About Us — HookTos AI',
+  description: 'Learn about HookTos AI, our mission, vision, and the story behind the viral hook generator.',
+  path: '/about',
+});
 
 export default function AboutPage() {
     return (

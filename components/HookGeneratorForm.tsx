@@ -46,7 +46,7 @@ export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage }: Hook
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Something went wrong.");
+        setError(data.message ?? data.error ?? "Something went wrong.");
         if (data.usage) setUsage(data.usage);
         return;
       }
@@ -61,8 +61,8 @@ export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage }: Hook
   }
 
   return (
-    <Card>
-      <CardBody className="space-y-5">
+    <Card className="border-indigo-400/20 bg-slate-900/40 shadow-2xl shadow-indigo-950/20 ring-1 ring-white/5">
+      <CardBody className="space-y-5 p-5 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Topic input */}
           <div>
