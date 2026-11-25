@@ -25,8 +25,15 @@ export function buildMetadata({
   const og = /^https?:\/\//i.test(imageUrl)
     ? imageUrl
     : `${SITE.url}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+  const brandSuffix = ` | ${SITE.name}`;
+  const hasBrand = /hooktos(?: ai)?/i.test(title);
+  const brandedTitle = hasBrand ? title : `${title}${brandSuffix}`;
   const fullTitle =
-    title.length > 58 ? `${title.slice(0, 57).trimEnd()}…` : title;
+    brandedTitle.length > 60
+      ? hasBrand
+        ? `${brandedTitle.slice(0, 59).trimEnd()}…`
+        : `${title.slice(0, 60 - brandSuffix.length - 1).trimEnd()}…${brandSuffix}`
+      : brandedTitle;
   const desc =
     description.length > 155
       ? `${description.slice(0, 154).trimEnd()}…`
@@ -34,7 +41,7 @@ export function buildMetadata({
 
   return {
     metadataBase: new URL(SITE.url),
-    title: fullTitle,
+    title: { absolute: fullTitle },
     description: desc,
     alternates: { canonical: url },
     robots: noindex

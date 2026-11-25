@@ -6,8 +6,8 @@ import { BlogPosts } from '@/lib/BlogPosts';
 
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Blogs & Guides',
-  description: 'Read the latest tips, strategies, and insights on growing your social media presence.',
+  title: 'Reels Hooks, TikTok Frameworks & Creator Tips',
+  description: 'Read practical guides to Instagram Reels hooks, TikTok content frameworks, AI writing tools, and strategies for growing a creator business with HookTos AI.',
   path: '/blog',
 });
 
@@ -20,7 +20,7 @@ export default function BlogListingPage() {
                     Knowledge & Growth Guides
                 </span>
                 <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                    HookTos AI <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">Blog</span>
+                    Reels Hooks, TikTok Frameworks & Creator Guides
                 </h1>
                 <p className="text-slate-400 text-lg max-w-2xl mx-auto">
                     Latest strategies, guides, and tips for creating viral short-form content.

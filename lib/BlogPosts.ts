@@ -57,9 +57,9 @@ export const BlogPosts = [
     },
     {
         slug: '10-viral-hooks-for-reels',
-        title: '10 Viral Hooks to Skyrocket Your Instagram Reels in 2026',
+        title: '10 Viral Hooks for Instagram Reels (2026)',
         description:
-            'Discover the top 10 AI-proven hooks that grab attention in the first 3 seconds and massively increase your engagement and views.',
+            'Get 10 viral hooks for Instagram Reels, with proven opening lines, examples, and practical tips to earn attention. Try the free HookTos AI generator.',
         date: '2026-09-25',
         readTime: '4 min read',
         category: 'Instagram Strategy',

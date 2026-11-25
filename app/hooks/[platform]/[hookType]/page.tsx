@@ -42,9 +42,13 @@ export async function generateMetadata({
     path: "/hooks",
   });
 
+  const title = `${page.platform.name} ${page.hookType.name} Hook Frameworks`;
+  const titleWithExamples =
+    title.length < 37 ? `${title} Examples` : title;
+
   return buildMetadata({
-    title: `${page.hookType.name} Hooks for ${page.platform.name} (2026): ${page.examples.length}+ Viral Examples`,
-    description: `Copy ${page.examples.length}+ ${page.hookType.name.toLowerCase()} hooks for ${page.platform.name}. Proven formulas, niche examples, and a free AI hook generator.`,
+    title: titleWithExamples,
+    description: `Use ${page.hookType.name.toLowerCase()} hook frameworks for ${page.platform.name}, with niche examples, proven formulas, and tips. Generate custom opening lines free with HookTos AI.`,
     path: `/hooks/${platform}/${hookType}`,
     type: "article",
     noindex: page.qualityScore < 70,
