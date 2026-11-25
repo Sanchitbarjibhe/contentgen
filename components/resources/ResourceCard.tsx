@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ArrowRight, Check, Copy, ExternalLink, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   RESOURCE_CATEGORY_LABELS,
   type ResourceCardData,
@@ -26,6 +27,23 @@ export default function ResourceCard({
   const [copyError, setCopyError] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!isPreviewOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsPreviewOpen(false);
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isPreviewOpen]);
 
   const copyText =
     resource.category === "swipe-files"
@@ -173,6 +191,16 @@ export default function ResourceCard({
             {copied ? "Copied Prompt" : "Copy Prompt"}
           </button>
         )}
+        {resource.category === "checklists" && (
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
+            onClick={() => void copyToClipboard(resource.items.join("\n"))}
+            type="button"
+          >
+            {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+            {copied ? "Copied Checklist" : "Copy Checklist"}
+          </button>
+        )}
         {resource.category === "templates" && (
           <button
             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
@@ -207,65 +235,69 @@ export default function ResourceCard({
         </p>
       )}
 
-      {resource.category === "templates" && isPreviewOpen && (
-        <div
-          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) setIsPreviewOpen(false);
-          }}
-        >
-          <section
-            aria-labelledby={`template-title-${resource.slug}`}
-            aria-modal="true"
-            className="my-auto w-full max-w-2xl rounded-2xl border border-slate-700 bg-[#0d1021] p-5 shadow-2xl shadow-black/50 sm:p-7"
-            role="dialog"
+      {resource.category === "templates" &&
+        isPreviewOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setIsPreviewOpen(false);
+            }}
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wide text-cyan-300">
-                  Template Preview
-                </p>
-                <h3
-                  className="mt-2 break-words text-xl font-bold text-white"
-                  id={`template-title-${resource.slug}`}
+            <section
+              aria-labelledby={`template-title-${resource.slug}`}
+              aria-modal="true"
+              className="my-auto w-full max-w-2xl rounded-2xl border border-slate-700 bg-[#0d1021] p-5 shadow-2xl shadow-black/50 sm:p-7"
+              role="dialog"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-cyan-300">
+                    Template Preview
+                  </p>
+                  <h3
+                    className="mt-2 break-words text-xl font-bold text-white"
+                    id={`template-title-${resource.slug}`}
+                  >
+                    {resource.title}
+                  </h3>
+                </div>
+                <button
+                  aria-label="Close template preview"
+                  className="rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-white"
+                  onClick={() => setIsPreviewOpen(false)}
+                  type="button"
                 >
-                  {resource.title}
-                </h3>
+                  <X className="size-5" />
+                </button>
               </div>
+              <pre className="mt-5 max-h-[55vh] overflow-auto whitespace-pre-wrap break-words rounded-xl border border-slate-800 bg-slate-950/70 p-4 font-sans text-sm leading-6 text-slate-300">
+                {resource.content}
+              </pre>
               <button
-                aria-label="Close template preview"
-                className="rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-white"
-                onClick={() => setIsPreviewOpen(false)}
+                className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 sm:w-auto"
+                onClick={() => void copyToClipboard(resource.content)}
                 type="button"
               >
-                <X className="size-5" />
+                {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                {copied ? "Copied Template" : "Copy Template"}
               </button>
-            </div>
-            <pre className="mt-5 max-h-[55vh] overflow-auto whitespace-pre-wrap break-words rounded-xl border border-slate-800 bg-slate-950/70 p-4 font-sans text-sm leading-6 text-slate-300">
-              {resource.content}
-            </pre>
-            <button
-              className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 sm:w-auto"
-              onClick={() => void copyToClipboard(resource.content)}
-              type="button"
-            >
-              {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-              {copied ? "Copied Template" : "Copy Template"}
-            </button>
-            {(copied || copyError) && (
-              <p
-                aria-live="polite"
-                className={`mt-3 text-xs ${copyError ? "text-rose-300" : "text-emerald-300"}`}
-                role={copyError ? "alert" : "status"}
-              >
-                {copyError
-                  ? "Could not copy. Check clipboard permissions and try again."
-                  : "Template copied to clipboard."}
-              </p>
-            )}
-          </section>
-        </div>
-      )}
+              {(copied || copyError) && (
+                <p
+                  aria-live="polite"
+                  className={`mt-3 text-xs ${copyError ? "text-rose-300" : "text-emerald-300"}`}
+                  role={copyError ? "alert" : "status"}
+                >
+                  {copyError
+                    ? "Could not copy. Check clipboard permissions and try again."
+                    : "Template copied to clipboard."}
+                </p>
+              )}
+            </section>
+          </div>,
+          document.body,
+        )}
     </article>
   );
 }

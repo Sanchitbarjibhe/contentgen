@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search, Sparkles } from "lucide-react";
+import Link from "next/link";
 import {
   RESOURCE_CATEGORY_LABELS,
   isPersistedCreatorResource,
@@ -145,6 +146,16 @@ export default function ResourceHub({
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base sm:leading-7">
             Proven viral hook checklists, ChatGPT prompt packs, and ready-to-use
             script templates
+          </p>
+          <p className="mt-3 text-sm text-slate-400">
+            Need examples?{" "}
+            <Link
+              className="font-semibold text-indigo-300 underline decoration-indigo-400/50 underline-offset-4 hover:text-white"
+              href="/blog/10-viral-hooks-for-reels"
+            >
+              Explore Instagram Reels hook ideas and examples
+            </Link>
+            .
           </p>
         </header>
 

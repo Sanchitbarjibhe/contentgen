@@ -219,6 +219,10 @@ export default async function ResourceDetailPage({ params }: PageProps) {
                 <p className="text-sm text-slate-500">
                   Check off items on the resource card as you prepare your next video.
                 </p>
+                <ResourceDetailActions
+                  copyText={resource.items.join("\n")}
+                  copyLabel="Copy Checklist"
+                />
               </div>
             )}
 

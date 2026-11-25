@@ -686,6 +686,210 @@ export const resources: CreatorResource[] = [
     prompt:
       "Write 12 concise calls to action for this short-form video. Video topic and takeaway: [ADD]. Audience: [ADD]. Goal: [choose one: conversation, save/share, follow, newsletter signup, product demo, or purchase]. Offer or destination and any limitations: [ADD]. Create 2 options for each of 6 tones: helpful, conversational, direct, community-led, curiosity-led, and low-pressure. Ask for only one primary action per CTA, match the request to the value delivered, and do not create urgency, scarcity, or benefits that are not true.",
   },
+  {
+    category: "checklists",
+    slug: "viral-pre-publish-readiness-checklist",
+    title: "Viral Content Pre-Publish Readiness Checklist",
+    description:
+      "Give every short-form post a final check for a clear promise, strong opening, accessible edit, and useful next step.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Creator Economy / Monetization", "Digital Marketing & Creator Growth"],
+    items: [
+      "State one specific viewer takeaway that the video actually delivers.",
+      "Make the first frame and opening line understandable without a long introduction.",
+      "Show a relevant visual, result, question, or demonstration in the opening beat.",
+      "Check that the hook creates interest without exaggerating the payoff.",
+      "Review captions for accuracy, readable timing, and names or terms that speech-to-text may mishear.",
+      "Keep important text and faces clear of platform interface overlays.",
+      "Remove pauses, repeated explanations, and shots that do not help the story.",
+      "Check music, footage, and other assets for permission to use on the intended platform.",
+      "Choose one call to action that fits the value of the video.",
+      "Preview the exported video on a phone, with sound on and muted.",
+    ],
+  },
+  {
+    category: "checklists",
+    slug: "short-form-retention-and-pacing-audit",
+    title: "Short-Form Retention & Pacing Audit",
+    description:
+      "Review each beat for clarity and momentum, then use actual audience-retention data to guide the next edit.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Digital Marketing & Creator Growth", "Marketing Agencies"],
+    items: [
+      "Write the opening promise in one sentence and check that the video fulfills it.",
+      "Mark the point where the main question, problem, or outcome first becomes clear.",
+      "For every beat, note what new information or visual it adds.",
+      "Cut repeated setup and pauses unless they improve comprehension or timing.",
+      "Use a visual change when it clarifies a new step, example, or change in emphasis.",
+      "Keep on-screen text brief enough to read before the next important beat.",
+      "Make the payoff easy to find and avoid delaying it with an unrelated outro.",
+      "Compare retention dips with the corresponding line or shot before deciding what caused them.",
+      "Test one meaningful edit at a time so the result is easier to interpret.",
+      "Treat performance as audience feedback, not proof that one edit guarantees reach.",
+    ],
+  },
+  {
+    category: "checklists",
+    slug: "viral-distribution-and-repurposing-checklist",
+    title: "Going-Viral Distribution & Repurposing Checklist",
+    description:
+      "Distribute a strong idea thoughtfully across platforms and turn its useful parts into new, audience-fit formats.",
+    platforms: allPlatforms,
+    niches: ["Creator Economy / Monetization", "Digital Marketing & Creator Growth", "Marketing Agencies"],
+    items: [
+      "Choose the platform and audience for each version instead of reposting blindly.",
+      "Export a clean vertical master and upload without another platform's watermark.",
+      "Adapt the opening, pacing, caption, and call to action to each platform's viewing context.",
+      "Check each platform's current music, disclosure, and branded-content requirements.",
+      "Publish captions and on-screen text that preserve the video's meaning when watched muted.",
+      "Share the post with communities that genuinely benefit from it rather than mass-tagging people.",
+      "Use a pinned comment or reply to answer a useful follow-up, not to manufacture engagement.",
+      "Turn a strong question from the comments into a distinct follow-up with a new payoff.",
+      "Repurpose the core lesson into a carousel, short text post, or longer explanation with fresh context.",
+      "Review watch time, completion, saves, shares, and meaningful replies after a consistent interval.",
+      "Record what you learned and avoid treating one high-performing post as a guaranteed formula.",
+    ],
+  },
+  {
+    category: "swipe-files",
+    slug: "high-retention-opening-hooks-swipe-file",
+    title: "High-Retention Opening Hooks Swipe File",
+    description:
+      "A ready-to-adapt set of direct openings that make the viewer's reason to stay clear in the first few seconds.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Creator Economy / Monetization", "Digital Marketing & Creator Growth"],
+    hook:
+      "Your first three seconds should answer one question: why stay?\nBefore you add another effect, fix the sentence viewers hear first.\nHere's the small edit that made this tutorial easier to follow.\nMost of the useful part happens before the step everyone skips.",
+    generatorPrompt:
+      "Use the supplied opening lines as structural inspiration and write 8 original short-form hooks for my topic. Keep each line natural to say in under three seconds, make the viewer benefit or tension specific, and pair each hook with a visual that can be filmed simply. Ask me for the topic and audience first if they are missing. Do not invent personal results, statistics, or guarantees.",
+  },
+  {
+    category: "swipe-files",
+    slug: "curiosity-gap-callouts-swipe-file",
+    title: "Curiosity-Gap Callouts Swipe File",
+    description:
+      "Open a genuine question viewers want answered, then make sure the video pays it off clearly.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Marketing Agencies", "Creator Economy / Monetization"],
+    hook:
+      "I thought the obvious fix would work, until I checked this one detail.\nThe result looked simple; the reason behind it was not.\nThere is one part of this process I would check before changing anything else.\nI tested the usual advice, and the surprising part was what happened next.",
+    generatorPrompt:
+      "Write 8 curiosity-gap opening lines about my topic for Reels, Shorts, or TikTok. For each, state the real question it raises and the exact moment the video should answer it. Ask me for the topic and what I can honestly show if those details are missing. Keep the intrigue fair: no fake secrets, withheld safety information, unsupported outcomes, or bait-and-switch endings.",
+  },
+  {
+    category: "swipe-files",
+    slug: "pattern-interrupt-lines-swipe-file",
+    title: "Pattern-Interrupt Opening Lines Swipe File",
+    description:
+      "Break a familiar scroll pattern with a specific observation, visual cue, or concise change of perspective.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Digital Marketing & Creator Growth", "AI Tools & Tech"],
+    hook:
+      "Pause on this frame: the detail in the corner changes the whole explanation.\nDon't watch the final result yet; first notice what changed between these two steps.\nI was about to delete this clip, then I noticed what the screen was showing.\nQuick test: which version would you understand without the sound?",
+    generatorPrompt:
+      "Create 8 pattern-interrupt openings for my short-form video topic. Pair each spoken line with a simple first-frame action, prop, screen detail, or edit that supports its meaning. Ask me for the topic and available footage or props when needed. Avoid startling viewers, imitating another creator's signature, or promising a reveal that the video does not contain.",
+  },
+  {
+    category: "swipe-files",
+    slug: "share-save-triggers-swipe-file",
+    title: "Share & Save Triggers Swipe File",
+    description:
+      "Use clear, low-pressure lines that give viewers a real reason to save, share, or revisit a helpful video.",
+    platforms: allPlatforms,
+    niches: ["Creator Economy / Monetization", "Short-Form Video & Hooks", "Digital Marketing & Creator Growth"],
+    hook:
+      "Save this so you can run the checklist before your next post.\nSend this to the teammate who is editing your next short.\nKeep this walkthrough handy the next time you need to compare these options.\nIf someone on your team is working through this too, share the steps with them.",
+    generatorPrompt:
+      "Write 10 natural save-or-share calls to action for my video. Ask me what the video teaches and who it is for if that context is missing. Give each line one clear action, connect the action to a specific future use or relevant person, and keep the tone helpful rather than pressuring. Do not ask for likes, comments, follows, and shares all at once.",
+  },
+  {
+    category: "templates",
+    slug: "curiosity-loop-short-form-script-template",
+    title: "Curiosity Loop Short-Form Script Template",
+    description:
+      "Create an honest open loop, add useful clues, and deliver the answer before the ending.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Creator Economy / Monetization", "Digital Marketing & Creator Growth"],
+    content:
+      "OPEN (0-3 sec): Name the surprising question or detail that makes this worth watching.\n\nSETUP (3-8 sec): Give only the context needed to understand why the question matters.\n\nCLUE 1: Show the first useful observation, step, or piece of evidence.\n\nRE-HOOK: Point to what is still unresolved without repeating the opening.\n\nPAYOFF: Answer the opening question directly and show the supporting example.\n\nTAKEAWAY: Explain what the viewer can apply, and when the lesson may not fit.\n\nCTA: Choose one relevant next step, such as saving the walkthrough or asking a focused question.\n\nFINAL CHECK: The opening is accurate, the answer is present, and no essential context was withheld.",
+  },
+  {
+    category: "templates",
+    slug: "contrarian-take-short-form-script-template",
+    title: "Contrarian Take Short-Form Script Template",
+    description:
+      "Challenge a common idea with fair context, a reasoned alternative, and evidence viewers can evaluate.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Marketing Agencies", "SaaS & Startups"],
+    content:
+      "HOOK (0-3 sec): State the common advice you want to question and the context where it may fall short.\n\nFAIR SETUP: Explain why reasonable people use that advice and what it gets right.\n\nCOUNTERPOINT: Share the specific experience, example, or evidence that changed your view.\n\nALTERNATIVE: Demonstrate a practical option and who might benefit from it.\n\nTRADE-OFF: Name a case where the usual advice is still useful or your approach may not fit.\n\nTAKEAWAY: Give viewers one decision rule they can test for themselves.\n\nCTA: Invite one focused question or ask viewers to save the decision rule.\n\nFINAL CHECK: Separate opinion from fact and avoid framing disagreement as proof of incompetence.",
+  },
+  {
+    category: "templates",
+    slug: "step-by-step-short-form-breakdown-template",
+    title: "Step-by-Step Short-Form Breakdown Template",
+    description:
+      "Turn a repeatable process into concise, visible steps with a check for success and relevant caveats.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "AI Tools & Tech", "Digital Marketing & Creator Growth"],
+    content:
+      "HOOK (0-3 sec): Say what the viewer will be able to do after watching.\n\nCONTEXT: Show the starting point and identify who this process is intended for.\n\nSTEP ONE: Demonstrate the first action and name the expected result.\n\nSTEP TWO: Show the next action; keep the screen or object in view while explaining it.\n\nSTEP THREE: Complete the process and point out the detail that is easiest to miss.\n\nCHECK: Show how to confirm the process worked and what to do if it did not.\n\nSUMMARY: Recap the steps in one short sentence.\n\nCTA: Choose one action that helps viewers use or revisit the process.\n\nFINAL CHECK: Verify every instruction, disclose meaningful limits, and remove steps that are not needed.",
+  },
+  {
+    category: "templates",
+    slug: "before-after-transformation-script-template",
+    title: "Before / After Transformation Script Template",
+    description:
+      "Show a credible change by explaining the starting point, what changed, and the context behind the result.",
+    platforms: allPlatforms,
+    niches: ["Creator Economy / Monetization", "Short-Form Video & Hooks", "Marketing Agencies"],
+    content:
+      "HOOK (0-3 sec): Show the clearest verified difference and name what the video will explain.\n\nBEFORE: Establish the starting state, timeframe, and conditions viewers need to understand.\n\nCHANGE: Demonstrate the specific action, process, or decision that changed.\n\nAFTER: Show the actual result using a fair comparison and consistent conditions.\n\nEXPLANATION: Describe what likely contributed, what else changed, and what cannot be concluded.\n\nREUSABLE LESSON: Share one practical idea viewers can adapt without promising the same result.\n\nCTA: Invite viewers to save the process or ask one relevant follow-up.\n\nFINAL CHECK: Get permission for personal or client material and do not imply a typical outcome from a single example.",
+  },
+  {
+    category: "prompt-packs",
+    slug: "viral-angle-brainstorm-prompt-pack",
+    title: "Viral Angle Brainstorm Prompt Pack",
+    description:
+      "Explore a range of audience-first angles for one idea without relying on fabricated claims or guaranteed reach.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Creator Economy / Monetization", "Digital Marketing & Creator Growth"],
+    prompt:
+      "Act as a thoughtful short-form content strategist. Help me find distinctive angles for a video idea. First ask me for the topic, intended audience, what I know from direct experience, and any proof or source material. Then propose 12 angles across practical how-to, common misconception, decision comparison, small experiment, behind-the-scenes process, audience question, and useful failure. For each angle, provide the viewer's reason to care, an honest opening line, a simple visual, and the payoff the video must deliver. Flag any angle that needs evidence. Do not promise virality, invent results, or suggest outrage bait.",
+  },
+  {
+    category: "prompt-packs",
+    slug: "three-second-hook-writing-prompt-pack",
+    title: "Three-Second Hook Writing Prompt Pack",
+    description:
+      "Draft punchy spoken openings with a matching first-frame idea and a payoff the video can actually support.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Creator Economy / Monetization", "Marketing Agencies"],
+    prompt:
+      "You are a short-form video hook editor. Ask me for the video topic, target viewer, key takeaway, and any verified evidence before drafting. Write 15 spoken hooks that can be delivered naturally in about three seconds. Group them into curiosity, direct benefit, surprising detail, myth check, and relatable problem. For every hook, add a matching first-frame visual and the next sentence that begins the payoff. Keep each claim faithful to the material, use clear language, and reject misleading urgency or empty clickbait.",
+  },
+  {
+    category: "prompt-packs",
+    slug: "retention-drop-off-scoring-prompt-pack",
+    title: "Retention Drop-Off Review & Scoring Prompt Pack",
+    description:
+      "Diagnose likely friction points using a script and retention evidence, while separating observed data from hypotheses.",
+    platforms: allPlatforms,
+    niches: ["Short-Form Video & Hooks", "Digital Marketing & Creator Growth", "Marketing Agencies"],
+    prompt:
+      "Act as a careful short-form video editor reviewing audience retention. First ask me for the script or transcript, video duration, intended audience, and any timestamped retention data or known drop-off points. If retention data is unavailable, state that your review is a hypothesis based on the script alone. Score the opening clarity, beat-to-beat progression, pacing, payoff, and ending from 1 to 5 using a brief rubric. Then map likely friction points to specific lines or timestamps, explain confidence, and suggest three small tests ordered by expected learning value. Do not claim causation from a graph or assume every dip means the edit is bad.",
+  },
+  {
+    category: "prompt-packs",
+    slug: "viral-post-multiformat-repurposing-prompt-pack",
+    title: "One Post to Multiple Formats Prompt Pack",
+    description:
+      "Repurpose a single useful post into distinct platform-native versions while keeping its facts and core value intact.",
+    platforms: allPlatforms,
+    niches: ["Creator Economy / Monetization", "Digital Marketing & Creator Growth", "Marketing Agencies"],
+    prompt:
+      "Help me repurpose one existing post into platform-appropriate short-form content. First ask me to provide the original post or transcript, its intended audience, the main takeaway, and any factual or usage constraints. Identify the core idea and list what must remain accurate. Then create distinct concepts for TikTok, Instagram Reels, and YouTube Shorts, plus a concise carousel outline and a text-post version. For each, provide an opening, structure, visual or formatting approach, and one suitable call to action. Do not copy another creator's style, add unsupported claims, or make the versions feel like identical cross-posts.",
+  },
 ];
 
 export const RESOURCE_CATEGORY_LABELS: Record<ResourceCategory, string> = {
