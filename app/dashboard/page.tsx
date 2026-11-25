@@ -16,17 +16,26 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  searchParams: Promise<{ prompt?: string | string[] }>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const promptParam = (await searchParams).prompt;
+  const initialPrompt = Array.isArray(promptParam)
+    ? promptParam[0]
+    : promptParam;
+
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent />
+        <DashboardContent initialPrompt={initialPrompt?.slice(0, 1200)} />
       </Suspense>
     </div>
   );
 }
 
-async function DashboardContent() {
+async function DashboardContent({ initialPrompt }: { initialPrompt?: string }) {
   const userId = await getAnonId();
   const usageRecord = await getOrCreateUsage(userId);
   const usage = usageSnapshot(usageRecord.freeCreditsLeft, usageRecord.isPremium);
@@ -67,6 +76,7 @@ async function DashboardContent() {
 
       <DashboardWorkspace
         initialUsage={usage}
+        initialPrompt={initialPrompt}
         initialRecent={recentGenerations.map((generation): RecentGeneration => ({
           id: generation.id,
           topic: generation.topic,

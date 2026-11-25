@@ -199,6 +199,37 @@ model AdSlot {
   @@index([isLive, expiresAt])
 }
 
+model CreatorResource {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  category   String
+  niche      String
+  summary    String   @db.Text
+  content    Json
+  platforms  String[]
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  likes ResourceLike[]
+
+  @@index([category, niche])
+  @@index([createdAt])
+}
+
+model ResourceLike {
+  id         String   @id @default(cuid())
+  resourceId String
+  visitorKey String
+  createdAt  DateTime @default(now())
+
+  resource CreatorResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([resourceId, visitorKey])
+  @@index([visitorKey])
+}
+
 model WaitlistEntry {
   id        String   @id @default(cuid())
   email     String   @unique

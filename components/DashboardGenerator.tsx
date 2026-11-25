@@ -18,10 +18,11 @@ export type SavedGeneration = GenerationResult & {
 
 interface DashboardGeneratorProps {
   initialUsage: UsageInfo;
+  initialPrompt?: string;
   onGenerated?: (result: SavedGeneration) => void;
 }
 
-export function DashboardGenerator({ initialUsage, onGenerated }: DashboardGeneratorProps) {
+export function DashboardGenerator({ initialUsage, initialPrompt, onGenerated }: DashboardGeneratorProps) {
   const [result, setResult] = useState<(GenerationResult & { id: string }) | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -35,6 +36,7 @@ export function DashboardGenerator({ initialUsage, onGenerated }: DashboardGener
     <div className="space-y-8">
       <HookGeneratorForm
         initialUsage={initialUsage}
+        initialTopic={initialPrompt}
         onGenerated={(data) => {
           setResult(data);
           onGenerated?.(data);

@@ -125,3 +125,58 @@ export function itemListSchema(
     })),
   };
 }
+
+export function collectionPageSchema(page: {
+  name: string;
+  description: string;
+  url: string;
+  items: { name: string; url: string }[];
+}) {
+  const url = /^https?:\/\//i.test(page.url)
+    ? page.url
+    : `${SITE.url}${page.url}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${url}#collection`,
+    name: page.name,
+    description: page.description,
+    url,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: page.items.length,
+      itemListElement: page.items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        item: /^https?:\/\//i.test(item.url)
+          ? item.url
+          : `${SITE.url}${item.url}`,
+      })),
+    },
+  };
+}
+
+export function resourceArticleSchema(article: {
+  headline: string;
+  description: string;
+  url: string;
+}) {
+  const url = /^https?:\/\//i.test(article.url)
+    ? article.url
+    : `${SITE.url}${article.url}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: article.headline,
+    description: article.description,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    author: { "@type": "Organization", name: SITE.name },
+    publisher: { "@id": `${SITE.url}/#organization` },
+    inLanguage: "en",
+  };
+}
