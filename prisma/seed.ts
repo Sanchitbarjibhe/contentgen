@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma";
+import { seedCreatorResources } from "./seed-resources";
 
 const listings = [
   ["Northstar Studio", "northstar-studio", "SaaS", "AI Automation"],
@@ -127,6 +128,8 @@ async function main() {
       },
     });
   }
+
+  await seedCreatorResources();
 
   console.info(
     `Seeded ${listings.length} business listings and ${adSlots.length} billboard slots.`,

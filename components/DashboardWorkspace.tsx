@@ -17,9 +17,10 @@ type SavedGeneration = GenerationResult & {
 interface DashboardWorkspaceProps {
     initialUsage: UsageInfo;
     initialRecent: RecentGeneration[];
+    initialPrompt?: string;
 }
 
-export function DashboardWorkspace({ initialUsage, initialRecent }: DashboardWorkspaceProps) {
+export function DashboardWorkspace({ initialUsage, initialRecent, initialPrompt }: DashboardWorkspaceProps) {
     const [recent, setRecent] = useState(initialRecent);
 
     function handleGenerated(generation: SavedGeneration) {
@@ -38,7 +39,7 @@ export function DashboardWorkspace({ initialUsage, initialRecent }: DashboardWor
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3">
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-indigo-300">Quick generate</h2>
-                <DashboardGenerator initialUsage={initialUsage} onGenerated={handleGenerated} />
+                <DashboardGenerator initialUsage={initialUsage} initialPrompt={initialPrompt} onGenerated={handleGenerated} />
             </div>
             <div className="lg:col-span-2">
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Recent generations</h2>

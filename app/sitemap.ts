@@ -5,6 +5,12 @@ import { PLATFORMS } from "@/lib/hook-pages";
 import { getAllHookPages } from "@/lib/pseo/data";
 import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
 import { SITE } from "@/lib/seo/config";
+import {
+  RESOURCE_CATEGORIES,
+  resources as starterResources,
+} from "@/data/resources";
+import { nicheResources } from "@/data/niche-resources";
+import { prisma } from "@/lib/prisma";
 
 export const revalidate = 3600;
 
@@ -47,6 +53,7 @@ function absoluteUrl(url: string): string {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const buildTime = new Date();
+  const resourceCategories = new Set<string>(RESOURCE_CATEGORIES);
   const staticEntries: MetadataRoute.Sitemap = [
     { url: SITE.url, changeFrequency: "daily", priority: 1, lastModified: buildTime },
     { url: `${SITE.url}/hooks`, changeFrequency: "weekly", priority: 0.9, lastModified: buildTime },
@@ -67,6 +74,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
     lastModified: buildTime,
   }));
+
+  const resourceCategoryEntries: MetadataRoute.Sitemap = RESOURCE_CATEGORIES.map(
+    (category) => ({
+      url: `${SITE.url}/resources/${category}`,
+      changeFrequency: "weekly",
+      priority: 0.7,
+      lastModified: buildTime,
+    }),
+  );
+
+  const resourceEntryMap = new Map<string, MetadataRoute.Sitemap[number]>();
+  for (const resource of [...starterResources, ...nicheResources]) {
+    const url = `${SITE.url}/resources/${resource.category}/${resource.slug}`;
+    resourceEntryMap.set(url, {
+      url,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      lastModified: buildTime,
+    });
+  }
+  try {
+    const databaseResources = await prisma.creatorResource.findMany({
+      select: { category: true, slug: true, updatedAt: true },
+    });
+    for (const resource of databaseResources) {
+      if (!resourceCategories.has(resource.category)) continue;
+      const url = `${SITE.url}/resources/${resource.category}/${resource.slug}`;
+      resourceEntryMap.set(url, {
+        url,
+        changeFrequency: "monthly",
+        priority: 0.6,
+        lastModified: resource.updatedAt,
+      });
+    }
+  } catch (error) {
+    console.error("[sitemap] unable to load database resources; using static catalog:", error);
+  }
 
   const platformEntries: MetadataRoute.Sitemap = PLATFORMS.map((platform) => ({
     url: `${SITE.url}/hooks/${platform.slug}`,
@@ -123,6 +167,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticEntries,
     ...categoryEntries,
+    ...resourceCategoryEntries,
+    {
+      url: `${SITE.url}/resources`,
+      changeFrequency: "weekly",
+      priority: 0.8,
+      lastModified: buildTime,
+    },
+    ...resourceEntryMap.values(),
     ...platformEntries,
     ...hookEntries,
     ...blogEntries,

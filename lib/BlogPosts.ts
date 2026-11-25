@@ -57,9 +57,9 @@ export const BlogPosts = [
     },
     {
         slug: '10-viral-hooks-for-reels',
-        title: '10 Viral Hooks to Skyrocket Your Instagram Reels in 2026',
+        title: 'Instagram Reels Hooks: 10 Ideas & Examples',
         description:
-            'Discover the top 10 AI-proven hooks that grab attention in the first 3 seconds and massively increase your engagement and views.',
+            'Instagram Reels hook ideas with examples, visual openers, and curiosity-gap prompts. Write an opening that fits your audience and delivers on its promise.',
         date: '2026-09-25',
         readTime: '4 min read',
         category: 'Instagram Strategy',

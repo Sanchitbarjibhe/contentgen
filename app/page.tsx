@@ -3,9 +3,9 @@ import HomeLanding from "@/components/HomeLanding";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
-  title: "HookTos AI | AI Viral Hook Generator & Creator Marketplace",
+  title: "AI Content Generator for Reels and TikTok",
   description:
-    "Generate psychology-backed hooks, captions, and SEO content for TikTok, Reels, and YouTube Shorts in seconds.",
+    "Turn ideas into scroll-stopping hooks, captions, and short-form content with HookTos AI. Create stronger Reels, TikTok, and YouTube Shorts openings.",
   path: "/",
 });
 

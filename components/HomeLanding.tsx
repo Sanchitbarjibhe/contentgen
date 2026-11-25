@@ -193,9 +193,9 @@ export default function HomeLanding() {
               Your next scroll-stopper starts here
             </div>
             <h1 className="mx-auto mt-6 max-w-3xl text-balance text-4xl font-black leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl lg:mx-0">
-              Make the first 3 seconds{" "}
+              AI hook generator for{" "}
               <span className="bg-gradient-to-r from-indigo-300 via-violet-300 to-emerald-300 bg-clip-text text-transparent">
-                impossible to skip.
+                Reels, TikTok, and Shorts.
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-pretty text-base leading-7 text-slate-300 sm:text-lg sm:leading-8 lg:mx-0">

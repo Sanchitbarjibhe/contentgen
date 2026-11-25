@@ -326,13 +326,9 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
     // Dynamic Title & Description Optimization
     const rawTitle = getString(post.data.title) || normalizedSlug.replace(/-/g, " ");
     const seoOverrides: Record<string, { title: string; description: string }> = {
-        "10-viral-hooks-for-reels": {
-            title: "10 Viral Hooks for Reels in 2026 (Boost Engagement Fast) | HookTos",
-            description: "Discover 10 proven viral hook formulas for Instagram Reels & Shorts in 2026. Grab attention in 3 seconds and skyrocket your reach. Try them today!",
-        },
         "monetize-a-small-audience": {
-            title: "How to Monetize a Small Audience in 2026 (Step-by-Step) | HookTos",
-            description: "Learn actionable strategies to monetize a small following on Instagram, YouTube, & TikTok without millions of subscribers.",
+            title: "How to Monetize a Small Audience: 2026 Guide",
+            description: "Learn best ways to monetize a small audience on Instagram, YouTube, and TikTok with products, sponsorships, and services—without millions of followers.",
         },
     };
     const seoOverride = seoOverrides[normalizedSlug];

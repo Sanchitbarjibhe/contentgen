@@ -5,9 +5,9 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema, itemListSchema } from "@/lib/seo/schema";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Creator AI Tools",
+  title: "AI Creator Tools for Reels, TikTok & Shorts",
   description:
-    "Explore HookTos creator tools for viral hooks, hashtag research, trending audio, and short-form content planning.",
+    "Explore AI creator tools for Reels, TikTok, and Shorts, including a viral hook generator, Instagram hashtag research, and trending audio discovery.",
   path: "/tools",
 });
 
@@ -38,7 +38,7 @@ export default function ToolsPage() {
         <span className="text-slate-200">Tools</span>
       </nav>
       <header className="mt-8 max-w-3xl">
-        <h1 className="text-4xl font-extrabold text-white sm:text-5xl">Creator AI tools</h1>
+        <h1 className="text-4xl font-extrabold text-white sm:text-5xl">AI creator tools for Reels, TikTok, and Shorts</h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
           Discover tools for stronger openings, trend research, and short-form content planning.
         </p>

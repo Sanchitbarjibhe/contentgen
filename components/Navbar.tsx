@@ -17,6 +17,7 @@ const links = [
   { href: "/hooks", label: "Hooks" },
   { href: "/changelog", label: "What's New" },
   { href: "/marketplace", label: "Marketplace" },
+  { href: "/resources", label: "Resources" },
   { href: "/tools", label: "Tools" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
@@ -29,7 +30,7 @@ const platformHashtags = [
 ];
 
 function isActiveLink(pathname: string, href: string) {
-  return href === "/blog"
+  return href === "/blog" || href === "/resources"
     ? pathname === href || pathname.startsWith(`${href}/`)
     : pathname === href;
 }

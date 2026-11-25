@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!platform) return buildMetadata({ title: "Hooks", description: "Hook guides.", path: "/hooks" });
 
   return buildMetadata({
-    title: `Viral Hooks for ${platform.name} (2026)`,
-    description: `Explore curiosity, storytelling, question, and problem-solution hook guides for ${platform.name}.`,
+    title: `Viral Hook Frameworks for ${platform.name}`,
+    description: `Explore ${platform.name} hook frameworks for curiosity, storytelling, questions, and problem-solution videos. Find examples and create opening lines with HookTos AI.`,
     path: `/hooks/${platform.slug}`,
   });
 }
@@ -64,7 +64,7 @@ export default async function HookPlatformPage({ params }: PageProps) {
       </nav>
       <header className="mt-8 max-w-3xl">
         <h1 className="text-4xl font-extrabold text-white sm:text-5xl">
-          Viral hooks for {platform.name}
+          Viral hook frameworks for {platform.name}
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
           Choose a proven opening style for {platform.format}.

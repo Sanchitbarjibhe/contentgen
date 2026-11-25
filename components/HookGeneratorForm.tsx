@@ -14,12 +14,13 @@ interface HookGeneratorFormProps {
   onGenerated: (result: GenerationResult & { id: string; usage: UsageInfo; topic: string; niche: Niche; platform: Platform; createdAt: string }) => void;
   onUpgrade: () => void;
   initialUsage?: UsageInfo;
+  initialTopic?: string;
 }
 
 const MIN_TOPIC_LENGTH = 10;
 
-export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage }: HookGeneratorFormProps) {
-  const [topic, setTopic] = useState("");
+export function HookGeneratorForm({ onGenerated, onUpgrade, initialUsage, initialTopic }: HookGeneratorFormProps) {
+  const [topic, setTopic] = useState(initialTopic ?? "");
   const [niche, setNiche] = useState<Niche>("TECH");
   const [platform, setPlatform] = useState<Platform>("SHORTS");
   const [loading, setLoading] = useState(false);

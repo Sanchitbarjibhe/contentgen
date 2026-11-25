@@ -10,9 +10,9 @@ import {
 import { HOOK_TYPES, PLATFORMS } from "@/lib/hook-pages";
 
 export const metadata: Metadata = buildMetadata({
-  title: "AI Viral Hook Generator & Hook Guides",
+  title: "Viral Hook Generator and Creator Guides",
   description:
-    "Generate viral hooks and explore platform-specific hook guides for Reels, TikTok, Shorts, LinkedIn, and X.",
+    "Generate stronger opening lines and explore proven hook frameworks for Instagram Reels, TikTok, YouTube Shorts, LinkedIn, and X with HookTos AI.",
   path: "/hooks",
 });
 
@@ -42,7 +42,7 @@ export default function HooksPage() {
       </nav>
       <header className="mt-8 max-w-3xl">
         <h1 className="text-4xl font-extrabold text-white sm:text-5xl">
-          AI viral hook generator and platform guides
+          AI viral hook generator and creator guides
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
           Build scroll-stopping openings for short-form video and professional

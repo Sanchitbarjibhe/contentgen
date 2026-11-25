@@ -15,8 +15,8 @@ import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categorie
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Marketplace | Explore Creator Businesses',
-  description: 'Discover top global creator businesses, brands, and tools in the verified HookTos Marketplace.',
+  title: 'Creator Business Marketplace and Directory',
+  description: 'Discover creator businesses, verified brands, and tools in the HookTos AI Marketplace. Browse categories, find resources, and list your business free.',
   path: '/marketplace',
 });
 
@@ -78,15 +78,15 @@ export default async function MarketplacePage() {
                 <Sparkles aria-hidden="true" className="size-3.5" />
                 MEET YOUR NEIGHBORS
               </span>
-              <h2
+              <h1
                 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl"
                 id="business-directory-title"
               >
-                Good businesses.{" "}
+                Discover creator businesses and tools.{" "}
                 <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-fuchsia-300 bg-clip-text text-transparent">
-                  Great things in motion.
+                  Find your next favorite.
                 </span>
-              </h2>
+              </h1>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7">
                 Explore independent businesses from the HookTos community.
                 Your next favorite might be just around the corner.
