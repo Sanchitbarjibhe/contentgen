@@ -4,32 +4,14 @@
 // Styled to match the HookTos dark glass theme (Tailwind v4).
 
 import { useEffect, useState } from 'react';
-
-const KEY = 'hooktos_consent';
-
-function update(granted: boolean) {
-  const value = granted ? 'granted' : 'denied';
-  if (typeof window.gtag === 'function') {
-    window.gtag('consent', 'update', {
-      ad_storage: value,
-      ad_user_data: value,
-      ad_personalization: value,
-      analytics_storage: value,
-    });
-  }
-  try {
-    localStorage.setItem(KEY, value);
-  } catch {
-    /* private mode — ignore */
-  }
-}
+import { ANALYTICS_CONSENT_KEY, updateAnalyticsConsent } from '@/lib/gtag';
 
 export default function ConsentBanner() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(KEY)) setShow(true);
+      if (!localStorage.getItem(ANALYTICS_CONSENT_KEY)) setShow(true);
     } catch {
       setShow(true);
     }
@@ -50,13 +32,13 @@ export default function ConsentBanner() {
       </p>
       <div className="mt-3 flex gap-2">
         <button
-          onClick={() => { update(true); setShow(false); }}
+          onClick={() => { updateAnalyticsConsent(true); setShow(false); }}
           className="rounded-lg bg-purple-600 px-4 py-2 font-medium text-white hover:bg-purple-500"
         >
           Accept
         </button>
         <button
-          onClick={() => { update(false); setShow(false); }}
+          onClick={() => { updateAnalyticsConsent(false); setShow(false); }}
           className="rounded-lg border border-slate-700 px-4 py-2 hover:bg-slate-800"
         >
           Decline

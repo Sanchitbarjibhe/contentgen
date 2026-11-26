@@ -1,62 +1,43 @@
 'use client';
-// components/GoogleAnalytics.tsx  (HookTos AI — v1)
-// GA4 + Google Consent Mode v2 + page_view on every App Router route change.
-//
-// Setup:
-//  1. In Vercel → Project → Settings → Environment Variables add
-//       NEXT_PUBLIC_GA_ID = G-XXXXXXXXXX   (your GA4 Measurement ID)
-//  2. In GA4 → Admin → Data streams → your stream → Enhanced measurement → ⚙
-//       turn OFF "Page changes based on browser history events"
-//     (this component sends page_view itself; leaving both on double-counts).
 
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect } from 'react';
-
-const configuredGAId = process.env.NEXT_PUBLIC_GA_ID?.trim() ?? '';
-export const GA_ID = /^G-[A-Z0-9]+$/.test(configuredGAId) ? configuredGAId : '';
-
-declare global {
-  interface Window {
-    dataLayer: unknown[];
-    gtag: (...args: unknown[]) => void;
-  }
-}
+import { Suspense, useEffect, useState } from 'react';
+import { ANALYTICS_CONSENT_KEY, GA_MEASUREMENT_ID, trackEvent } from '@/lib/gtag';
 
 // Sends a page_view whenever the URL changes (including the first load).
-function PageViewTracker() {
+function PageViewTracker({ ready }: { ready: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!GA_ID || typeof window.gtag !== 'function') return;
+    if (!ready) return;
+
     const query = searchParams?.toString();
     const pagePath = query ? `${pathname}?${query}` : pathname;
-    window.gtag('event', 'page_view', {
+    trackEvent('page_view', {
       page_path: pagePath,
       page_location: window.location.href,
       page_title: document.title,
     });
-  }, [pathname, searchParams]);
+  }, [pathname, ready, searchParams]);
 
   return null;
 }
 
 export default function GoogleAnalytics() {
-  // Skip in development and when no ID is set.
-  if (!GA_ID || process.env.NODE_ENV !== 'production') return null;
+  const [scriptReady, setScriptReady] = useState(false);
+
+  if (!GA_MEASUREMENT_ID || process.env.NODE_ENV !== 'production') return null;
 
   return (
     <>
-      {/* 1. Consent defaults + config are queued BEFORE gtag.js loads */}
       <Script id="ga4-init" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = gtag;
+          window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
 
-          // Consent Mode v2 — everything denied until the visitor chooses.
-          gtag('consent', 'default', {
+          window.gtag('consent', 'default', {
             ad_storage: 'denied',
             ad_user_data: 'denied',
             ad_personalization: 'denied',
@@ -66,35 +47,33 @@ export default function GoogleAnalytics() {
             wait_for_update: 500
           });
 
-          // Re-apply a choice the visitor already made on an earlier visit.
           try {
-            var saved = localStorage.getItem('hooktos_consent');
+            var saved = window.localStorage.getItem('${ANALYTICS_CONSENT_KEY}');
             if (saved === 'granted') {
-              gtag('consent', 'update', {
+              window.gtag('consent', 'update', {
                 ad_storage: 'granted',
                 ad_user_data: 'granted',
                 ad_personalization: 'granted',
                 analytics_storage: 'granted'
               });
             }
-          } catch (e) {}
+          } catch (error) {}
 
-          gtag('set', 'ads_data_redaction', true);
-          gtag('set', 'url_passthrough', true);
-          gtag('js', new Date());
-          gtag('config', '${GA_ID}', { send_page_view: false });
+          window.gtag('set', 'ads_data_redaction', true);
+          window.gtag('set', 'url_passthrough', true);
+          window.gtag('js', new Date());
+          window.gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
         `}
       </Script>
 
-      {/* 2. The GA4 library itself */}
       <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
         strategy="afterInteractive"
+        onReady={() => setScriptReady(true)}
       />
 
-      {/* 3. Route-change tracking (useSearchParams needs a Suspense boundary) */}
       <Suspense fallback={null}>
-        <PageViewTracker />
+        <PageViewTracker ready={scriptReady} />
       </Suspense>
     </>
   );
