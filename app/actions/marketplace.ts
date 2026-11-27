@@ -143,6 +143,7 @@ export async function getActiveBusinessListings(): Promise<BusinessListingItem[]
     const businesses = await prisma.businessListing.findMany({
       where: { isApproved: true },
       orderBy: { createdAt: "desc" },
+      take: 48,
       select: {
         id: true,
         name: true,

@@ -86,6 +86,17 @@ export default function HooksPage() {
           ))}
         </div>
       </section>
+      <nav
+        aria-label="Related creator resources"
+        className="mt-14 flex flex-wrap gap-x-6 gap-y-3 border-t border-slate-800 pt-6 text-sm"
+      >
+        <Link className="text-blue-300 hover:text-blue-200" href="/blog">
+          Read short-form content and creator growth guides
+        </Link>
+        <Link className="text-blue-300 hover:text-blue-200" href="/marketplace">
+          Browse creator businesses and tools
+        </Link>
+      </nav>
     </main>
   );
 }

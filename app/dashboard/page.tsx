@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/Badge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  robots: { index: false, follow: false },
+  alternates: { canonical: "/dashboard" },
+  robots: { index: false, follow: true },
 };
 
 export const dynamic = "force-dynamic";
