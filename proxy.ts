@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, type NextMiddleware } from "next/server";
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { ANON_COOKIE_MAX_AGE, ANON_ID_COOKIE, newAnonId } from "@/lib/anonymous";
+import { hasClerkConfiguration } from "@/lib/clerk-config";
 
 function handleRequest(request: NextRequest) {
     const url = request.nextUrl.clone();
@@ -43,7 +44,13 @@ function handleRequest(request: NextRequest) {
     return response;
 }
 
-export default clerkMiddleware(async (_auth, request) => handleRequest(request));
+const clerkProxy = hasClerkConfiguration()
+    ? clerkMiddleware(async (_auth, request) => handleRequest(request))
+    : undefined;
+
+export default function proxy(request: NextRequest, event: Parameters<NextMiddleware>[1]) {
+    return clerkProxy ? clerkProxy(request, event) : handleRequest(request);
+}
 
 export const config = {
     matcher: [

@@ -15,6 +15,7 @@ import IncidentLog from "@/app/admin/IncidentLog";
 import type { AdminIncidentRecord } from "@/lib/admin-incidents";
 import { prisma } from "@/lib/prisma";
 import { hasAdminAllowlist, isAdminEmail } from "@/lib/admin-access";
+import { hasClerkConfiguration } from "@/lib/clerk-config";
 import { SITE } from "@/lib/seo/config";
 
 export const dynamic = "force-dynamic";
@@ -93,10 +94,24 @@ function Status({
 }
 
 export default async function AdminPage() {
+  if (!hasClerkConfiguration()) {
+    return (
+      <AdminAccessNotice
+        isConfigured={hasAdminAllowlist()}
+        clerkConfigured={false}
+      />
+    );
+  }
+
   const user = await currentUser();
   if (!user) redirect("/sign-in?redirect_url=%2Fadmin");
   if (!isAdminEmail(user.primaryEmailAddress?.emailAddress)) {
-    return <AdminAccessNotice isConfigured={hasAdminAllowlist()} />;
+    return (
+      <AdminAccessNotice
+        isConfigured={hasAdminAllowlist()}
+        clerkConfigured
+      />
+    );
   }
 
   const now = new Date();
@@ -538,7 +553,13 @@ async function getActiveUsersSince(since: Date, label: string) {
   });
 }
 
-function AdminAccessNotice({ isConfigured }: { isConfigured: boolean }) {
+function AdminAccessNotice({
+  isConfigured,
+  clerkConfigured,
+}: {
+  isConfigured: boolean;
+  clerkConfigured: boolean;
+}) {
   return (
     <main className="grid min-h-screen place-items-center bg-[#0d1021] px-4 py-12 text-slate-100">
       <section className="w-full max-w-lg rounded-2xl border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/20">
@@ -546,20 +567,30 @@ function AdminAccessNotice({ isConfigured }: { isConfigured: boolean }) {
           HookTos AI · Admin
         </p>
         <h1 className="mt-3 text-2xl font-semibold text-white">
-          {isConfigured ? "Admin access denied" : "Admin access not configured"}
+          {!clerkConfigured
+            ? "Clerk authentication not configured"
+            : isConfigured
+              ? "Admin access denied"
+              : "Admin access not configured"}
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-300">
-          {isConfigured
-            ? "This Clerk account is not on the admin allowlist."
-            : "No admin email has been configured yet. Add your Clerk primary email to the server-side allowlist to enable the dashboard."}
+          {!clerkConfigured
+            ? "Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to enable the admin dashboard."
+            : isConfigured
+              ? "This Clerk account is not on the admin allowlist."
+              : "No admin email has been configured yet. Add your Clerk primary email to the server-side allowlist to enable the dashboard."}
         </p>
-        <p className="mt-4 rounded-lg border border-indigo-300/10 bg-indigo-400/[0.07] px-3 py-2 font-mono text-xs text-indigo-100">
-          ADMIN_EMAILS=your-clerk-primary-email@example.com
-        </p>
-        <p className="mt-3 text-xs leading-5 text-slate-400">
-          Add this to the project&apos;s .env file, then restart the dev server.
-          Separate multiple admin emails with commas.
-        </p>
+        {clerkConfigured && !isConfigured ? (
+          <>
+            <p className="mt-4 rounded-lg border border-indigo-300/10 bg-indigo-400/[0.07] px-3 py-2 font-mono text-xs text-indigo-100">
+              ADMIN_EMAILS=your-clerk-primary-email@example.com
+            </p>
+            <p className="mt-3 text-xs leading-5 text-slate-400">
+              Add this to the project&apos;s .env file, then restart the dev server.
+              Separate multiple admin emails with commas.
+            </p>
+          </>
+        ) : null}
         <Link
           className="mt-6 inline-flex rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-200 transition hover:border-indigo-300/30 hover:text-white"
           href="/"

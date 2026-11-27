@@ -13,6 +13,7 @@ import {
   websiteSchema,
 } from "@/lib/schema";
 import { SITE } from "@/lib/seo/config";
+import { hasClerkConfiguration } from "@/lib/clerk-config";
 import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
@@ -107,11 +108,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           ]}
         />
         <GoogleAnalytics />
-        <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
-          <Navbar />
-          {children}
-          <Analytics />
-        </ClerkProvider>
+        {hasClerkConfiguration() ? (
+          <ClerkProvider appearance={{ variables: { colorPrimary: "#4F46E5" } }}>
+            <Navbar />
+            {children}
+            <Analytics />
+          </ClerkProvider>
+        ) : (
+          <>
+            <Navbar />
+            {children}
+            <Analytics />
+          </>
+        )}
         <ConsentBanner />
       </body>
     </html>
