@@ -2,17 +2,17 @@ import { ArrowDown, Sparkles } from "lucide-react";
 import {
   getFreeListingStats,
   getActiveBusinessListings,
-  getLiveBillboardSlots,
 } from "@/app/actions/marketplace";
 import BusinessListingDialog from "@/components/BusinessListingDialog";
 import BusinessMarqueeRows from "@/components/BusinessMarqueeRows";
-import VirtualBillboard from "@/components/VirtualBillboard";
 import ListingPaymentStatus from "@/components/ListingPaymentStatus";
 import ScarcityBanner from "@/components/ScarcityBanner";
 import { Metadata } from "next";
 import Link from "next/link";
 import { marketplaceCategories } from "@/optimizations/SEO/marketplace-categories";
 import { buildMetadata } from "@/lib/seo/metadata";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/lib/seo/schema";
 
 export const metadata: Metadata = buildMetadata({
   title: 'Creator Business Marketplace and Directory',
@@ -20,19 +20,22 @@ export const metadata: Metadata = buildMetadata({
   path: '/marketplace',
 });
 
-export const dynamic = "force-dynamic";
-
-export const revalidate = 0; // Dynamic data fetching disable caching
+export const revalidate = 300;
 
 export default async function MarketplacePage() {
-  const [billboardSlots, businessListings, freeListingStats] = await Promise.all([
-    getLiveBillboardSlots(),
+  const [businessListings, freeListingStats] = await Promise.all([
     getActiveBusinessListings(),
     getFreeListingStats(),
   ]);
 
   return (
     <main className="relative isolate overflow-hidden bg-transparent text-slate-100">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: "/" },
+          { name: "Marketplace", url: "/marketplace" },
+        ])}
+      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -43,6 +46,12 @@ export default async function MarketplacePage() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ScarcityBanner stats={freeListingStats} listings={businessListings} />
+
+        <nav aria-label="Breadcrumb" className="mb-5 text-sm text-slate-400">
+          <Link className="hover:text-white" href="/">Home</Link>
+          <span aria-hidden="true" className="px-2">/</span>
+          <span aria-current="page" className="text-slate-200">Marketplace</span>
+        </nav>
 
         <nav aria-label="Browse marketplace categories" className="mb-8 flex flex-wrap justify-center gap-2">
           {Object.values(marketplaceCategories).map((category) => (
@@ -55,14 +64,6 @@ export default async function MarketplacePage() {
             </Link>
           ))}
         </nav>
-
-        {/* <section
-          aria-label="Virtual billboard ads"
-          className="flex min-h-[calc(100svh-73px)] flex-col justify-center"
-          id="virtual-billboard"
-        >
-          <VirtualBillboard slots={billboardSlots} />
-        </section> */}
 
         <div aria-hidden="true" className="border-t border-slate-800/70" />
 
@@ -101,16 +102,28 @@ export default async function MarketplacePage() {
               <BusinessListingDialog
                 freeSpotsRemaining={freeListingStats?.remaining}
               />
-              <a
+              <Link
                 className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-5 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800"
-                href="#virtual-billboard"
+                href="/blog"
               >
-                Back to billboard
-                <ArrowDown aria-hidden="true" className="size-4 rotate-180" />
-              </a>
+                Read creator growth guides
+                <ArrowDown aria-hidden="true" className="size-4 -rotate-90" />
+              </Link>
             </div>
           </div>
         </section>
+
+        <nav
+          aria-label="Related creator tools"
+          className="mb-12 flex flex-wrap justify-center gap-x-6 gap-y-3 border-t border-slate-800/70 py-8 text-sm"
+        >
+          <Link className="text-blue-300 hover:text-blue-200" href="/hooks">
+            Explore AI hook frameworks
+          </Link>
+          <Link className="text-blue-300 hover:text-blue-200" href="/dashboard">
+            Open the AI content dashboard
+          </Link>
+        </nav>
       </div>
     </main>
   );

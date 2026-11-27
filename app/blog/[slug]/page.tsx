@@ -11,6 +11,7 @@ import JsonLd from "@/components/JsonLd";
 import { blogMdxComponents } from "@/components/BlogMdxComponents";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { autoLink } from "@/lib/seo/autoLink";
+import { SITE } from "@/lib/seo/config";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 
 interface BlogProps {
@@ -305,7 +306,7 @@ function getHowToSteps(content: string): { name: string; text: string }[] {
 }
 
 function absoluteUrl(value: string): string {
-    return /^https?:\/\//i.test(value) ? value : `https://hooktos.com${value.startsWith("/") ? "" : "/"}${value}`;
+    return /^https?:\/\//i.test(value) ? value : `${SITE.url}${value.startsWith("/") ? "" : "/"}${value}`;
 }
 
 export function generateStaticParams() {
@@ -358,7 +359,7 @@ export async function generateMetadata({ params }: BlogProps): Promise<Metadata>
             type: "article",
             title,
             description,
-            url: `${"https://hooktos.com"}/blog/${normalizedSlug}`,
+            url: `${SITE.url}/blog/${normalizedSlug}`,
             siteName: "HookTos AI",
             images: [absoluteUrl(cover || "/opengraph-image")],
             authors: [author],
@@ -390,7 +391,7 @@ export default async function SingleBlogPost({ params }: BlogProps) {
     const howToSteps = getHowToSteps(content);
     const explicitFaqSection = getExplicitFaqSection(content);
     const modifiedDate = toDateString(data.updated, new Date(publishedDate));
-    const canonical = `https://hooktos.com/blog/${normalizedSlug}`;
+    const canonical = `${SITE.url}/blog/${normalizedSlug}`;
     const faqItems = explicitFaqSection?.items ?? getFaqItems(content, rawTitle);
     const articleSchema = {
         "@context": "https://schema.org",
@@ -416,8 +417,8 @@ export default async function SingleBlogPost({ params }: BlogProps) {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Home", item: "https://hooktos.com/" },
-                { "@type": "ListItem", position: 2, name: "Blog", item: "https://hooktos.com/blog" },
+                { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.url}/` },
+                { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE.url}/blog` },
                 { "@type": "ListItem", position: 3, name: displayTitle, item: canonical },
             ],
         },

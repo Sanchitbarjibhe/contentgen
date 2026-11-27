@@ -2,7 +2,7 @@
 
 ## Phase 1 decisions
 
-- Canonical host: `https://hooktos.com`, following the guide's default. The existing `www` host is redirected to non-www in `next.config.mjs`.
+- Canonical host: `https://www.hooktos.com`, matching the crawled 200 host. Keep the apex-to-www permanent redirect configured at the deployment/domain level.
 - Next 16 `proxy.ts` returns 301 responses for underscores, uppercase paths, and trailing slashes. Static files, `_next`, and `/api` are excluded; the existing anonymous-ID proxy behavior is preserved.
 - The guide file is named `docs/SEO/Seo strategy guide.md` in this checkout; it was used as the specification.
 - Existing blog data already normalizes underscore filenames and frontmatter slugs. Middleware handles legacy underscore URLs as 301 redirects to hyphenated canonical paths.
@@ -16,9 +16,9 @@
 
 ## Phase 2 decisions
 
-- Canonical sitemap and robots URLs use `https://hooktos.com`.
-- `/dashboard`, `/api/`, `/account`, `/admin`, `/sign-in`, `/sign-up`, and `/claim-spot` are excluded or noindexed as auth/private routes.
-- Existing Organization and WebSite JSON-LD remains in the root layout and now uses the non-www canonical host.
+- Canonical sitemap and robots URLs use `https://www.hooktos.com`.
+- `/dashboard` is excluded from the sitemap and returns `noindex, follow`; it must remain crawlable so search engines can read that directive. Internal APIs and auth routes remain blocked or noindexed.
+- Existing Organization and WebSite JSON-LD remains in the root layout and uses the www canonical host.
 - `SoftwareApplication` JSON-LD was moved to the existing/new `/hooks` hub.
 - Reused the existing JSON-LD renderer for `components/seo/JsonLd.tsx`.
 - Blog posts include Article, FAQPage when applicable, HowTo where detected, and BreadcrumbList JSON-LD.
@@ -139,9 +139,9 @@
 
 ## Final verification commands
 
-- `curl -I https://hooktos.com/blog/monetize_a_small_audience` — expected 301 to `/blog/monetize-a-small-audience`.
-- `curl -I https://www.hooktos.com/blog/monetize-a-small-audience` — expected 301 to non-www canonical.
-- Open `https://hooktos.com/sitemap.xml` and confirm canonical indexable URLs.
-- Open `https://hooktos.com/robots.txt` and confirm private routes and the sitemap URL.
+- `curl -I https://hooktos.com/` — expected permanent redirect to `https://www.hooktos.com/`.
+- `curl -I https://www.hooktos.com/blog/how-to-hook-viewers-in-3-seconds` — expected permanent redirect to `/blog/short-form-content-strategy`.
+- Open `https://www.hooktos.com/sitemap.xml` and confirm it contains canonical indexable URLs only.
+- Open `https://www.hooktos.com/robots.txt` and confirm it references the www sitemap and does not disallow `/dashboard`.
 - Validate blog, hook, FAQ, and marketplace JSON-LD in Google Rich Results Test after deployment.
 - Run Lighthouse mobile and desktop reports for `/`, `/hooks`, `/hooks/instagram-reels/curiosity`, `/blog/10-viral-hooks-for-reels`, `/marketplace/ai-tools` after deployment.

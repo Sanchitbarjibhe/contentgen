@@ -12,6 +12,7 @@ import {
   organizationSchema,
   websiteSchema,
 } from "@/lib/schema";
+import { SITE } from "@/lib/seo/config";
 import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
@@ -21,7 +22,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hooktos.com'),
+  metadataBase: new URL(SITE.url),
   title: {
     default: 'HookTos AI | AI Viral Hook Generator & Creator Marketplace',
     template: '%s | HookTos AI',
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://hooktos.com',
+    url: SITE.url,
     siteName: 'HookTos AI',
     title: 'HookTos AI | Viral Hooks for Social Video',
     description:

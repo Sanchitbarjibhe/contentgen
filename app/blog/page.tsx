@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { BlogPosts } from '@/lib/BlogPosts';
+import { breadcrumbSchema } from '@/lib/seo/schema';
+import JsonLd from '@/components/seo/JsonLd';
 
 
 export const metadata: Metadata = buildMetadata({
@@ -13,7 +15,13 @@ export const metadata: Metadata = buildMetadata({
 
 export default function BlogListingPage() {
     return (
-        <div className="min-h-screen bg-transparent px-4 py-16 text-slate-100 selection:bg-purple-500 selection:text-white sm:px-6 lg:px-8">
+        <main className="min-h-screen bg-transparent px-4 py-16 text-slate-100 selection:bg-purple-500 selection:text-white sm:px-6 lg:px-8">
+            <JsonLd
+                data={breadcrumbSchema([
+                    { name: 'Home', url: '/' },
+                    { name: 'Blog', url: '/blog' },
+                ])}
+            />
             {/* Header Section */}
             <div className="max-w-4xl mx-auto text-center space-y-4">
                 <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
@@ -26,6 +34,18 @@ export default function BlogListingPage() {
                     Latest strategies, guides, and tips for creating viral short-form content.
                 </p>
             </div>
+
+            <nav aria-label="Related creator tools" className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
+                <Link className="text-blue-300 hover:text-blue-200" href="/hooks">
+                    Explore AI hook frameworks
+                </Link>
+                <Link className="text-blue-300 hover:text-blue-200" href="/marketplace">
+                    Browse the creator business marketplace
+                </Link>
+                <Link className="text-blue-300 hover:text-blue-200" href="/dashboard">
+                    Open the AI content dashboard
+                </Link>
+            </nav>
 
             {/* Blog Grid / Cards Container */}
             <div className="max-w-4xl mx-auto mt-14 space-y-6">
@@ -60,6 +80,6 @@ export default function BlogListingPage() {
                     </Link>
                 ))}
             </div>
-        </div>
+        </main>
     );
 }

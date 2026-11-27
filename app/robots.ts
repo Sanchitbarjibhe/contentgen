@@ -1,5 +1,5 @@
 // app/robots.ts  (HookTos AI — v2)
-// Next.js serves it automatically at https://hooktos.com/robots.txt
+// Next.js serves it automatically at https://www.hooktos.com/robots.txt
 //
 // Strategy: HookTos wants maximum visibility in Google AND in AI answers
 // (ChatGPT, Claude, Gemini, Perplexity). So every search bot, every AI search bot,
@@ -7,7 +7,7 @@
 // Only private/app areas are blocked, for everyone.
 //
 // What changed vs v1:
-//  - Sitemap and canonical host both use https://hooktos.com.
+//  - Sitemap and canonical host both use https://www.hooktos.com.
 //  - Named AI crawlers explicitly so you can switch any of them off in one place.
 //  - Private paths are repeated for every named bot (a bot that has its own group
 //    ignores the "*" group, so the blocks must be repeated).
@@ -18,7 +18,6 @@ import { SITE } from '@/lib/seo/config';
 // Private areas — never crawl. Edit to match your real route names.
 const PRIVATE_PATHS = [
   '/api/',
-  '/dashboard',
   '/admin/',
   '/account',
   '/sign-in',
