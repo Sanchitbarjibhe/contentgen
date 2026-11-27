@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import { ANON_COOKIE_MAX_AGE, ANON_ID_COOKIE, newAnonId } from "@/lib/anonymous";
 
-export default function proxy(request: NextRequest) {
+function handleRequest(request: NextRequest) {
     const url = request.nextUrl.clone();
     let shouldRedirect = false;
 
@@ -42,8 +43,11 @@ export default function proxy(request: NextRequest) {
     return response;
 }
 
+export default clerkMiddleware(async (_auth, request) => handleRequest(request));
+
 export const config = {
     matcher: [
         '/((?!_next|api|[^?]*\\.[\\w]+$|_next/image).*)',
+        '/api/admin/:path*',
     ],
 };

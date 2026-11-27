@@ -18,7 +18,7 @@ import { SITE } from '@/lib/seo/config';
 // Private areas — never crawl. Edit to match your real route names.
 const PRIVATE_PATHS = [
   '/api/',
-  '/admin/',
+  '/admin',
   '/account',
   '/sign-in',
   '/sign-up',
